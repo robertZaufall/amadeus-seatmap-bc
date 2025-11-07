@@ -25,6 +25,34 @@ def extract_row_and_column(seat_number: str):
     column = ''.join(ch for ch in seat_number if ch.isalpha())
     return row, column
 
+
+def char_display_width(character: str) -> int:
+    """Return the display width of a single character."""
+    return 2 if unicodedata.east_asian_width(character) in {'F', 'W'} else 1
+
+
+def display_width(text: str) -> int:
+    """Return the printable width of text accounting for wide characters."""
+    return sum(char_display_width(ch) for ch in text or '')
+
+
+def pad_to_width(text: str, width: int) -> str:
+    """Pad or trim text so that its display width equals the provided width."""
+    if width <= 0:
+        return ''
+    current_width = 0
+    trimmed: list[str] = []
+    for ch in text or '':
+        ch_width = char_display_width(ch)
+        if current_width + ch_width > width:
+            break
+        trimmed.append(ch)
+        current_width += ch_width
+    result = ''.join(trimmed)
+    if current_width < width:
+        result += ' ' * (width - current_width)
+    return result
+
 @dataclass
 class SeatMap:
     departure_date: str
@@ -105,12 +133,6 @@ class SeatMaps:
         seats = deck.get('seats', [])
         columns_by_position = {}
         rows = {}
-
-        def display_width(text: str) -> int:
-            width = 0
-            for ch in text or '':
-                width += 2 if unicodedata.east_asian_width(ch) in {'F', 'W'} else 1
-            return width
 
         symbol_width = max((display_width(symbol) for symbol in self.STATUS_SYMBOL.values()), default=1)
         seat_column_width = max(symbol_width, 1)
@@ -297,14 +319,128 @@ def window_seat_sort_key(seat_label: str):
     numeric_part = ''.join(filter(str.isdigit, seat_label))
     return int(numeric_part or 0), seat_label
 
-for date_key in sorted(seatmaps_by_date):
-    seatmap_obj = seatmaps_by_date[date_key]
-    print(seatmaps.render_map(seatmap_obj))
+def normalize_block(lines: list[str], width: int, height: int) -> list[str]:
+    """Ensure a block of text occupies a consistent rectangle."""
+    padded = [pad_to_width(line, width) for line in lines]
+    blank_line = ' ' * width
+    while len(padded) < height:
+        padded.append(blank_line)
+    return padded
+
+
+def build_placeholder_block(date_key: str, width: int, height: int) -> list[str]:
+    """Create a placeholder block for dates without seatmap data."""
+    lines: list[str] = []
+    lines.append(pad_to_width(f"{date_key} -- NO DATA --", width))
+    if height == 1:
+        return normalize_block(lines, width, height)
+
+    inner_width = max(width - 2, 0)
+    top_border = pad_to_width('╭' + ('─' * inner_width) + '╮', width)
+    bottom_border = pad_to_width('╰' + ('─' * inner_width) + '╯', width)
+    empty_body = pad_to_width('│' + (' ' * inner_width) + '│', width) if width >= 2 else pad_to_width('', width)
+    lines.append(top_border)
+
+    body_rows = max(height - 3, 0)
+    if body_rows > 0 and inner_width > 0:
+        message = 'NO DATA'
+        trimmed_message = message[:inner_width]
+        left_padding = (inner_width - len(trimmed_message)) // 2
+        right_padding = inner_width - len(trimmed_message) - left_padding
+        message_line = pad_to_width(
+            '│' + (' ' * left_padding) + trimmed_message + (' ' * right_padding) + '│',
+            width
+        )
+        lines.append(message_line)
+        body_rows -= 1
+
+    for _ in range(body_rows):
+        lines.append(empty_body)
+
+    lines.append(bottom_border)
+    return normalize_block(lines, width, height)
+
+
+def print_weekly_layout(seatmaps_obj: SeatMaps, seatmaps_by_date: dict[str, SeatMap]) -> None:
+    """Print seatmaps grouped by week, filling missing days with placeholders."""
+    if not seatmaps_by_date:
+        return
+
+    rendered_blocks: dict[str, list[str]] = {}
+    max_width = 0
+    max_height = 0
+    for date_key, seatmap_obj in seatmaps_by_date.items():
+        block_lines = seatmaps_obj.render_map(seatmap_obj).splitlines()
+        while block_lines and not block_lines[0].strip():
+            block_lines = block_lines[1:]
+        rendered_blocks[date_key] = block_lines
+        if block_lines:
+            width = max(display_width(line) for line in block_lines)
+            max_width = max(max_width, width)
+            max_height = max(max_height, len(block_lines))
+
+    if max_width == 0 or max_height == 0:
+        return
+
+    sorted_dates = sorted(datetime.strptime(key, '%Y%m%d') for key in seatmaps_by_date.keys())
+    start_date = sorted_dates[0] - timedelta(days=sorted_dates[0].weekday())
+    end_date = sorted_dates[-1] + timedelta(days=(6 - sorted_dates[-1].weekday()))
+    current = start_date
+    placeholder_cache: dict[str, list[str]] = {}
+    previous_week_signature: tuple[str, ...] | None = None
+
+    while current <= end_date:
+        weekly_blocks: list[list[str]] = []
+        week_has_data = False
+        week_routes: set[str] = set()
+        for offset in range(7):
+            current_date = current + timedelta(days=offset)
+            date_key = current_date.strftime('%Y%m%d')
+            block_lines = rendered_blocks.get(date_key)
+            if block_lines is None:
+                block_lines = placeholder_cache.setdefault(
+                    date_key,
+                    build_placeholder_block(date_key, max_width, max_height)
+                )
+            else:
+                week_has_data = True
+                seatmap = seatmaps_by_date.get(date_key)
+                if seatmap is not None:
+                    week_routes.add(f"{seatmap.origin}->{seatmap.destination}")
+                block_lines = normalize_block(block_lines, max_width, max_height)
+            weekly_blocks.append(block_lines)
+
+        if not week_has_data:
+            current += timedelta(days=7)
+            continue
+
+        week_signature = tuple(sorted(week_routes))
+        if previous_week_signature and week_signature != previous_week_signature:
+            print()
+            print()
+
+        for line_idx in range(max_height):
+            print('  '.join(block[line_idx] for block in weekly_blocks))
+        print()
+
+        previous_week_signature = week_signature
+        current += timedelta(days=7)
+
+print("\n\n")
+print_weekly_layout(seatmaps, seatmaps_by_date)
 
 if seatmaps_by_date:
     print("\nAvailable window seats by date:")
+    previous_destination: str | None = None
     for date_key in sorted(seatmaps_by_date):
-        seats = seatmaps_by_date[date_key].window_seats
+        seatmap = seatmaps_by_date[date_key]
+        if previous_destination and seatmap.destination != previous_destination:
+            print()
+            print()
+        seats = seatmap.window_seats
         if seats:
             sorted_seats = ', '.join(sorted(seats, key=window_seat_sort_key))
             print(f"{date_key}: {sorted_seats}")
+        previous_destination = seatmap.destination
+
+print("\n\n")
