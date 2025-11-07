@@ -288,15 +288,23 @@ else:
     with open(pickle_path, "wb") as pickled_seatmaps:
         pickle.dump(seatmaps.seatmaps, pickled_seatmaps)
 
-seatmaps_by_date = {}
-window_seats = []
-for seatmap_obj in seatmaps:
-    seatmaps_by_date[seatmap_obj.departure_date] = seatmap_obj
+seatmaps_by_date = {
+    seatmap_obj.departure_date: seatmap_obj
+    for seatmap_obj in seatmaps
+}
+
+def window_seat_sort_key(seat_label: str):
+    numeric_part = ''.join(filter(str.isdigit, seat_label))
+    return int(numeric_part or 0), seat_label
 
 for date_key in sorted(seatmaps_by_date):
     seatmap_obj = seatmaps_by_date[date_key]
     print(seatmaps.render_map(seatmap_obj))
-    window_seats.extend(seatmap_obj.window_seats)
 
-if window_seats:
-    print("\nAvailable window seats: " + ', '.join(sorted(window_seats, key=lambda x: (int(''.join(filter(str.isdigit, x)) or 0), x))))
+if seatmaps_by_date:
+    print("\nAvailable window seats by date:")
+    for date_key in sorted(seatmaps_by_date):
+        seats = seatmaps_by_date[date_key].window_seats
+        if seats:
+            sorted_seats = ', '.join(sorted(seats, key=window_seat_sort_key))
+            print(f"{date_key}: {sorted_seats}")
