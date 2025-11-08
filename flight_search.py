@@ -66,7 +66,8 @@ class SeatMap:
 
 
 class SeatMaps:
-    STATUS_SYMBOL = {'AVAILABLE': '🟩', 'OCCUPIED': '🟥', 'BLOCKED': '⬛'}
+    STATUS_SYMBOL = {'AVAILABLE': '🟪', 'OCCUPIED': '❌', 'BLOCKED': '⬛'}
+    WINDOW_AVAILABLE_SYMBOL = '🟩'
 
     def __init__(self, seatmaps: list[SeatMap] | None = None):
         self.seatmaps = seatmaps or []
@@ -134,7 +135,9 @@ class SeatMaps:
         columns_by_position = {}
         rows = {}
 
-        symbol_width = max((display_width(symbol) for symbol in self.STATUS_SYMBOL.values()), default=1)
+        symbol_width = max(
+            [display_width(symbol) for symbol in self.STATUS_SYMBOL.values()] + [display_width(self.WINDOW_AVAILABLE_SYMBOL)]
+        )
         seat_column_width = max(symbol_width, 1)
         aisle_column_width = max(1, seat_column_width // 2) + 1
 
@@ -156,7 +159,10 @@ class SeatMaps:
             row_bucket = rows.setdefault(row_label, {})
             traveler_pricing = seat.get('travelerPricing', [])
             availability = traveler_pricing[0].get('seatAvailabilityStatus') if traveler_pricing else 'UNKNOWN'
-            row_bucket[column_position] = self.STATUS_SYMBOL.get(availability, '?')
+            seat_symbol = self.STATUS_SYMBOL.get(availability, '?')
+            if availability == 'AVAILABLE' and 'W' in seat.get('characteristicsCodes', []):
+                seat_symbol = self.WINDOW_AVAILABLE_SYMBOL
+            row_bucket[column_position] = seat_symbol
 
         ordered_columns = sorted(columns_by_position)
         display_columns = []
