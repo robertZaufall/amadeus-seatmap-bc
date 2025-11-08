@@ -17,6 +17,20 @@ load_dotenv()
 #environment = "e2e"
 environment = "e2e-pickle"
 
+travel_windows = [
+    {
+        "origin": "MUC",
+        "destination": "BKK",
+        "start_date": "2025-12-01",
+        "end_date": "2025-12-20",
+    },
+    {
+        "origin": "BKK",
+        "destination": "MUC",
+        "start_date": "2026-01-15",
+        "end_date": "2026-01-25",
+    },
+]
 
 fixtures_dir = Path(__file__).parent / "test"
 
@@ -345,21 +359,6 @@ if environment == "e2e-pickle":
         if not hasattr(seatmap_obj, "price_currency"):
             seatmap_obj.price_currency = None
 else:
-    travel_windows = [
-        {
-            "origin": "MUC",
-            "destination": "BKK",
-            "start_date": "2025-12-01",
-            "end_date": "2025-12-20",
-        },
-        {
-            "origin": "BKK",
-            "destination": "MUC",
-            "start_date": "2026-01-15",
-            "end_date": "2026-01-25",
-        },
-    ]
-
     for window in travel_windows:
         for departure_date in iter_dates(window["start_date"], window["end_date"]):
             try:
