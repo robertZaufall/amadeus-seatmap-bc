@@ -3,8 +3,9 @@ import os
 import pickle
 import re
 import unicodedata
+from collections import defaultdict
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
 
@@ -41,8 +42,17 @@ travel_window_ranges = [
     for window in travel_windows
 ]
 
+route_travel_windows: dict[str, list[tuple[datetime.date, datetime.date]]] = defaultdict(list)
+for window in travel_windows:
+    start = datetime.fromisoformat(window["start_date"]).date()
+    end = datetime.fromisoformat(window["end_date"]).date()
+    route = f"{window['origin']}->{window['destination']}"
+    route_travel_windows[route].append((start, end))
+
 fixtures_dir = Path(__file__).parent / "test"
 ANSI_ESCAPE_RE = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
+HEATMAP_RED = '\033[31m'
+HEATMAP_YELLOW = '\033[33m'
 
 
 def _load_flight_offer_fixtures() -> dict[str, dict]:
@@ -518,7 +528,106 @@ def build_placeholder_block(date_key: str, width: int, height: int) -> list[str]
     return lines
 
 
-def render_availability_boxes(route_lines: dict[str, list[str]], *, route_order: list[str] | None = None) -> None:
+def build_heatmap_entries(seatmaps_by_date: dict[str, SeatMap]) -> dict[str, dict[str, Decimal]]:
+    route_entries: dict[str, dict[str, Decimal]] = defaultdict(dict)
+    for window in travel_windows:
+        route_key = f"{window['origin']}->{window['destination']}"
+        for date_iso in iter_dates(window["start_date"], window["end_date"]):
+            date_key = date_iso.replace('-', '')
+            seatmap = seatmaps_by_date.get(date_key)
+            if seatmap is None or not seatmap.window_seats:
+                continue
+            price = parse_total_price(seatmap.price_total)
+            if price is None:
+                continue
+            route_entries[route_key][date_key] = price
+    return route_entries
+
+
+def build_heatmap_price_stats(entries_by_route: dict[str, dict[str, Decimal]]) -> dict[str, tuple[Decimal, Decimal]]:
+    stats: dict[str, tuple[Decimal, Decimal]] = {}
+    for route, entries in entries_by_route.items():
+        if not entries:
+            continue
+        prices = list(entries.values())
+        stats[route] = (min(prices), max(prices))
+    return stats
+
+
+def heatmap_color(price: Decimal | None, min_price: Decimal | None, max_price: Decimal | None) -> str:
+    if price is None or min_price is None or max_price is None or min_price == max_price:
+        return SeatMaps.BORDER_COLOR_HIGHLIGHT
+    if price == min_price:
+        return SeatMaps.BORDER_COLOR_HIGHLIGHT
+    if price == max_price:
+        return HEATMAP_RED
+    return HEATMAP_YELLOW
+
+
+def format_heatmap_calendar(
+    route_key: str,
+    entries_by_route: dict[str, dict[str, Decimal]],
+    stats_by_route: dict[str, tuple[Decimal, Decimal]]
+) -> list[str]:
+    entries = entries_by_route.get(route_key)
+    windows = route_travel_windows.get(route_key)
+    if not entries or not windows:
+        return []
+    min_price, max_price = stats_by_route.get(route_key, (None, None))
+
+    lines: list[str] = ['', '']
+    for window_start, window_end in windows:
+        if window_start > window_end:
+            continue
+        window_lines: list[str] = []
+        day_header = 'Mo Tu We Th Fr Sa Su'
+        current = window_start - timedelta(days=window_start.weekday())
+        window_cutoff = window_end + timedelta(days=(6 - window_end.weekday()))
+        while current <= window_cutoff:
+            week_boxes: list[str] = []
+            week_labels: list[str] = []
+            week_has_data = False
+            for offset in range(7):
+                day = current + timedelta(days=offset)
+                in_window = window_start <= day <= window_end
+                if in_window:
+                    date_key = day.strftime('%Y%m%d')
+                    price = entries.get(date_key)
+                    day_label = day.strftime('%d')
+                    if price is not None:
+                        week_has_data = True
+                        color_code = heatmap_color(price, min_price, max_price)
+                        colored_box = f"{color_code}■{SeatMaps.ANSI_RESET}"
+                        week_boxes.append(colored_box)
+                        week_labels.append(day_label)
+                    else:
+                        week_boxes.append(' ')
+                        week_labels.append(day_label)
+                else:
+                    week_boxes.append(' ')
+                    week_labels.append('  ')
+            if week_has_data:
+                formatted_boxes = ' '.join(pad_to_width(token or '', 2) for token in week_boxes)
+                formatted_labels = ' '.join(pad_to_width(label or '', 2) for label in week_labels)
+                window_lines.append(formatted_boxes)
+                window_lines.append(formatted_labels)
+            current += timedelta(days=7)
+        if window_lines:
+            lines.append(day_header)
+            lines.extend(window_lines)
+            lines.append('')
+    while lines and not lines[-1].strip():
+        lines.pop()
+    return lines
+
+
+def render_availability_boxes(
+    route_lines: dict[str, list[str]],
+    *,
+    route_order: list[str] | None = None,
+    heatmap_entries: dict[str, dict[str, Decimal]] | None = None,
+    heatmap_stats: dict[str, tuple[Decimal, Decimal]] | None = None,
+) -> None:
     if not route_lines:
         return
     if route_order:
@@ -532,6 +641,10 @@ def render_availability_boxes(route_lines: dict[str, list[str]], *, route_order:
         if entries:
             lines.append('')
         lines.extend(entries)
+        if heatmap_entries and heatmap_stats:
+            heatmap_lines = format_heatmap_calendar(route, heatmap_entries, heatmap_stats)
+            if heatmap_lines:
+                lines.extend(heatmap_lines)
         box_contents.append(lines)
 
     content_width = max(
@@ -633,6 +746,8 @@ print_weekly_layout(seatmaps, seatmaps_by_date, best_price_by_route=best_price_b
 
 if seatmaps_by_date:
     print("\nAvailable window seats by date:")
+    heatmap_entries = build_heatmap_entries(seatmaps_by_date)
+    heatmap_stats = build_heatmap_price_stats(heatmap_entries)
     availability_by_route: dict[str, list[str]] = {}
     route_first_date: dict[str, str] = {}
     for date_key in sorted(seatmaps_by_date):
@@ -646,10 +761,21 @@ if seatmaps_by_date:
         sorted_seats = ', '.join(sorted(seats, key=window_seat_sort_key))
         formatted_date = datetime.strptime(date_key, '%Y%m%d').strftime('%Y-%m-%d')
         price_text = seatmap.formatted_total_price(rounded=True) or "N/A"
-        availability_by_route.setdefault(route_key, []).append(f"{formatted_date} ({price_text}): {sorted_seats}")
+        price_decimal = heatmap_entries.get(route_key, {}).get(date_key)
+        min_price, max_price = heatmap_stats.get(route_key, (None, None))
+        color_code = heatmap_color(price_decimal, min_price, max_price)
+        colored_prefix = f"{color_code}■{SeatMaps.ANSI_RESET}"
+        availability_by_route.setdefault(route_key, []).append(
+            f"{colored_prefix} {formatted_date} ({price_text}): {sorted_seats}"
+        )
 
     if availability_by_route:
         ordered_routes = sorted(route_first_date, key=route_first_date.get)
-        render_availability_boxes(availability_by_route, route_order=ordered_routes)
+        render_availability_boxes(
+            availability_by_route,
+            route_order=ordered_routes,
+            heatmap_entries=heatmap_entries,
+            heatmap_stats=heatmap_stats,
+        )
 
 print("\n")
