@@ -51,8 +51,6 @@ for window in travel_windows:
 
 fixtures_dir = Path(__file__).parent / "test"
 ANSI_ESCAPE_RE = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
-HEATMAP_RED = '\033[31m'
-HEATMAP_YELLOW = '\033[33m'
 
 
 def _load_flight_offer_fixtures() -> dict[str, dict]:
@@ -554,14 +552,41 @@ def build_heatmap_price_stats(entries_by_route: dict[str, dict[str, Decimal]]) -
     return stats
 
 
-def heatmap_color(price: Decimal | None, min_price: Decimal | None, max_price: Decimal | None) -> str:
-    if price is None or min_price is None or max_price is None or min_price == max_price:
-        return SeatMaps.BORDER_COLOR_HIGHLIGHT
+HEATMAP_SYMBOL_MIN = '🟩'
+HEATMAP_SYMBOL_DEFAULT = '🟨'
+HEATMAP_SYMBOL_MAX = '🟥'
+HEATMAP_COLOR_MIN = SeatMaps.BORDER_COLOR_HIGHLIGHT
+HEATMAP_COLOR_DEFAULT = '\033[33m'
+HEATMAP_COLOR_MAX = '\033[31m'
+HEATMAP_CELL_WIDTH = max(
+    display_width(HEATMAP_SYMBOL_MIN),
+    display_width(HEATMAP_SYMBOL_DEFAULT),
+    display_width(HEATMAP_SYMBOL_MAX),
+    2,
+)
+
+
+def colorize_symbol(symbol: str, color: str | None) -> str:
+    if not symbol:
+        return ''
+    if not color:
+        return symbol
+    return f"{color}{symbol}{SeatMaps.ANSI_RESET}"
+
+
+HEATMAP_SYMBOL_FALLBACK = colorize_symbol(HEATMAP_SYMBOL_DEFAULT, HEATMAP_COLOR_DEFAULT)
+
+
+def heatmap_symbol(price: Decimal | None, min_price: Decimal | None, max_price: Decimal | None) -> str:
+    if price is None:
+        return ''
+    if min_price is None or max_price is None or min_price == max_price:
+        return colorize_symbol(HEATMAP_SYMBOL_MIN, HEATMAP_COLOR_MIN)
     if price == min_price:
-        return SeatMaps.BORDER_COLOR_HIGHLIGHT
+        return colorize_symbol(HEATMAP_SYMBOL_MIN, HEATMAP_COLOR_MIN)
     if price == max_price:
-        return HEATMAP_RED
-    return HEATMAP_YELLOW
+        return colorize_symbol(HEATMAP_SYMBOL_MAX, HEATMAP_COLOR_MAX)
+    return colorize_symbol(HEATMAP_SYMBOL_DEFAULT, HEATMAP_COLOR_DEFAULT)
 
 
 def format_heatmap_calendar(
@@ -580,7 +605,8 @@ def format_heatmap_calendar(
         if window_start > window_end:
             continue
         window_lines: list[str] = []
-        day_header = 'Mo Tu We Th Fr Sa Su'
+        weekday_names = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+        day_header = ' '.join(pad_to_width(name, HEATMAP_CELL_WIDTH) for name in weekday_names)
         current = window_start - timedelta(days=window_start.weekday())
         window_cutoff = window_end + timedelta(days=(6 - window_end.weekday()))
         while current <= window_cutoff:
@@ -596,19 +622,17 @@ def format_heatmap_calendar(
                     day_label = day.strftime('%d')
                     if price is not None:
                         week_has_data = True
-                        color_code = heatmap_color(price, min_price, max_price)
-                        colored_box = f"{color_code}■{SeatMaps.ANSI_RESET}"
-                        week_boxes.append(colored_box)
+                        week_boxes.append(heatmap_symbol(price, min_price, max_price))
                         week_labels.append(day_label)
                     else:
-                        week_boxes.append(' ')
+                        week_boxes.append('')
                         week_labels.append(day_label)
                 else:
-                    week_boxes.append(' ')
-                    week_labels.append('  ')
+                    week_boxes.append('')
+                    week_labels.append('')
             if week_has_data:
-                formatted_boxes = ' '.join(pad_to_width(token or '', 2) for token in week_boxes)
-                formatted_labels = ' '.join(pad_to_width(label or '', 2) for label in week_labels)
+                formatted_boxes = ' '.join(pad_to_width(token, HEATMAP_CELL_WIDTH) for token in week_boxes)
+                formatted_labels = ' '.join(pad_to_width(label, HEATMAP_CELL_WIDTH) for label in week_labels)
                 window_lines.append(formatted_boxes)
                 window_lines.append(formatted_labels)
             current += timedelta(days=7)
@@ -763,10 +787,9 @@ if seatmaps_by_date:
         price_text = seatmap.formatted_total_price(rounded=True) or "N/A"
         price_decimal = heatmap_entries.get(route_key, {}).get(date_key)
         min_price, max_price = heatmap_stats.get(route_key, (None, None))
-        color_code = heatmap_color(price_decimal, min_price, max_price)
-        colored_prefix = f"{color_code}■{SeatMaps.ANSI_RESET}"
+        symbol_prefix = heatmap_symbol(price_decimal, min_price, max_price) or HEATMAP_SYMBOL_FALLBACK
         availability_by_route.setdefault(route_key, []).append(
-            f"{colored_prefix} {formatted_date} ({price_text}): {sorted_seats}"
+            f"{symbol_prefix} {formatted_date} ({price_text}): {sorted_seats}"
         )
 
     if availability_by_route:
