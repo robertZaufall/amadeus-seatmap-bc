@@ -1,4 +1,4 @@
-# Business Class Seatmap Generator w/ Amadeus Rest-API
+# Business Class Seatmap Generator w/ Amadeus API
 
 CLI utility for browsing Amadeus seat-map availability across a set of long-haul trips. It can pull live data directly from the Amadeus Self-Service APIs or replay previously captured fixtures to make it easy to study cabin layouts and track window-seat availability over time.
 
