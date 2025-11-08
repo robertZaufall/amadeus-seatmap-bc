@@ -4,6 +4,7 @@ import pickle
 import unicodedata
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
 
 from amadeus import Client, ResponseError
@@ -18,6 +19,34 @@ environment = "e2e-pickle"
 
 
 fixtures_dir = Path(__file__).parent / "test"
+
+
+def _load_flight_offer_fixtures() -> dict[str, dict]:
+    """Return flight offer fixtures keyed by their id."""
+    flight_offer_path = fixtures_dir / "flight-offer.json"
+    if not flight_offer_path.exists():
+        return {}
+
+    with open(flight_offer_path, encoding="utf-8") as fixture:
+        payload = json.load(fixture)
+
+    if isinstance(payload, dict) and "data" in payload:
+        offers = payload["data"]
+    elif isinstance(payload, list):
+        offers = payload
+    elif isinstance(payload, dict):
+        offers = [payload]
+    else:
+        return {}
+
+    offer_map: dict[str, dict] = {}
+    for offer in offers:
+        if not isinstance(offer, dict):
+            continue
+        offer_id = str(offer.get("id") or "")
+        if offer_id:
+            offer_map[offer_id] = offer
+    return offer_map
 
 
 def extract_row_and_column(seat_number: str):
@@ -63,6 +92,21 @@ class SeatMap:
     aircraft_code: str
     decks: list
     window_seats: list[str] = field(default_factory=list)
+    price_total: str | None = None
+    price_currency: str | None = None
+
+    def formatted_total_price(self, *, rounded: bool = False) -> str | None:
+        display_total = self.price_total
+        if rounded and display_total:
+            try:
+                display_total = str(Decimal(display_total).quantize(Decimal('1'), rounding=ROUND_HALF_UP))
+            except (InvalidOperation, ValueError):
+                pass
+        if display_total and self.price_currency:
+            return f"{display_total} {self.price_currency}"
+        if display_total:
+            return display_total
+        return None
 
 
 class SeatMaps:
@@ -83,7 +127,15 @@ class SeatMaps:
             self.seatmaps.append(seatmap)
 
     @staticmethod
-    def _build_seatmap(record: dict | None) -> SeatMap | None:
+    def _extract_price_fields(price_info: dict | None) -> tuple[str | None, str | None]:
+        if not isinstance(price_info, dict):
+            return None, None
+        total = price_info.get('grandTotal') or price_info.get('total')
+        currency = price_info.get('currency')
+        return total, currency
+
+    @staticmethod
+    def _build_seatmap(record: dict | None, price_info: dict | None = None) -> SeatMap | None:
         if record is None:
             return None
         departure_info = record.get('departure', {})
@@ -96,6 +148,7 @@ class SeatMaps:
         aircraft_code = record.get('aircraft', {}).get('code', 'N/A')
         decks = record.get('decks', [])
         window_seats = SeatMaps._collect_available_window_seats(decks)
+        total_price, price_currency = SeatMaps._extract_price_fields(price_info)
         return SeatMap(
             departure_date=departure_date,
             origin=origin,
@@ -105,6 +158,8 @@ class SeatMaps:
             aircraft_code=aircraft_code,
             decks=decks,
             window_seats=window_seats,
+            price_total=total_price,
+            price_currency=price_currency,
         )
 
     @staticmethod
@@ -128,6 +183,9 @@ class SeatMaps:
         output = [f"\n{header}"]
         for deck in seatmap.decks:
             output.append(self._render_ascii_deck(deck))
+        price_text = seatmap.formatted_total_price()
+        if price_text:
+            output.append(f"{price_text}")
         return '\n'.join(output)
 
     def _render_ascii_deck(self, deck: dict) -> str:
@@ -224,7 +282,11 @@ class SeatMaps:
             with open(fixtures_dir / "seatmap.json", encoding="utf-8") as fixture:
                 seatmap_fixtures = json.load(fixture)
             first_record = seatmap_fixtures[0] if seatmap_fixtures else None
-            return cls._build_seatmap(first_record)
+            price_lookup = _load_flight_offer_fixtures()
+            flight_offer_id = first_record.get('flightOfferId') if isinstance(first_record, dict) else None
+            offer = price_lookup.get(str(flight_offer_id)) if flight_offer_id is not None else None
+            price_info = offer.get('price') if isinstance(offer, dict) else None
+            return cls._build_seatmap(first_record, price_info)
 
         if environment not in {"test", "production"}:
             raise ValueError(f"Unsupported environment '{environment}'")
@@ -255,11 +317,13 @@ class SeatMaps:
         if not search_data:
             return None
 
-        seatmap_request = {'data': [search_data[0]]}
+        first_offer = search_data[0]
+        price_info = first_offer.get('price') if isinstance(first_offer, dict) else None
+        seatmap_request = {'data': [first_offer]}
         seatmap_response = amadeus.shopping.seatmaps.post(seatmap_request)
         seatmap_payload = seatmap_response.data or []
         first_record = seatmap_payload[0] if seatmap_payload else None
-        return cls._build_seatmap(first_record)
+        return cls._build_seatmap(first_record, price_info)
 
 def iter_dates(start_date: str, end_date: str):
     current = datetime.fromisoformat(start_date)
@@ -275,6 +339,11 @@ if environment == "e2e-pickle":
     pickle_path = fixtures_dir / "seatmaps.pkl"
     with open(pickle_path, "rb") as pickled_seatmaps:
         seatmaps.seatmaps = pickle.load(pickled_seatmaps)
+    for seatmap_obj in seatmaps:
+        if not hasattr(seatmap_obj, "price_total"):
+            seatmap_obj.price_total = None
+        if not hasattr(seatmap_obj, "price_currency"):
+            seatmap_obj.price_currency = None
 else:
     travel_windows = [
         {
@@ -423,7 +492,6 @@ def print_weekly_layout(seatmaps_obj: SeatMaps, seatmaps_by_date: dict[str, Seat
         week_signature = tuple(sorted(week_routes))
         if previous_week_signature and week_signature != previous_week_signature:
             print()
-            print()
 
         for line_idx in range(max_height):
             print('  '.join(block[line_idx] for block in weekly_blocks))
@@ -442,11 +510,12 @@ if seatmaps_by_date:
         seatmap = seatmaps_by_date[date_key]
         if previous_destination and seatmap.destination != previous_destination:
             print()
-            print()
         seats = seatmap.window_seats
         if seats:
             sorted_seats = ', '.join(sorted(seats, key=window_seat_sort_key))
-            print(f"{date_key}: {sorted_seats}")
+            formatted_date = datetime.strptime(date_key, '%Y%m%d').strftime('%Y-%m-%d')
+            price_text = seatmap.formatted_total_price(rounded=True) or "N/A"
+            print(f"{formatted_date} ({price_text}): {sorted_seats}")
         previous_destination = seatmap.destination
 
-print("\n\n")
+print("\n")
