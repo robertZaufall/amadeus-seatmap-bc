@@ -4,14 +4,24 @@ CLI utility for browsing Amadeus seat-map availability across a set of long-haul
 
 ## Example output
 
-![Example output: weekly grid of ASCII seat maps and window-seat ledger](docs/seatmaps.png)
+![Example output: weekly grid of ASCII seat maps](docs/seatmaps.png)
 
-_Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun) and the date-sorted ledger of available window seats._
+_Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun)._
+
+![Example output: window-seat ledger](docs/window_seats.png)
+
+_Figure: Example terminal output showing the date-sorted ledger of available window seats including calendar heatmap for the price._
+
+![Example output: price heatmaps](docs/price_heatmaps.png)
+
+_Figure: Example terminal output showing the price heatmaps for all flight combinations - one for windows seats and one for all._
 
 ## Highlights
 - Builds ASCII seat maps with wide-character awareness so layouts stay aligned even when using emoji markers.
+- Highlights the lowest fare per route with a green border so deals stand out immediately.
 - Supports multiple execution modes: live API calls, JSON fixtures, or pre-built pickle snapshots.
 - Prints a week-by-week grid plus per-day window-seat summaries with optional pricing pulled from flight offers.
+- Generates calendar heatmaps (per route and round-trip) to make fare trends obvious when scanning many dates.
 
 ## Requirements
 - Python 3.11+ (tested locally with 3.11)
@@ -50,16 +60,39 @@ Set the `environment` constant near the top of `flight_search.py` to pick a data
 
 When running against `test` or `production`, the script iterates over the configured `travel_windows` and caches every retrieved seat map into `test/seatmaps.pkl` for future offline use.
 
+## Travel windows & filters
+Define the routes and date ranges you care about by editing the `travel_windows` list near the top of `flight_search.py`:
+
+```python
+travel_windows = [
+    {
+        "origin": "MUC",
+        "destination": "BKK",
+        "start_date": "2025-11-24",
+        "end_date": "2025-12-20",
+    },
+    # add more windows as needed
+]
+```
+
+Each window is inclusive, so the script requests seat maps for every day in the range. The first two windows also drive the combined round-trip heatmaps (outbound vs. return). By default the fetch logic targets non-stop business-class flights on Thai Airways (`included_airline_codes='TG'`); adjust those arguments inside `SeatMaps.fetch` if you need different carriers, cabins, or connection rules.
+
 ## Usage
 ```bash
 python flight_search.py
 ```
 
 Typical output is:
-- A blank spacer, followed by a weekly grid (Monday–Sunday) of ASCII seat maps. Missing days show a `NO DATA` placeholder.
-- A date-sorted ledger of available window seats that includes rounded prices when available.
+- A blank spacer, followed by a weekly grid (Monday–Sunday) of ASCII seat maps. Missing days show a `NO DATA` placeholder and the cheapest fare on each route is highlighted.
+- A route-by-route window-seat ledger that includes rounded prices, per-date availability notes, and a small calendar heatmap to hint at relative fares.
+- (Optional) Two round-trip matrices that add outbound + return fares together—one based on window-seat pricing and one using any available fare—whenever at least two travel windows are defined.
 
 Adjust `travel_windows` in `flight_search.py` if you need different routes or date ranges. The helper `iter_dates` already walks every day between the `start_date` and `end_date`.
+
+## Output details
+- **Weekly seat-map grid** – One block per day, grouped by week. Missing data shows a `NO DATA` placeholder, and the absolute lowest fare per route gets a green border plus a rounded price label at the bottom of the block.
+- **Route availability boxes** – After the grid, every route receives a bordered box that lists the available window seats per date, prefixed with a relative fare symbol and paired with a mini calendar heatmap for additional visual context.
+- **Round-trip price heatmaps** – If you provide at least two travel windows (outbound + inbound), the script prints two combined matrices: one based on window-seat fares only and another that considers any price returned by the offer search.
 
 ## Fixtures
 `test/` contains reproducible inputs:
@@ -68,6 +101,9 @@ Adjust `travel_windows` in `flight_search.py` if you need different routes or da
 - `seatmaps.pkl` – pickled list of `SeatMap` instances captured from earlier runs.
 
 Feel free to swap these with real captures when building demos or regression tests.
+
+## Refreshing cached seat maps
+Whenever you run in `test` or `production` mode, newly fetched seat maps automatically overwrite `test/seatmaps.pkl`. This keeps the offline (`e2e-pickle`) mode in sync with your latest captures. Delete the file or run the script again to regenerate it whenever you want a fresh snapshot.
 
 ## Contributing
 No special tooling is required beyond standard linting/formatting for Python scripts. Please keep fixtures anonymized and avoid committing sensitive traveler data.
