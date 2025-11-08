@@ -1,6 +1,7 @@
 import json
 import os
 import pickle
+import re
 import unicodedata
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
@@ -21,18 +22,27 @@ travel_windows = [
     {
         "origin": "MUC",
         "destination": "BKK",
-        "start_date": "2025-12-01",
+        "start_date": "2025-11-24",
         "end_date": "2025-12-20",
     },
     {
         "origin": "BKK",
         "destination": "MUC",
         "start_date": "2026-01-15",
-        "end_date": "2026-01-25",
+        "end_date": "2026-01-30",
     },
 ]
 
+travel_window_ranges = [
+    (
+        datetime.fromisoformat(window["start_date"]).date(),
+        datetime.fromisoformat(window["end_date"]).date(),
+    )
+    for window in travel_windows
+]
+
 fixtures_dir = Path(__file__).parent / "test"
+ANSI_ESCAPE_RE = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
 
 
 def _load_flight_offer_fixtures() -> dict[str, dict]:
@@ -73,10 +83,17 @@ def char_display_width(character: str) -> int:
     """Return the display width of a single character."""
     return 2 if unicodedata.east_asian_width(character) in {'F', 'W'} else 1
 
+def strip_ansi(text: str) -> str:
+    """Remove ANSI escape codes from text."""
+    if not text:
+        return ''
+    return ANSI_ESCAPE_RE.sub('', text)
+
 
 def display_width(text: str) -> int:
     """Return the printable width of text accounting for wide characters."""
-    return sum(char_display_width(ch) for ch in text or '')
+    visible = strip_ansi(text or '')
+    return sum(char_display_width(ch) for ch in visible)
 
 
 def pad_to_width(text: str, width: int) -> str:
@@ -84,14 +101,24 @@ def pad_to_width(text: str, width: int) -> str:
     if width <= 0:
         return ''
     current_width = 0
-    trimmed: list[str] = []
-    for ch in text or '':
+    trimmed_parts: list[str] = []
+    text = text or ''
+    idx = 0
+    while idx < len(text):
+        if text[idx] == '\x1b':
+            match = ANSI_ESCAPE_RE.match(text, idx)
+            if match:
+                trimmed_parts.append(match.group(0))
+                idx = match.end()
+                continue
+        ch = text[idx]
         ch_width = char_display_width(ch)
         if current_width + ch_width > width:
             break
-        trimmed.append(ch)
+        trimmed_parts.append(ch)
         current_width += ch_width
-    result = ''.join(trimmed)
+        idx += 1
+    result = ''.join(trimmed_parts)
     if current_width < width:
         result += ' ' * (width - current_width)
     return result
@@ -126,6 +153,9 @@ class SeatMap:
 class SeatMaps:
     STATUS_SYMBOL = {'AVAILABLE': '🟪', 'OCCUPIED': '❌', 'BLOCKED': '⬛'}
     WINDOW_AVAILABLE_SYMBOL = '🟩'
+    BORDER_COLOR_DEFAULT = '\033[90m'
+    BORDER_COLOR_HIGHLIGHT = '\033[32m'
+    ANSI_RESET = '\033[0m'
 
     def __init__(self, seatmaps: list[SeatMap] | None = None):
         self.seatmaps = seatmaps or []
@@ -190,19 +220,16 @@ class SeatMaps:
                 available.append(seat.get('number'))
         return available
 
-    def render_map(self, seatmap: SeatMap) -> str:
+    def render_map(self, seatmap: SeatMap, *, highlight_border: bool = False) -> str:
         header = (f"{seatmap.departure_date} "
                   f"{seatmap.origin}{seatmap.destination} "
                   f"{seatmap.carrier}{seatmap.number}-{seatmap.aircraft_code} ")
         output = [f"\n{header}"]
         for deck in seatmap.decks:
-            output.append(self._render_ascii_deck(deck))
-        price_text = seatmap.formatted_total_price()
-        if price_text:
-            output.append(f"{price_text}")
+            output.append(self._render_ascii_deck(deck, highlight_border=highlight_border))
         return '\n'.join(output)
 
-    def _render_ascii_deck(self, deck: dict) -> str:
+    def _render_ascii_deck(self, deck: dict, *, highlight_border: bool = False) -> str:
         seats = deck.get('seats', [])
         columns_by_position = {}
         rows = {}
@@ -271,13 +298,39 @@ class SeatMaps:
 
         content_width = max((display_width(line) for line in lines), default=0)
         horizontal = '─' * (content_width + 2)
-        bordered_lines = ['╭' + horizontal + '╮']
+        border_color = self.BORDER_COLOR_HIGHLIGHT if highlight_border else self.BORDER_COLOR_DEFAULT
+        border_reset = self.ANSI_RESET
+        bordered_lines = [f"{border_color}╭{horizontal}╮{border_reset}"]
+        left_border = f"{border_color}│{border_reset}"
+        right_border = f"{border_color}│{border_reset}"
         for line in lines:
             padded = pad_line(line, content_width)
-            bordered_lines.append(f"│ {padded} │")
-        bordered_lines.append('╰' + horizontal + '╯')
+            bordered_lines.append(f"{left_border} {padded} {right_border}")
+        bordered_lines.append(f"{border_color}╰{horizontal}╯{border_reset}")
 
         return '\n'.join(bordered_lines)
+
+
+def render_text_box(
+    lines: list[str],
+    *,
+    content_width: int,
+    content_height: int,
+    border_color: str | None = None,
+) -> list[str]:
+    """Render a text box with padding, returning the list of lines."""
+    padded_lines = list(lines)
+    while len(padded_lines) < content_height:
+        padded_lines.append('')
+    padded_lines = [pad_to_width(line, content_width) for line in padded_lines]
+    horizontal = '─' * (content_width + 2)
+    color = border_color or SeatMaps.BORDER_COLOR_DEFAULT
+    reset = SeatMaps.ANSI_RESET
+    box_lines = [f"{color}╭{horizontal}╮{reset}"]
+    for line in padded_lines:
+        box_lines.append(f"{color}│{reset} {line} {color}│{reset}")
+    box_lines.append(f"{color}╰{horizontal}╯{reset}")
+    return box_lines
 
     @classmethod
     def fetch(
@@ -389,6 +442,40 @@ seatmaps_by_date = {
     for seatmap_obj in seatmaps
 }
 
+def parse_total_price(value: str | None) -> Decimal | None:
+    if value is None:
+        return None
+    try:
+        return Decimal(value)
+    except (InvalidOperation, ValueError):
+        return None
+
+
+def compute_best_price_by_route(seatmaps_obj: SeatMaps) -> dict[tuple[str, str], Decimal]:
+    best: dict[tuple[str, str], Decimal] = {}
+    for seatmap_obj in seatmaps_obj:
+        price = parse_total_price(seatmap_obj.price_total)
+        if price is None:
+            continue
+        route = (seatmap_obj.origin, seatmap_obj.destination)
+        existing = best.get(route)
+        if existing is None or price < existing:
+            best[route] = price
+    return best
+
+
+def has_best_price_for_route(seatmap_obj: SeatMap, price_lookup: dict[tuple[str, str], Decimal]) -> bool:
+    price = parse_total_price(seatmap_obj.price_total)
+    if price is None:
+        return False
+    route = (seatmap_obj.origin, seatmap_obj.destination)
+    best_price = price_lookup.get(route)
+    return best_price is not None and price == best_price
+
+
+best_price_by_route = compute_best_price_by_route(seatmaps)
+
+
 def window_seat_sort_key(seat_label: str):
     numeric_part = ''.join(filter(str.isdigit, seat_label))
     return int(numeric_part or 0), seat_label
@@ -402,40 +489,79 @@ def normalize_block(lines: list[str], width: int, height: int) -> list[str]:
     return padded
 
 
+def is_within_travel_windows(date_key: str) -> bool:
+    """Return True if the provided YYYYMMDD date falls inside a travel window."""
+    target_date = None
+    for fmt in ('%Y%m%d', '%Y-%m-%d'):
+        try:
+            target_date = datetime.strptime(date_key, fmt).date()
+            break
+        except ValueError:
+            continue
+    if target_date is None:
+        return False
+    for start, end in travel_window_ranges:
+        if start <= target_date <= end:
+            return True
+    return False
+
+
 def build_placeholder_block(date_key: str, width: int, height: int) -> list[str]:
     """Create a placeholder block for dates without seatmap data."""
     lines: list[str] = []
-    lines.append(pad_to_width(f"{date_key} -- NO DATA --", width))
-    if height == 1:
-        return normalize_block(lines, width, height)
+    show_date = is_within_travel_windows(date_key)
+    lines.append(pad_to_width(f"{date_key}" if show_date else '', width))
 
-    inner_width = max(width - 2, 0)
-    top_border = pad_to_width('╭' + ('─' * inner_width) + '╮', width)
-    bottom_border = pad_to_width('╰' + ('─' * inner_width) + '╯', width)
-    empty_body = pad_to_width('│' + (' ' * inner_width) + '│', width) if width >= 2 else pad_to_width('', width)
-    lines.append(top_border)
+    blank_line = pad_to_width('', width)
+    while len(lines) < height:
+        lines.append(blank_line)
+    return lines
 
-    body_rows = max(height - 3, 0)
-    if body_rows > 0 and inner_width > 0:
-        message = 'NO DATA'
-        trimmed_message = message[:inner_width]
-        left_padding = (inner_width - len(trimmed_message)) // 2
-        right_padding = inner_width - len(trimmed_message) - left_padding
-        message_line = pad_to_width(
-            '│' + (' ' * left_padding) + trimmed_message + (' ' * right_padding) + '│',
-            width
+
+def render_availability_boxes(route_lines: dict[str, list[str]], *, route_order: list[str] | None = None) -> None:
+    if not route_lines:
+        return
+    if route_order:
+        ordered_routes = [route for route in route_order if route in route_lines]
+    else:
+        ordered_routes = sorted(route_lines)
+    box_contents: list[list[str]] = []
+    for route in ordered_routes:
+        entries = route_lines[route] or ['No window seats']
+        lines = [route]
+        if entries:
+            lines.append('')
+        lines.extend(entries)
+        box_contents.append(lines)
+
+    content_width = max(
+        ((max(display_width(line) for line in lines) if lines else 0) for lines in box_contents),
+        default=0,
+    )
+    content_height = max((len(lines) for lines in box_contents), default=0)
+    boxes = [
+        render_text_box(
+            lines,
+            content_width=content_width,
+            content_height=content_height,
+            border_color=SeatMaps.BORDER_COLOR_DEFAULT,
         )
-        lines.append(message_line)
-        body_rows -= 1
+        for lines in box_contents
+    ]
+    if not boxes:
+        return
+    box_height = len(boxes[0])
+    for row_idx in range(box_height):
+        row_segments = [box[row_idx] for box in boxes]
+        print('  '.join(row_segments))
 
-    for _ in range(body_rows):
-        lines.append(empty_body)
 
-    lines.append(bottom_border)
-    return normalize_block(lines, width, height)
-
-
-def print_weekly_layout(seatmaps_obj: SeatMaps, seatmaps_by_date: dict[str, SeatMap]) -> None:
+def print_weekly_layout(
+    seatmaps_obj: SeatMaps,
+    seatmaps_by_date: dict[str, SeatMap],
+    *,
+    best_price_by_route: dict[tuple[str, str], Decimal] | None = None
+) -> None:
     """Print seatmaps grouped by week, filling missing days with placeholders."""
     if not seatmaps_by_date:
         return
@@ -444,7 +570,10 @@ def print_weekly_layout(seatmaps_obj: SeatMaps, seatmaps_by_date: dict[str, Seat
     max_width = 0
     max_height = 0
     for date_key, seatmap_obj in seatmaps_by_date.items():
-        block_lines = seatmaps_obj.render_map(seatmap_obj).splitlines()
+        highlight_border = (
+            best_price_by_route is not None and has_best_price_for_route(seatmap_obj, best_price_by_route)
+        )
+        block_lines = seatmaps_obj.render_map(seatmap_obj, highlight_border=highlight_border).splitlines()
         while block_lines and not block_lines[0].strip():
             block_lines = block_lines[1:]
         rendered_blocks[date_key] = block_lines
@@ -500,21 +629,27 @@ def print_weekly_layout(seatmaps_obj: SeatMaps, seatmaps_by_date: dict[str, Seat
         current += timedelta(days=7)
 
 print("\n\n")
-print_weekly_layout(seatmaps, seatmaps_by_date)
+print_weekly_layout(seatmaps, seatmaps_by_date, best_price_by_route=best_price_by_route)
 
 if seatmaps_by_date:
     print("\nAvailable window seats by date:")
-    previous_destination: str | None = None
+    availability_by_route: dict[str, list[str]] = {}
+    route_first_date: dict[str, str] = {}
     for date_key in sorted(seatmaps_by_date):
         seatmap = seatmaps_by_date[date_key]
-        if previous_destination and seatmap.destination != previous_destination:
-            print()
+        route_key = f"{seatmap.origin}->{seatmap.destination}"
+        route_first_date.setdefault(route_key, date_key)
         seats = seatmap.window_seats
-        if seats:
-            sorted_seats = ', '.join(sorted(seats, key=window_seat_sort_key))
-            formatted_date = datetime.strptime(date_key, '%Y%m%d').strftime('%Y-%m-%d')
-            price_text = seatmap.formatted_total_price(rounded=True) or "N/A"
-            print(f"{formatted_date} ({price_text}): {sorted_seats}")
-        previous_destination = seatmap.destination
+        if not seats:
+            availability_by_route.setdefault(route_key, [])
+            continue
+        sorted_seats = ', '.join(sorted(seats, key=window_seat_sort_key))
+        formatted_date = datetime.strptime(date_key, '%Y%m%d').strftime('%Y-%m-%d')
+        price_text = seatmap.formatted_total_price(rounded=True) or "N/A"
+        availability_by_route.setdefault(route_key, []).append(f"{formatted_date} ({price_text}): {sorted_seats}")
+
+    if availability_by_route:
+        ordered_routes = sorted(route_first_date, key=route_first_date.get)
+        render_availability_boxes(availability_by_route, route_order=ordered_routes)
 
 print("\n")
