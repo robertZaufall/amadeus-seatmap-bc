@@ -542,6 +542,23 @@ def build_heatmap_entries(seatmaps_by_date: dict[str, SeatMap]) -> dict[str, dic
     return route_entries
 
 
+def build_price_entries_all_dates(seatmaps_by_date: dict[str, SeatMap]) -> dict[str, dict[str, Decimal]]:
+    """Build price entries for every seatmap date regardless of window-seat availability."""
+    route_entries: dict[str, dict[str, Decimal]] = defaultdict(dict)
+    for window in travel_windows:
+        route_key = f"{window['origin']}->{window['destination']}"
+        for date_iso in iter_dates(window["start_date"], window["end_date"]):
+            date_key = date_iso.replace('-', '')
+            seatmap = seatmaps_by_date.get(date_key)
+            if seatmap is None:
+                continue
+            price = parse_total_price(seatmap.price_total)
+            if price is None:
+                continue
+            route_entries[route_key][date_key] = price
+    return route_entries
+
+
 def build_heatmap_price_stats(entries_by_route: dict[str, dict[str, Decimal]]) -> dict[str, tuple[Decimal, Decimal]]:
     stats: dict[str, tuple[Decimal, Decimal]] = {}
     for route, entries in entries_by_route.items():
@@ -587,6 +604,18 @@ def heatmap_symbol(price: Decimal | None, min_price: Decimal | None, max_price: 
     if price == max_price:
         return colorize_symbol(HEATMAP_SYMBOL_MAX, HEATMAP_COLOR_MAX)
     return colorize_symbol(HEATMAP_SYMBOL_DEFAULT, HEATMAP_COLOR_DEFAULT)
+
+
+def heatmap_color_code(price: Decimal | None, min_price: Decimal | None, max_price: Decimal | None) -> str | None:
+    if price is None:
+        return None
+    if min_price is None or max_price is None or min_price == max_price:
+        return HEATMAP_COLOR_MIN
+    if price == min_price:
+        return HEATMAP_COLOR_MIN
+    if price == max_price:
+        return HEATMAP_COLOR_MAX
+    return HEATMAP_COLOR_DEFAULT
 
 
 def format_heatmap_calendar(
@@ -643,6 +672,102 @@ def format_heatmap_calendar(
     while lines and not lines[-1].strip():
         lines.pop()
     return lines
+
+
+def format_roundtrip_price_heatmap(
+    heatmap_entries: dict[str, dict[str, Decimal]],
+    *,
+    title: str | None = None,
+) -> list[str]:
+    """Return a combined outbound/return heatmap covering the first two travel windows."""
+    if len(travel_windows) < 2 or not heatmap_entries:
+        return []
+
+    outbound_window, return_window = travel_windows[:2]
+    outbound_route = f"{outbound_window['origin']}->{outbound_window['destination']}"
+    return_route = f"{return_window['origin']}->{return_window['destination']}"
+    outbound_entries = heatmap_entries.get(outbound_route, {})
+    return_entries = heatmap_entries.get(return_route, {})
+
+    def build_axis(window: dict, route_entries: dict[str, Decimal]) -> list[tuple[str, str, Decimal | None]]:
+        axis: list[tuple[str, str, Decimal | None]] = []
+        for date_iso in iter_dates(window["start_date"], window["end_date"]):
+            date_key = date_iso.replace('-', '')
+            label = datetime.fromisoformat(date_iso).strftime('%d%m')
+            axis.append((date_key, label, route_entries.get(date_key)))
+        return axis
+
+    outbound_axis = build_axis(outbound_window, outbound_entries)
+    return_axis = build_axis(return_window, return_entries)
+    if not outbound_axis or not return_axis:
+        return []
+
+    combined_matrix: list[list[Decimal | None]] = []
+    combined_values: list[Decimal] = []
+    for _, _, return_price in return_axis:
+        row: list[Decimal | None] = []
+        for _, _, outbound_price in outbound_axis:
+            if outbound_price is not None and return_price is not None:
+                combined = outbound_price + return_price
+                combined_values.append(combined)
+                row.append(combined)
+            else:
+                row.append(None)
+        combined_matrix.append(row)
+
+    min_combined = min(combined_values) if combined_values else None
+    max_combined = max(combined_values) if combined_values else None
+
+    def format_cell(value: Decimal | None) -> str:
+        if value is None:
+            return ''
+        rounded_value = value.quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+        color = heatmap_color_code(value, min_combined, max_combined)
+        text = str(rounded_value)
+        if color:
+            return f"{color}{text}{SeatMaps.ANSI_RESET}"
+        return text
+
+    rendered_rows: list[list[str]] = [
+        [format_cell(value) for value in row]
+        for row in combined_matrix
+    ]
+    cell_width = max(
+        (display_width(cell) for row in rendered_rows for cell in row),
+        default=4,
+    )
+    row_labels = [label for _, label, _ in return_axis]
+    column_labels = [label for _, label, _ in outbound_axis]
+    row_label_header = ''
+    column_axis_header = f"{outbound_route} cols"
+    row_label_width = max((display_width(label) for label in row_labels), default=0)
+    default_title = f"Round-trip price heatmap ({outbound_route} + {return_route})"
+    title_line = title or default_title
+    content_lines: list[str] = []
+    header_cells = [pad_to_width(row_label_header, row_label_width)]
+    header_cells.extend(pad_to_width(label, cell_width) for label in column_labels)
+    content_lines.append(' '.join(header_cells))
+    for label, row_cells in zip(row_labels, rendered_rows):
+        row_line = [pad_to_width(label, row_label_width)]
+        row_line.extend(pad_to_width(cell, cell_width) for cell in row_cells)
+        content_lines.append(' '.join(row_line))
+
+    legend_line = (
+        f"cols: {outbound_route} ({outbound_window['start_date']}-{outbound_window['end_date']}), "
+        f"rows: {return_route} ({return_window['start_date']}-{return_window['end_date']}) "
+        f"[prices sum two one-way fares]"
+    )
+    content_lines.append('')
+    content_lines.append(legend_line)
+
+    content_width = max((display_width(line) for line in content_lines), default=0)
+    bordered_lines = render_text_box(
+        content_lines,
+        content_width=content_width,
+        content_height=len(content_lines),
+        border_color=SeatMaps.BORDER_COLOR_DEFAULT,
+    )
+    return ['', title_line, *bordered_lines, '']
 
 
 def render_availability_boxes(
@@ -713,6 +838,8 @@ def print_weekly_layout(
         block_lines = seatmaps_obj.render_map(seatmap_obj, highlight_border=highlight_border).splitlines()
         while block_lines and not block_lines[0].strip():
             block_lines = block_lines[1:]
+        price_text = seatmap_obj.formatted_total_price(rounded=True) or "N/A"
+        block_lines.append(f"Price: {price_text}")
         rendered_blocks[date_key] = block_lines
         if block_lines:
             width = max(display_width(line) for line in block_lines)
@@ -772,6 +899,7 @@ if seatmaps_by_date:
     print("\nAvailable window seats by date:")
     heatmap_entries = build_heatmap_entries(seatmaps_by_date)
     heatmap_stats = build_heatmap_price_stats(heatmap_entries)
+    all_price_entries = build_price_entries_all_dates(seatmaps_by_date)
     availability_by_route: dict[str, list[str]] = {}
     route_first_date: dict[str, str] = {}
     for date_key in sorted(seatmaps_by_date):
@@ -800,5 +928,23 @@ if seatmaps_by_date:
             heatmap_entries=heatmap_entries,
             heatmap_stats=heatmap_stats,
         )
+
+    window_roundtrip_heatmap = format_roundtrip_price_heatmap(
+        heatmap_entries,
+        title="Round-trip price heatmap (window-seat prices)",
+    )
+    if window_roundtrip_heatmap:
+        print()
+        for line in window_roundtrip_heatmap:
+            print(line)
+
+    all_price_roundtrip_heatmap = format_roundtrip_price_heatmap(
+        all_price_entries,
+        title="Round-trip price heatmap (all prices)",
+    )
+    if all_price_roundtrip_heatmap:
+        print()
+        for line in all_price_roundtrip_heatmap:
+            print(line)
 
 print("\n")
