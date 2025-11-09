@@ -46,6 +46,13 @@ TRAVEL_WINDOWS = [
     },
 ]
 
+# Default filters applied when requesting flight offers from Amadeus.
+FLIGHT_SEARCH_FILTERS = {
+    "travel_class": "BUSINESS",
+    "non_stop": "true",
+    "included_airline_codes": "TG",
+}
+
 ANSI_RESET = "\033[0m"
 
 BORDER_COLORS = {

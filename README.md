@@ -56,6 +56,7 @@ The script reads these via `python-dotenv`, so the `.env` file only needs to exi
 Most runtime knobs live in `config.py`, so you rarely need to edit `flight_search.py` directly. Notable settings:
 - `ENVIRONMENT` picks the data source (`production`, `test`, `e2e`, `e2e-pickle`).
 - `TRAVEL_WINDOWS` lists the routes/date ranges that should be fetched and rendered.
+- `FLIGHT_SEARCH_FILTERS` stores the request arguments (`travel_class`, `non_stop`, `included_airline_codes`, etc.) passed to the Amadeus `flight_offers_search` endpoint.
 - Visual toggles such as `SEATMAP_OUTPUT_STYLE`, `SHOW_SEATMAP_PRICE`, `HEATMAP_EMPHASIS_STYLES`, `STATUS_SYMBOLS`, and `WINDOW_AVAILABLE_SYMBOL` control how the ASCII/emoji output looks.
 - Currency/price decoration (`CURRENCY_SYMBOLS`, `BORDER_COLORS`, etc.) reference the semantic tokens defined in `colors.py`; extend `colors.TOKEN_MAP` if you need custom ANSI sequences.
 
@@ -86,7 +87,20 @@ TRAVEL_WINDOWS = [
 ]
 ```
 
-Each window is inclusive, so the script requests seat maps for every day in the range. The first two windows also drive the combined round-trip heatmaps (outbound vs. return). By default the fetch logic targets non-stop business-class flights on Thai Airways (`included_airline_codes='TG'`); adjust those arguments inside `SeatMaps.fetch` if you need different carriers, cabins, or connection rules.
+Each window is inclusive, so the script requests seat maps for every day in the range. The first two windows also drive the combined round-trip heatmaps (outbound vs. return).
+
+Flight-offer search filters live in `config.FLIGHT_SEARCH_FILTERS`, so you can tweak cabin class, airline, or connection rules without touching the main script. The defaults target non-stop business-class flights on Thai Airways:
+
+```python
+FLIGHT_SEARCH_FILTERS = {
+    "travel_class": "BUSINESS",
+    "non_stop": "true",
+    "included_airline_codes": "TG",
+    # add "adults", "children", etc. if needed
+}
+```
+
+Any key/value pairs in this dict get splatted into the `SeatMaps.fetch` call.
 
 ## Usage
 ```bash

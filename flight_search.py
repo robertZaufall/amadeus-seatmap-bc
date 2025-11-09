@@ -24,6 +24,7 @@ from config import (
     HEATMAP_SYMBOLS,
     CURRENCY_SYMBOLS,
     HEATMAP_EMPHASIS_STYLES,
+    FLIGHT_SEARCH_FILTERS,
     SEATMAP_OUTPUT_STYLE,
     SHOW_SEATMAP_PRICE,
     STATIC_LABELS,
@@ -37,6 +38,7 @@ load_dotenv()
 
 environment = ENVIRONMENT
 travel_windows = TRAVEL_WINDOWS
+flight_search_filters = FLIGHT_SEARCH_FILTERS
 
 travel_window_ranges = [
     (
@@ -728,9 +730,7 @@ else:
                     origin_location_code=window["origin"],
                     destination_location_code=window["destination"],
                     departure_date=departure_date,
-                    travel_class='BUSINESS',
-                    non_stop='true',
-                    included_airline_codes='TG'
+                    **flight_search_filters,
                 )
             except ResponseError as error:
                 raise error
