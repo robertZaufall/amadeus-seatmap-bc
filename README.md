@@ -4,7 +4,7 @@ CLI utility for browsing Amadeus seat-map availability across a set of long-haul
 
 ## Example output
 
-![Example output: weekly grid of ASCII seat maps](docs/seatmaps.png)
+![Example output: weekly grid of ASCII seat maps](docs/seatmaps_compact.png)
 
 _Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun)._
 
@@ -15,6 +15,10 @@ _Figure: Example terminal output showing the date-sorted ledger of available win
 ![Example output: price heatmaps](docs/price_heatmaps.png)
 
 _Figure: Example terminal output showing the price heatmaps for all flight combinations - one for windows seats and one for all._
+
+![Example output: weekly grid of ASCII seat maps - alternative layout](docs/seatmaps.png)
+
+_Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun) in an alternative layout._
 
 ## Highlights
 - Builds ASCII seat maps with wide-character awareness so layouts stay aligned even when using emoji markers.
@@ -48,8 +52,15 @@ AMADEUS_CLIENT_SECRET=...
 
 The script reads these via `python-dotenv`, so the `.env` file only needs to exist in the repo root.
 
+## Configuration
+Most runtime knobs live in `config.py`, so you rarely need to edit `flight_search.py` directly. Notable settings:
+- `ENVIRONMENT` picks the data source (`production`, `test`, `e2e`, `e2e-pickle`).
+- `TRAVEL_WINDOWS` lists the routes/date ranges that should be fetched and rendered.
+- Visual toggles such as `SEATMAP_OUTPUT_STYLE`, `SHOW_SEATMAP_PRICE`, `HEATMAP_EMPHASIS_STYLES`, `STATUS_SYMBOLS`, and `WINDOW_AVAILABLE_SYMBOL` control how the ASCII/emoji output looks.
+- Currency/price decoration (`CURRENCY_SYMBOLS`, `BORDER_COLORS`, etc.) reference the semantic tokens defined in `colors.py`; extend `colors.TOKEN_MAP` if you need custom ANSI sequences.
+
 ## Execution modes
-Set the `environment` constant near the top of `flight_search.py` to pick a data source:
+Set `ENVIRONMENT` in `config.py` to pick a data source:
 
 | Value | Description |
 | --- | --- |
@@ -58,13 +69,13 @@ Set the `environment` constant near the top of `flight_search.py` to pick a data
 | `test` | Calls the Amadeus *test* environment using `TEST_AMADEUS_CLIENT_*` credentials. |
 | `production` | Calls the Amadeus *production* environment using `AMADEUS_CLIENT_*` credentials. |
 
-When running against `test` or `production`, the script iterates over the configured `travel_windows` and caches every retrieved seat map into `test/seatmaps.pkl` for future offline use.
+When running against `test` or `production`, the script iterates over the configured `TRAVEL_WINDOWS` and caches every retrieved seat map into `test/seatmaps.pkl` for future offline use.
 
 ## Travel windows & filters
-Define the routes and date ranges you care about by editing the `travel_windows` list near the top of `flight_search.py`:
+Define the routes and date ranges you care about by editing the `TRAVEL_WINDOWS` list inside `config.py`:
 
 ```python
-travel_windows = [
+TRAVEL_WINDOWS = [
     {
         "origin": "MUC",
         "destination": "BKK",
@@ -87,7 +98,7 @@ Typical output is:
 - A route-by-route window-seat ledger that includes rounded prices, per-date availability notes, and a small calendar heatmap to hint at relative fares.
 - (Optional) Two round-trip matrices that add outbound + return fares together—one based on window-seat pricing and one using any available fare—whenever at least two travel windows are defined.
 
-Adjust `travel_windows` in `flight_search.py` if you need different routes or date ranges. The helper `iter_dates` already walks every day between the `start_date` and `end_date`.
+Adjust `TRAVEL_WINDOWS` in `config.py` if you need different routes or date ranges. The helper `iter_dates` already walks every day between the `start_date` and `end_date`.
 
 ## Output details
 - **Weekly seat-map grid** – One block per day, grouped by week. Missing data shows a `NO DATA` placeholder, and the absolute lowest fare per route gets a green border plus a rounded price label at the bottom of the block.

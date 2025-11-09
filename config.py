@@ -102,7 +102,7 @@ HEATMAP_COLORS = {
 HEATMAP_HEADER_COLOR = "fg_grey"
 
 STATIC_LABELS = {
-    "compact_seatmap_heading": "\nCompact seatmaps:\n",
+    "compact_seatmap_heading": "\nSeatmaps:\n",
     "availability_heading": "\nAvailable window seats by date:",
     "price_label": "Price",
     "no_window_seats": "No window seats",
