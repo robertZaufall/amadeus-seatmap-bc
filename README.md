@@ -29,7 +29,7 @@ _Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun) 
 
 ## Requirements
 - Python 3.11+ (tested locally with 3.11)
-- `pip install amadeus python-dotenv`
+- `pip install -r requirements.txt`
 - Amadeus Self-Service API credentials (test and/or production)
 
 ## Local setup
@@ -37,7 +37,7 @@ _Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun) 
 python -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
-pip install amadeus python-dotenv
+pip install -r requirements.txt
 cp .env.template .env
 ```
 
