@@ -14,7 +14,7 @@ _Figure: Example terminal output showing the date-sorted ledger of available win
 _Figure: Example terminal output showing the price heatmaps for all flight combinations - one for windows seats and one for all._
 
 ![Example output: weekly grid of ASCII seat maps - alternative layout](docs/seatmaps.png)
-_Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun) in an alternative layout (not current!)._
+_Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun) in an alternative layout._
 
 ## Highlights
 - Builds ASCII seat maps with wide-character awareness so layouts stay aligned even when using emoji markers.
