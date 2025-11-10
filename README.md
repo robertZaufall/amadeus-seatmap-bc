@@ -119,6 +119,19 @@ Adjust `TRAVEL_WINDOWS` in `config.py` if you need different routes or date rang
 - **Route availability boxes** – After the grid, every route receives a bordered box that lists the available window seats per date, prefixed with a relative fare symbol and paired with a mini calendar heatmap for additional visual context.
 - **Round-trip price heatmaps** – If you provide at least two travel windows (outbound + inbound), the script prints two combined matrices: one based on window-seat fares only and another that considers any price returned by the offer search.
 
+## Roundtrip price database
+Each time the round-trip heatmaps are generated, the script also persists the combined price matrix to a local SQLite file (`roundtrip_prices.db`). Every record stores:
+* outbound/return routes and dates
+* summed fare (as text) and currency
+* the capture timestamp that produced the price
+* whether window seats were available on the outbound and return legs when that fare was recorded
+
+When a new run encounters data already in the database, prices are replaced only if the fresh capture is newer, but the window-availability flags are always backfilled when they were missing previously (this keeps legacy pickle snapshots useful). You can inspect the DB with the built-in CLI:
+
+```bash
+sqlite3 roundtrip_prices.db 'SELECT * FROM combination_prices LIMIT 5;'
+```
+
 ## Fixtures
 `test/` contains reproducible inputs:
 - `flight-offer.json` – sample response from `flight_offers_search`.
