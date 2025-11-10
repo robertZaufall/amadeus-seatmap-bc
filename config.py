@@ -62,8 +62,9 @@ BORDER_COLORS = {
     "worst": "fg_red",
 }
 
+# 🟦 / 🟪 / 🟥 / 🟧 / 🟨 / 🟩 / 🟫
 STATUS_SYMBOLS = {
-    "AVAILABLE": "🟪",
+    "AVAILABLE": "🟦",
     "OCCUPIED": "❌",
     "BLOCKED": "⬛",
 }
