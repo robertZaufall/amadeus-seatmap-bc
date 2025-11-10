@@ -13,6 +13,9 @@ SHOW_SEATMAP_PRICE = False
 SEATMAP_OUTPUT_STYLE = "compact"
 #SEATMAP_OUTPUT_STYLE = "normal"
 
+# For compact view
+SUPPRESS_COMPACT_SECOND_HEADER = True
+
 # Controls whether highlighted heatmap cells render bold and/or italic.
 HEATMAP_EMPHASIS_STYLES = {
     "bold": True,

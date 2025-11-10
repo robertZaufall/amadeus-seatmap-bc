@@ -1,9 +1,6 @@
 from __future__ import annotations
-
 from datetime import datetime
-
 from colors import apply as apply_color, resolve as resolve_color, ANSI_RESET as COLORS_ANSI_RESET
-
 from config import (
     ANSI_RESET as CONFIG_ANSI_RESET,
     BORDER_COLORS,
@@ -11,6 +8,7 @@ from config import (
     COMPACT_SYMBOL_COLORS,
     COMPACT_SYMBOLS,
     STATUS_SYMBOLS,
+    SUPPRESS_COMPACT_SECOND_HEADER,
     WINDOW_AVAILABLE_SYMBOL as CONFIG_WINDOW_AVAILABLE_SYMBOL,
 )
 from display_utils import (
@@ -204,13 +202,16 @@ class SeatMaps:
         if style == 'compact':
             date_label = self._format_date_no_year(seatmap.departure_date)
             primary_line, layout = self._build_compact_header_primary_line(date_label, route, flight)
-            secondary_line = self._build_compact_header_meta_line(
-                weekday_label=self._weekday_label(seatmap.departure_date),
-                price_label=seatmap.formatted_total_price(rounded=True) or "N/A",
-                aircraft_label=seatmap.aircraft_code or '',
-                layout=layout,
-            )
-            lines = [line for line in (primary_line, secondary_line) if line]
+            lines = [primary_line]
+            if not SUPPRESS_COMPACT_SECOND_HEADER:
+                secondary_line = self._build_compact_header_meta_line(
+                    weekday_label=self._weekday_label(seatmap.departure_date),
+                    price_label=seatmap.formatted_total_price(rounded=True) or "N/A",
+                    aircraft_label=seatmap.aircraft_code or '',
+                    layout=layout,
+                )
+                if secondary_line:
+                    lines.append(secondary_line)
             colored_lines = [apply_heatmap_header_color(line) for line in lines]
             return '\n'.join(colored_lines)
         header = f"{seatmap.departure_date} {route} {flight}-{seatmap.aircraft_code} "
