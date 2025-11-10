@@ -10,6 +10,14 @@
             "request": "launch",
             "program": "flight_search.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Python Debugger: current file",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
         }
+
     ]
 }
