@@ -2,7 +2,7 @@
 
 CLI utility for browsing Amadeus seat-map availability across a set of long-haul trips. It can pull live data directly from the Amadeus Self-Service APIs or replay previously captured fixtures to make it easy to study cabin layouts and track window-seat availability over time.
 
-## Example output
+## Example output (timestamp: 2025-11-13, 1:00 am)
 
 ![Example output: weekly grid of ASCII seat maps](docs/seatmaps_compact.png)
 _Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun)._
