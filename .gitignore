@@ -2,3 +2,4 @@
 __pycache__/**
 test/__pycache__/**
 data/**
+!data/*_template.json
