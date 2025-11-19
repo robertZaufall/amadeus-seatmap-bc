@@ -17,7 +17,7 @@ TRAVEL_WINDOWS = [
         "origin": "BKK",
         "destination": "MUC",
         "start_date": "2026-01-15",
-        "end_date": "2026-02-15",
+        "end_date": "2026-02-10",
     },
 ]
 
