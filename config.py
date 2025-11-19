@@ -10,14 +10,14 @@ TRAVEL_WINDOWS = [
     {
         "origin": "MUC",
         "destination": "BKK",
-        "start_date": "2025-11-24",
-        "end_date": "2025-12-20",
+        "start_date": "2025-12-07",
+        "end_date": "2025-12-22",
     },
     {
         "origin": "BKK",
         "destination": "MUC",
         "start_date": "2026-01-15",
-        "end_date": "2026-02-10",
+        "end_date": "2026-01-20",
     },
 ]
 
