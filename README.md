@@ -27,7 +27,7 @@ _Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun) 
 - Python 3.11+ (tested locally with 3.11)
 - `pip install -r requirements.txt`
 - Amadeus Self-Service API credentials (test and/or production)
-- Optional: `Pillow` for PNG export; if missing, the script still renders to the terminal.
+- Pillow (for PNG export; included in `requirements.txt` so GitHub Actions can commit PNGs)
 
 ## Local setup
 ```bash
