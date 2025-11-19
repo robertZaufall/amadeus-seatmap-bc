@@ -37,21 +37,20 @@ jobs:
       - name: Commit rendered PNGs
         run: |
           set -euo pipefail
-          shopt -s nullglob
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          png_files=(docs/*.png)
-          if [ ${#png_files[@]} -eq 0 ]; then
+          if ! compgen -G "docs/*.png" > /dev/null; then
             echo "No PNG updates to commit."
             exit 0
           fi
 
-          if ! git status --porcelain -- "${png_files[@]}" | grep -q .; then
+          git add docs/*.png
+
+          if git diff --cached --quiet; then
             echo "No PNG updates to commit."
             exit 0
           fi
 
-          git add "${png_files[@]}"
           git commit -m "chore: update rendered seatmaps"
           git push
