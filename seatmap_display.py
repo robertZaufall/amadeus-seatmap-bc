@@ -102,7 +102,8 @@ class SeatMaps:
         if not rows:
             return ''
 
-        header_cells = [' ' if col['is_aisle'] else (col['label'] or ' ') for col in column_layout]
+        aisle_fill = '  '
+        header_cells = [aisle_fill if col['is_aisle'] else (col['label'] or ' ') for col in column_layout]
         header = f"{'':>2} " + ''.join(header_cells)
         lines = [header]
 
@@ -111,7 +112,7 @@ class SeatMaps:
             row_cells = []
             for col in column_layout:
                 if col['is_aisle']:
-                    row_cells.append(' ')
+                    row_cells.append(aisle_fill)
                 else:
                     row_cells.append(self._compact_seat_cell(seats_in_row.get(col['position'])))
             lines.append(f"{row_name:>2} " + ''.join(row_cells))
@@ -171,6 +172,8 @@ class SeatMaps:
             seat_symbol = self.STATUS_SYMBOL.get(availability, '?')
             if availability == 'AVAILABLE' and is_window:
                 seat_symbol = self.WINDOW_AVAILABLE_SYMBOL
+            elif availability == 'OCCUPIED':
+                seat_symbol = apply_color('fg_red', '✘')
             row_bucket[column_position] = {
                 'symbol': seat_symbol,
                 'availability': availability,

@@ -44,10 +44,14 @@ def display_width(text: str) -> int:
     return sum(char_display_width(ch) for ch in visible)
 
 
-def resolve_seatmap_style(value: str | None) -> str:
-    """Normalize the configured seatmap style to either 'ascii' or 'compact'."""
+def resolve_seatmap_style(value: str | None) -> list[str]:
+    """Normalize the configured seatmap style to the list of styles to render."""
     normalized = (value or '').strip().lower()
-    return 'compact' if normalized == 'compact' else 'ascii'
+    if normalized == 'compact':
+        return ['compact']
+    if normalized == 'both':
+        return ['ascii', 'compact']
+    return ['ascii']
 
 
 def apply_emphasis_styles(text: str, *, enabled: bool) -> str:
