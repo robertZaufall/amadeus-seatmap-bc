@@ -41,6 +41,7 @@ from config import (
     SEATMAP_OUTPUT_STYLE,
     SHOW_SEATMAP_PRICE,
     STATIC_LABELS,
+    HEATMAP_HEADER_COLOR,
     TRAVEL_WINDOWS,
 )
 from colors import apply as apply_color, resolve as resolve_color, ANSI_RESET as COLORS_ANSI_RESET
@@ -1064,6 +1065,14 @@ def format_roundtrip_price_heatmap(
         else:
             column_months.append('')
 
+    column_split_indices: set[int] = set()
+    previous_column_month: int | None = None
+    for idx, entry in enumerate(outbound_axis):
+        month_value = entry.date_obj.month
+        if previous_column_month is not None and month_value != previous_column_month:
+            column_split_indices.add(idx)
+        previous_column_month = month_value
+
     row_months: list[str] = []
     previous_row_month: str | None = None
     for entry in return_axis:
@@ -1073,6 +1082,14 @@ def format_roundtrip_price_heatmap(
             previous_row_month = month_str
         else:
             row_months.append('')
+
+    row_split_indices: set[int] = set()
+    previous_row_month_value: int | None = None
+    for idx, entry in enumerate(return_axis):
+        month_value = entry.date_obj.month
+        if previous_row_month_value is not None and month_value != previous_row_month_value:
+            row_split_indices.add(idx)
+        previous_row_month_value = month_value
 
     cell_width_candidates = [display_width(cell) for row in rendered_rows for cell in row]
     cell_width_candidates.extend(display_width(label) for label in column_labels)
@@ -1095,20 +1112,48 @@ def format_roundtrip_price_heatmap(
     )
     suffix = "[prices sum two one-way fares]" if show_price_sum_suffix else ""
     title_line = f"{title or default_title} {suffix}".strip()
+
+    separator_color = HEATMAP_HEADER_COLOR
+
+    def paint_separator(text: str) -> str:
+        return apply_color(separator_color, text) if separator_color else text
+
+    row_header_separator = paint_separator('│')
+    vertical_separator = paint_separator('│')
+
+    def build_separator_line() -> str:
+        parts: list[str] = [
+            '─' * max(1, row_month_width),
+            '─' * max(1, row_label_width),
+            '┼',
+        ]
+        for col_idx in range(len(outbound_axis)):
+            if col_idx in column_split_indices:
+                parts.append('┼')
+            parts.append('─' * max(1, cell_width))
+        colored_parts = [paint_separator(part) for part in parts]
+        joiner = paint_separator('─')
+        return joiner.join(colored_parts)
+
     content_lines: list[str] = []
     if column_labels:
         left_padding_cells = [
             pad_to_width('', row_month_width),
             pad_to_width('', row_label_width),
+            row_header_separator,
         ]
         year_cells = left_padding_cells[:]
-        for axis_entry, label in zip(outbound_axis, column_months):
+        for idx, (axis_entry, label) in enumerate(zip(outbound_axis, column_months)):
+            if idx in column_split_indices:
+                year_cells.append(vertical_separator)
             styled_label = style_header_label(label, available=axis_entry.has_window, allow_highlight=False)
             year_cells.append(pad_to_width_centered(styled_label, cell_width))
         content_lines.append(' '.join(year_cells))
 
         weekday_cells = left_padding_cells[:]
-        for axis_entry, label in zip(outbound_axis, column_weekdays):
+        for idx, (axis_entry, label) in enumerate(zip(outbound_axis, column_weekdays)):
+            if idx in column_split_indices:
+                weekday_cells.append(vertical_separator)
             styled_label = style_header_label(label, available=axis_entry.has_window)
             if label.startswith('|'):
                 weekday_cells.append(pad_to_width(styled_label, cell_width))
@@ -1119,20 +1164,45 @@ def format_roundtrip_price_heatmap(
         date_cells = [
             pad_to_width(row_month_header, row_month_width),
             pad_to_width(row_label_header, row_label_width),
+            row_header_separator,
         ]
-        for axis_entry, label in zip(outbound_axis, column_labels):
+        for idx, (axis_entry, label) in enumerate(zip(outbound_axis, column_labels)):
+            if idx in column_split_indices:
+                date_cells.append(vertical_separator)
             styled_label = style_header_label(label, available=axis_entry.has_window)
             date_cells.append(pad_to_width_centered(styled_label, cell_width))
         content_lines.append(' '.join(date_cells))
+        content_lines.append(build_separator_line())
 
-    for axis_entry, month_label, label, row_cells in zip(return_axis, row_months, row_labels, rendered_rows):
+    horizontal_separator = paint_separator(pad_to_width('─' * max(1, row_month_width), row_month_width))
+    horizontal_label_separator = paint_separator(pad_to_width('─' * max(1, row_label_width), row_label_width))
+    data_separator_cell = paint_separator(pad_to_width('─' * max(1, cell_width), cell_width))
+    cross_separator = paint_separator('┼')
+
+    for row_idx, (axis_entry, month_label, label, row_cells) in enumerate(zip(return_axis, row_months, row_labels, rendered_rows)):
+        if row_idx in row_split_indices:
+            separator_line_parts = [
+                horizontal_separator,
+                horizontal_label_separator,
+                cross_separator,
+            ]
+            for col_idx in range(len(outbound_axis)):
+                if col_idx in column_split_indices:
+                    separator_line_parts.append(cross_separator)
+                separator_line_parts.append(data_separator_cell)
+            separator_joiner = paint_separator('─')
+            content_lines.append(separator_joiner.join(separator_line_parts))
         styled_month = style_header_label(month_label, available=axis_entry.has_window, allow_highlight=False)
         styled_label = style_header_label(label, available=axis_entry.has_window)
         row_line = [
             pad_to_width(styled_month, row_month_width),
             pad_to_width(styled_label, row_label_width),
+            row_header_separator,
         ]
-        row_line.extend(pad_to_width(cell, cell_width) for cell in row_cells)
+        for col_idx, cell in enumerate(row_cells):
+            if col_idx in column_split_indices:
+                row_line.append(vertical_separator)
+            row_line.append(pad_to_width(cell, cell_width))
         content_lines.append(' '.join(row_line))
 
     content_width = max((display_width(line) for line in content_lines), default=0)
@@ -1264,6 +1334,7 @@ def print_weekly_layout(
     if max_width == 0 or max_height == 0:
         return
 
+    week_row_width = (max_width * 7) + (2 * 6)
     sorted_dates = sorted(datetime.strptime(key, '%Y%m%d') for key in seatmaps_by_date.keys())
     start_date = sorted_dates[0] - timedelta(days=sorted_dates[0].weekday())
     end_date = sorted_dates[-1] + timedelta(days=(6 - sorted_dates[-1].weekday()))
@@ -1319,7 +1390,12 @@ def print_weekly_layout(
                     print(line)
                 print()
                 previous_route_label = route_label
-            print(apply_bold_italic(month_label))
+            styled_month = apply_bold_italic(month_label)
+            underline_width = max(week_row_width, display_width(styled_month))
+            underline = apply_color(HEATMAP_HEADER_COLOR, '─' * underline_width) if underline_width > 0 else ''
+            print(styled_month)
+            if underline:
+                print(underline)
             print()
             previous_month_key = month_key
 
