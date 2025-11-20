@@ -494,6 +494,12 @@ def window_seat_sort_key(seat_label: str):
     numeric_part = ''.join(filter(str.isdigit, seat_label))
     return int(numeric_part or 0), seat_label
 
+
+def spaced_upper(text: str) -> str:
+    """Return text uppercased with a space between every character."""
+    return ' '.join(text.upper())
+
+
 def normalize_block(lines: list[str], width: int, height: int) -> list[str]:
     """Ensure a block of text occupies a consistent rectangle."""
     padded = [pad_to_width(line, width) for line in lines]
@@ -1379,6 +1385,7 @@ def print_weekly_layout(
         if month_key != previous_month_key:
             route_label = ' / '.join(sorted(week_routes)) if week_routes else ''
             month_label = datetime(month_reference_date.year, month_reference_date.month, 1).strftime('%B %Y')
+            month_label = spaced_upper(month_label)
             if route_label and route_label != previous_route_label:
                 boxed_route = render_text_box(
                     [apply_bold_italic(route_label)],
@@ -1390,10 +1397,10 @@ def print_weekly_layout(
                     print(line)
                 print()
                 previous_route_label = route_label
-            styled_month = apply_bold_italic(month_label)
-            underline_width = max(week_row_width, display_width(styled_month))
-            underline = apply_color(HEATMAP_HEADER_COLOR, '─' * underline_width) if underline_width > 0 else ''
-            print(styled_month)
+            target_width = max(week_row_width, display_width(month_label))
+            centered_month = apply_heatmap_header_color(pad_to_width_centered(month_label, target_width))
+            underline = apply_color(HEATMAP_HEADER_COLOR, '─' * target_width) if target_width > 0 else ''
+            print(centered_month)
             if underline:
                 print(underline)
             print()
