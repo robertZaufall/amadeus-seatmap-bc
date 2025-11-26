@@ -11,7 +11,7 @@ _Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun).
 _Figure: Example terminal output showing the date-sorted ledger of available window seats including calendar heatmap for the price._
 
 ![Example output: price heatmaps](docs/price_heatmaps.png)
-_Figure: Example terminal output showing the price heatmaps for all flight combinations - one for windows seats and one for all._
+_Figure: Example terminal output showing the price heatmaps for all flight combinations - one for just windows seats (cumulated), one for all (cumulated) and one for all with actual return fares._
 
 <!-- ![Example output: weekly grid of ASCII seat maps - compact](docs/seatmaps_compact.png)
 _Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun) - compact._ -->
