@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 from config import TRAVEL_WINDOWS, FLIGHT_SEARCH_FILTERS, ENVIRONMENT
 
 fetch_from_api = True
-refresh_data = False # get data even data is present from today
+refresh_data = True # get data even data is present from today
 
 data_dir = Path(__file__).parent / "data"
 data_dir.mkdir(parents=True, exist_ok=True)

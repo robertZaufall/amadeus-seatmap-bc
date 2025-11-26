@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 from config import ENVIRONMENT, FLIGHT_SEARCH_FILTERS
 
 fetch_from_api = True
-refresh_data = False  # fetch even if today's data exists
+refresh_data = True  # fetch even if today's data exists
 
 data_dir = Path(__file__).parent / "data"
 data_dir.mkdir(parents=True, exist_ok=True)
