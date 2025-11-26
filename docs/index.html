@@ -59,18 +59,26 @@
   <h1>Flights TG925 - TG924</h1>
   <div class="gallery">
     <figure>
-      <img src="seatmaps.png" alt="Weekly grid of ASCII seat maps">
+      <img data-src="seatmaps.png" alt="Weekly grid of ASCII seat maps" loading="lazy">
     </figure>
   </div>
   <div class="gallery">
     <figure>
-      <img src="window_seats.png" alt="Window-seat ledger">
+      <img data-src="window_seats.png" alt="Window-seat ledger" loading="lazy">
     </figure>
   </div>
   <div class="gallery">
     <figure>
-      <img src="price_heatmaps.png" alt="Price heatmaps">
+      <img data-src="price_heatmaps.png" alt="Price heatmaps" loading="lazy">
     </figure>
   </div>
+  <script>
+    // Append a cache-busting query string to each image to avoid stale renders.
+    const bust = Date.now();
+    document.querySelectorAll('img[data-src]').forEach((img) => {
+      const base = img.getAttribute('data-src');
+      img.src = `${base}?v=${bust}`;
+    });
+  </script>
 </body>
 </html>
