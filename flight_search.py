@@ -1546,14 +1546,19 @@ full_output = output_buffer.getvalue()
 def _clean_marker(value: str | None) -> str:
     return (value or '').strip()
 
+
+def _format_timestamp_label(ts: datetime | None) -> str:
+    suffix = " (c) Robert Zaufall"
+    if not ts:
+        return f"Data timestamp: N/A{suffix}"
+    has_time = any((ts.hour, ts.minute, ts.second, ts.microsecond))
+    fmt = '%Y-%m-%d %H:%M:%S' if has_time else '%Y-%m-%d'
+    return f"Data timestamp: {ts.strftime(fmt)}{suffix}"
+
 compact_marker = _clean_marker(STATIC_LABELS.get('compact_seatmap_heading'))
 normal_marker = _clean_marker(STATIC_LABELS.get('normal_seatmap_heading'))
 availability_marker = _clean_marker(STATIC_LABELS.get('availability_heading'))
-timestamp_label = (
-    f"Data timestamp: {latest_price_timestamp.strftime('%Y-%m-%d %H:%M:%S')}"
-    if latest_price_timestamp
-    else "Data timestamp: N/A"
-)
+timestamp_label = _format_timestamp_label(latest_price_timestamp)
 
 compact_section = section_slices.get('compact') or extract_section(
     full_output,
