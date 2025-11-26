@@ -530,7 +530,8 @@ def build_placeholder_block(date_key: str, width: int, height: int) -> list[str]
     """Create a placeholder block for dates without seatmap data."""
     lines: list[str] = []
     show_date = is_within_travel_windows(date_key)
-    lines.append(pad_to_width(f"{date_key}" if show_date else '', width))
+    day_label = SeatMaps._format_day_of_month(date_key) if show_date else ''
+    lines.append(pad_to_width_centered(day_label, width))
 
     blank_line = pad_to_width('', width)
     while len(lines) < height:
