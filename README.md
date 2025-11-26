@@ -4,7 +4,7 @@ CLI utility for browsing Amadeus seat-map availability across a set of long-haul
 
 ## Example output
 
-![Example output: weekly grid of ASCII seat maps](docs/seatmaps_compact.png)
+![Example output: weekly grid of ASCII seat maps](docs/seatmaps.png)
 _Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun)._
 
 ![Example output: window-seat ledger](docs/window_seats.png)
@@ -13,8 +13,8 @@ _Figure: Example terminal output showing the date-sorted ledger of available win
 ![Example output: price heatmaps](docs/price_heatmaps.png)
 _Figure: Example terminal output showing the price heatmaps for all flight combinations - one for windows seats and one for all._
 
-![Example output: weekly grid of ASCII seat maps - alternative layout](docs/seatmaps.png)
-_Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun) in an alternative layout._
+<!-- ![Example output: weekly grid of ASCII seat maps - compact](docs/seatmaps_compact.png)
+_Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun) - compact._ -->
 
 ## Highlights
 - Builds ASCII seat maps with wide-character awareness so layouts stay aligned even when using emoji markers.

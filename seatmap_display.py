@@ -53,13 +53,17 @@ class SeatMaps:
         style: str = 'ascii',
         thick_border: bool = False,
     ) -> str:
-        header = self._format_header(seatmap, style=style)
         render_fn = self._render_ascii_deck if style != 'compact' else self._render_compact_deck
-        output = [f"\n{header}"]
+        rendered_decks: list[str] = []
         for deck in seatmap.decks:
             rendered = render_fn(deck, highlight=highlight, thick_border=thick_border)
             if rendered:
-                output.append(rendered)
+                rendered_decks.append(rendered)
+
+        header_width = display_width(rendered_decks[0].splitlines()[0]) if rendered_decks else None
+        header = self._format_header(seatmap, style=style, width=header_width)
+        output = [f"\n{header}"]
+        output.extend(rendered_decks)
         return '\n'.join(output)
 
     def _render_ascii_deck(self, deck: dict, *, highlight: str | None = None, thick_border: bool = False) -> str:
@@ -199,36 +203,31 @@ class SeatMaps:
     def _has_aisle_between(previous_label: str | None, next_label: str | None) -> bool:
         return (previous_label, next_label) in {('B', 'D'), ('G', 'J')}
 
-    def _format_header(self, seatmap: SeatMap, *, style: str) -> str:
-        route = f"{seatmap.origin}{seatmap.destination}".strip()
-        flight = f"{seatmap.carrier}{seatmap.number}".strip()
+    def _format_header(self, seatmap: SeatMap, *, style: str, width: int | None = None) -> str:
+        day_label = self._format_day_of_month(seatmap.departure_date)
+        header = self._center_text(day_label, width)
         if style == 'compact':
-            date_label = self._format_date_no_year(seatmap.departure_date)
-            primary_line, layout = self._build_compact_header_primary_line(date_label, route, flight)
-            lines = [primary_line]
-            if not SUPPRESS_COMPACT_SECOND_HEADER:
-                secondary_line = self._build_compact_header_meta_line(
-                    weekday_label=self._weekday_label(seatmap.departure_date),
-                    price_label=seatmap.formatted_total_price(rounded=True) or "N/A",
-                    aircraft_label=seatmap.aircraft_code or '',
-                    layout=layout,
-                )
-                if secondary_line:
-                    lines.append(secondary_line)
-            colored_lines = [apply_heatmap_header_color(line) for line in lines]
-            return '\n'.join(colored_lines)
-        header = f"{seatmap.departure_date} {route} {flight}-{seatmap.aircraft_code} "
+            return apply_heatmap_header_color(header)
         return header
 
     @staticmethod
-    def _format_date_no_year(date_str: str | None) -> str:
+    def _format_day_of_month(date_str: str | None) -> str:
         if not date_str:
             return ''
         try:
             date_value = datetime.strptime(date_str, '%Y%m%d')
-            return date_value.strftime('%m%d')
+            return str(date_value.day)
         except ValueError:
-            return date_str
+            fallback = date_str[-2:]
+            return fallback.lstrip('0') or fallback or date_str
+
+    @staticmethod
+    def _center_text(text: str, width: int | None) -> str:
+        if not width or width <= 0:
+            return text
+        if display_width(text) >= width:
+            return text
+        return text.center(width)
 
     @staticmethod
     def _weekday_label(date_str: str | None) -> str:
