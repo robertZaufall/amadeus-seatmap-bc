@@ -248,6 +248,7 @@ def process_seatmaps(amadeus, travel_dates_tuples, batch_size: int = 6):
                     batch[i]["id"] = str(i)
                 batch_request = {"data": batch}
                 seatmap_responses.extend(fetch_seatmap_batches(amadeus, batch_request))
+                print(f"Processed seatmap requests {idx + 1} to {min(idx + batch_size, total_requests)}")
             _dump_json(responses_path, seatmap_responses)
 
 
