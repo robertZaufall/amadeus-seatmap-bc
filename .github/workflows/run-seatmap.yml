@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set run date
+        id: rundate
+        run: echo "RUN_DATE=$(date +%Y%m%d)" >> "$GITHUB_ENV"
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -33,6 +37,13 @@ jobs:
           TEST_AMADEUS_CLIENT_ID: ${{ secrets.TEST_AMADEUS_CLIENT_ID }}
           TEST_AMADEUS_CLIENT_SECRET: ${{ secrets.TEST_AMADEUS_CLIENT_SECRET }}
         run: python run_pipeline.py
+
+      - name: Upload run data
+        uses: actions/upload-artifact@v4
+        with:
+          name: seatmap-data-${{ env.RUN_DATE }}
+          path: data/${{ env.RUN_DATE }}/
+          if-no-files-found: ignore
 
       - name: Commit rendered PNGs
         run: |

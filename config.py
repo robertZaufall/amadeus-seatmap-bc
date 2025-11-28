@@ -14,7 +14,7 @@ def _build_travel_windows(today: date | None = None) -> list[dict[str, str]]:
     first_end = first_start + timedelta(days=20)  # 3 weeks inclusive
 
     second_start = first_start + timedelta(weeks=6)
-    second_end = second_start + timedelta(days=20)  # 3 weeks inclusive
+    second_end = second_start + timedelta(days=24)  # 3.5 weeks inclusive
 
     def _iso(d: date) -> str:
         return d.strftime("%Y-%m-%d")
