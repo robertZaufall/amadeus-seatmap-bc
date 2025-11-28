@@ -1,25 +1,41 @@
 """Central configuration for seatmap rendering and search behavior."""
 
+from datetime import date, timedelta
+
 # Valid values: "production", "test", "e2e", "e2e-pickle"
 #ENVIRONMENT = "e2e-pickle"
 #ENVIRONMENT = "e2e"
 #ENVIRONMENT = "test"
 ENVIRONMENT = "production"
 
-TRAVEL_WINDOWS = [
-    {
-        "origin": "MUC",
-        "destination": "BKK",
-        "start_date": "2025-11-29",
-        "end_date": "2025-12-23",
-    },
-    {
-        "origin": "BKK",
-        "destination": "MUC",
-        "start_date": "2026-01-20",
-        "end_date": "2026-02-10",
-    },
-]
+def _build_travel_windows(today: date | None = None) -> list[dict[str, str]]:
+    base = today or date.today()
+    first_start = base + timedelta(days=3)
+    first_end = first_start + timedelta(days=20)  # 3 weeks inclusive
+
+    second_start = first_start + timedelta(weeks=6)
+    second_end = second_start + timedelta(days=20)  # 3 weeks inclusive
+
+    def _iso(d: date) -> str:
+        return d.strftime("%Y-%m-%d")
+
+    return [
+        {
+            "origin": "MUC",
+            "destination": "BKK",
+            "start_date": _iso(first_start),
+            "end_date": _iso(first_end),
+        },
+        {
+            "origin": "BKK",
+            "destination": "MUC",
+            "start_date": _iso(second_start),
+            "end_date": _iso(second_end),
+        },
+    ]
+
+
+TRAVEL_WINDOWS = _build_travel_windows()
 
 # Default filters applied when requesting flight offers from Amadeus.
 FLIGHT_SEARCH_FILTERS = {
