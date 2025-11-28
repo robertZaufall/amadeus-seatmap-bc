@@ -84,6 +84,14 @@ ONEWAY_PRICE_FILE_CANDIDATES: tuple[str, ...] = (
     "prices_responses_oneway_simple.json",
 )
 
+def _resolve_data_file(filename_candidates: tuple[str, ...], base_dir: Path = DATA_DIR) -> Path | None:
+    for name in filename_candidates:
+        candidate = base_dir / name
+        if candidate.exists():
+            return candidate
+    return None
+
+
 SEATMAP_DATA_PATH = _resolve_data_file(SEATMAP_FILE_CANDIDATES)
 RETURN_PRICE_DATA_PATH = _resolve_data_file(RETURN_PRICE_FILE_CANDIDATES)
 ONEWAY_PRICE_DATA_PATH = _resolve_data_file(ONEWAY_PRICE_FILE_CANDIDATES)
@@ -97,14 +105,6 @@ def _normalize_price_timestamp(value: datetime | str | None) -> datetime | None:
             return datetime.fromisoformat(value)
         except ValueError:
             return None
-    return None
-
-
-def _resolve_data_file(filename_candidates: tuple[str, ...], base_dir: Path = DATA_DIR) -> Path | None:
-    for name in filename_candidates:
-        candidate = base_dir / name
-        if candidate.exists():
-            return candidate
     return None
 
 
