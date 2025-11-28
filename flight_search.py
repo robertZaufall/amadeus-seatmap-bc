@@ -1,7 +1,7 @@
 import json
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
 import re
@@ -1546,11 +1546,20 @@ full_output = output_buffer.getvalue()
 def _clean_marker(value: str | None) -> str:
     return (value or '').strip()
 
+def _localize_timestamp(ts: datetime | None) -> datetime | None:
+    """Ensure a timestamp is aware and converted to the local timezone."""
+    if ts is None:
+        return None
+    local_tz = datetime.now().astimezone().tzinfo
+    if ts.tzinfo is None:
+        return ts.replace(tzinfo=local_tz)
+    return ts.astimezone(local_tz)
+
 def _file_timestamp(path: Path | None) -> datetime | None:
     if path is None or not path.exists():
         return None
     try:
-        return datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc).astimezone()
+        return _localize_timestamp(datetime.fromtimestamp(path.stat().st_mtime))
     except OSError:
         return None
 
@@ -1559,7 +1568,8 @@ def _format_timestamp_label(ts: datetime | None, *, label: str = "Data timestamp
     suffix = " (c) Robert Zaufall"
     if not ts:
         return f"{label}: N/A{suffix}"
-    return f"{label}: {ts.strftime('%Y-%m-%d %H:%M:%S %Z').rstrip()}{suffix}"
+    local_ts = _localize_timestamp(ts)
+    return f"{label}: {local_ts.strftime('%Y-%m-%d %H:%M:%S %Z').rstrip()}{suffix}"
 
 compact_marker = _clean_marker(STATIC_LABELS.get('compact_seatmap_heading'))
 normal_marker = _clean_marker(STATIC_LABELS.get('normal_seatmap_heading'))
