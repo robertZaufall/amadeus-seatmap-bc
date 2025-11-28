@@ -1,7 +1,7 @@
 import json
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
 import re
@@ -84,6 +84,10 @@ ONEWAY_PRICE_FILE_CANDIDATES: tuple[str, ...] = (
     "prices_responses_oneway_simple.json",
 )
 
+SEATMAP_DATA_PATH = _resolve_data_file(SEATMAP_FILE_CANDIDATES)
+RETURN_PRICE_DATA_PATH = _resolve_data_file(RETURN_PRICE_FILE_CANDIDATES)
+ONEWAY_PRICE_DATA_PATH = _resolve_data_file(ONEWAY_PRICE_FILE_CANDIDATES)
+
 
 def _normalize_price_timestamp(value: datetime | str | None) -> datetime | None:
     if isinstance(value, datetime):
@@ -137,7 +141,7 @@ def _collect_available_window_seats(decks: list[dict]) -> list[str]:
 
 def _load_oneway_price_lookup(base_dir: Path = DATA_DIR) -> dict[tuple[str, str], dict[str, object]]:
     lookup: dict[tuple[str, str], dict[str, object]] = {}
-    rows = _load_json_rows(_resolve_data_file(ONEWAY_PRICE_FILE_CANDIDATES, base_dir))
+    rows = _load_json_rows(ONEWAY_PRICE_DATA_PATH or _resolve_data_file(ONEWAY_PRICE_FILE_CANDIDATES, base_dir))
     for entry in rows:
         route = entry.get("outbound_route")
         outbound_date_iso = entry.get("outbound_date")
@@ -155,7 +159,7 @@ def _load_oneway_price_lookup(base_dir: Path = DATA_DIR) -> dict[tuple[str, str]
 
 def load_seatmaps_from_json(data_dir: Path = DATA_DIR) -> list[SeatMap]:
     """Load seatmaps from the dated JSON fixtures instead of the database."""
-    rows = _load_json_rows(_resolve_data_file(SEATMAP_FILE_CANDIDATES, data_dir))
+    rows = _load_json_rows(SEATMAP_DATA_PATH or _resolve_data_file(SEATMAP_FILE_CANDIDATES, data_dir))
     if not rows:
         return []
 
@@ -229,10 +233,6 @@ def build_route_price_metadata(seatmaps_obj: SeatMaps) -> dict[str, dict[str, di
 
 
 route_price_metadata = build_route_price_metadata(seatmaps)
-latest_price_timestamp = max(
-    (ts for ts in (seatmap.price_timestamp for seatmap in seatmap_records) if ts),
-    default=None,
-)
 
 
 def build_seatmap_context_label(seatmaps_by_date: dict[str, SeatMap]) -> str | None:
@@ -905,7 +905,7 @@ def build_roundtrip_matrix_from_table(
         raise ValueError(f"Unsupported table for roundtrip matrix: {table_name}")
 
     _, _, outbound_route, return_route = route_info
-    rows = _load_json_rows(_resolve_data_file(RETURN_PRICE_FILE_CANDIDATES))
+    rows = _load_json_rows(RETURN_PRICE_DATA_PATH or _resolve_data_file(RETURN_PRICE_FILE_CANDIDATES))
     if not rows:
         return None
 
@@ -1546,19 +1546,26 @@ full_output = output_buffer.getvalue()
 def _clean_marker(value: str | None) -> str:
     return (value or '').strip()
 
+def _file_timestamp(path: Path | None) -> datetime | None:
+    if path is None or not path.exists():
+        return None
+    try:
+        return datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc).astimezone()
+    except OSError:
+        return None
 
-def _format_timestamp_label(ts: datetime | None) -> str:
+
+def _format_timestamp_label(ts: datetime | None, *, label: str = "Data timestamp") -> str:
     suffix = " (c) Robert Zaufall"
     if not ts:
-        return f"Data timestamp: N/A{suffix}"
-    has_time = any((ts.hour, ts.minute, ts.second, ts.microsecond))
-    fmt = '%Y-%m-%d %H:%M:%S' if has_time else '%Y-%m-%d'
-    return f"Data timestamp: {ts.strftime(fmt)}{suffix}"
+        return f"{label}: N/A{suffix}"
+    return f"{label}: {ts.strftime('%Y-%m-%d %H:%M:%S %Z').rstrip()}{suffix}"
 
 compact_marker = _clean_marker(STATIC_LABELS.get('compact_seatmap_heading'))
 normal_marker = _clean_marker(STATIC_LABELS.get('normal_seatmap_heading'))
 availability_marker = _clean_marker(STATIC_LABELS.get('availability_heading'))
-timestamp_label = _format_timestamp_label(latest_price_timestamp)
+seatmap_timestamp_label = _format_timestamp_label(_file_timestamp(SEATMAP_DATA_PATH), label="Seatmap responses")
+return_price_timestamp_label = _format_timestamp_label(_file_timestamp(RETURN_PRICE_DATA_PATH), label="Roundtrip price responses")
 
 compact_section = section_slices.get('compact') or extract_section(
     full_output,
@@ -1566,7 +1573,7 @@ compact_section = section_slices.get('compact') or extract_section(
     [marker for marker in (normal_marker, availability_marker) if marker],
 )
 if compact_section:
-    save_text_block_png("seatmaps_compact", append_footer(trim_leading_blank_lines(compact_section), timestamp_label))
+    save_text_block_png("seatmaps_compact", append_footer(trim_leading_blank_lines(compact_section), seatmap_timestamp_label))
 
 normal_section = section_slices.get('ascii') or extract_section(
     full_output,
@@ -1574,7 +1581,7 @@ normal_section = section_slices.get('ascii') or extract_section(
     [marker for marker in (availability_marker, "Round-trip price heatmap") if marker],
 )
 if normal_section:
-    save_text_block_png("seatmaps", append_footer(trim_leading_blank_lines(normal_section), timestamp_label))
+    save_text_block_png("seatmaps", append_footer(trim_leading_blank_lines(normal_section), seatmap_timestamp_label))
 
 availability_section = extract_section(
     full_output,
@@ -1582,8 +1589,8 @@ availability_section = extract_section(
     ["Round-trip price heatmap"],
 )
 if availability_section:
-    save_text_block_png("window_seats", append_footer(trim_leading_blank_lines(availability_section), timestamp_label))
+    save_text_block_png("window_seats", append_footer(trim_leading_blank_lines(availability_section), seatmap_timestamp_label))
 
 heatmaps_section = extract_section(full_output, "Round-trip price heatmap", [])
 if heatmaps_section:
-    save_text_block_png("price_heatmaps", append_footer(trim_leading_blank_lines(heatmaps_section), timestamp_label))
+    save_text_block_png("price_heatmaps", append_footer(trim_leading_blank_lines(heatmaps_section), return_price_timestamp_label))

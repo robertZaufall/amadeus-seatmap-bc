@@ -10,8 +10,8 @@ ROOT = Path(__file__).parent.resolve()
 # Ordered list of scripts that make up the full data fetch + render flow.
 SCRIPT_ORDER = [
     ("Fetch availability", "get_availability.py"),
-    ("Fetch round-trip prices", "get_prices_return.py"),
     ("Fetch one-way prices", "get_prices_oneway.py"),
+    ("Fetch round-trip prices", "get_prices_return.py"),
     ("Fetch seatmaps", "get_seatmaps.py"),
     ("Render reports", "flight_search.py"),
 ]

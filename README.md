@@ -57,6 +57,11 @@ Most runtime knobs live in `config.py`, so you rarely need to edit `flight_searc
 - Visual toggles such as `SEATMAP_OUTPUT_STYLE`, `SHOW_SEATMAP_PRICE`, `HEATMAP_EMPHASIS_STYLES`, `STATUS_SYMBOLS`, and `WINDOW_AVAILABLE_SYMBOL` control how the ASCII/emoji output looks.
 - Currency/price decoration (`CURRENCY_SYMBOLS`, `BORDER_COLORS`, etc.) reference the semantic tokens defined in `colors.py`; extend `colors.TOKEN_MAP` if you need custom ANSI sequences.
 
+## Automation & publishing
+- **Seatmap pipeline** – Manually runnable via GitHub Actions (`Run Seatmap Pipeline`). It installs deps, runs `run_pipeline.py`, and commits the refreshed PNGs in `docs/` back to the repo.
+- **Static site deploy** – `Deploy static content to Pages` publishes the contents of `docs/` to GitHub Pages at https://robertzaufall.github.io/amadeus-seatmap-bc/. It triggers on `master` when files in `docs/**/*.png` or `docs/**/*.html` change, and can also be dispatched manually.
+- Local runs still work the same way; the automation just keeps the hosted artifacts current.
+
 ## Travel windows & filters
 Define the routes and date ranges you care about by editing the `TRAVEL_WINDOWS` list inside `config.py`. Each window is inclusive, so the scripts request seat maps for every day in the range. The first two windows drive the combined round-trip heatmaps (outbound vs. return).
 
@@ -68,8 +73,8 @@ Flight-offer search filters live in `config.FLIGHT_SEARCH_FILTERS`, so you can t
 3. Fetch and cache data for **today's** run:
    ```bash
    python get_availability.py       # builds travel_dates.json + availability_responses.json
-   python get_prices_return.py      # round-trip pricing -> pricing_responses*.json
    python get_prices_oneway.py      # per-leg pricing -> pricing_responses_*oneway*.json
+   python get_prices_return.py      # round-trip pricing -> pricing_responses*.json
    python get_seatmaps.py           # seat-map payloads -> seatmap_responses.json
    ```
    Each script reuses the existing files for today's date unless you flip `refresh_data = True` near the top of the file.
@@ -82,8 +87,8 @@ Flight-offer search filters live in `config.FLIGHT_SEARCH_FILTERS`, so you can t
 All generated API responses are timestamped by run date: `data/<YYYYMMDD>/`. Common files include:
 - `travel_dates.json`: cleaned list of dates per travel window (from availability checks).
 - `availability_responses.json`/`unavailable_flights.json`: raw availability responses and filtered-out flights.
-- `pricing_responses.json` and `pricing_responses_simple.json`: round-trip pricing used to build seatmap requests.
 - `pricing_responses_oneway.json` and `pricing_responses_simple_oneway.json`: leg-level pricing used for labels and price lookups.
+- `pricing_responses.json` and `pricing_responses_simple.json`: round-trip pricing used to build seatmap requests.
 - `seatmap_responses.json`: raw seatmap payloads consumed by `flight_search.py`.
 
 If you want to re-render a prior run, copy its dated folder to today's date inside `data/` so `flight_search.py` can find the JSON files.
