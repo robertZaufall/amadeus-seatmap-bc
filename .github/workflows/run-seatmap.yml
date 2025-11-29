@@ -3,7 +3,7 @@ name: Run Seatmap Pipeline
 on:
   workflow_dispatch:
   schedule:
-    - cron: "5 0 * * *"
+    - cron: "5 23 * * *"
 
 permissions:
   contents: write
