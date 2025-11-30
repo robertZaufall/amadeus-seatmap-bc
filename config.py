@@ -11,10 +11,16 @@ ENVIRONMENT = "production"
 def _build_travel_windows(today: date | None = None) -> list[dict[str, str]]:
     base = today or date.today()
     first_start = base + timedelta(days=3)
-    first_end = first_start + timedelta(days=20)  # 3 weeks inclusive
+    first_end = min(
+        first_start + timedelta(days=20),
+        date(2025, 12, 20) - timedelta(days=1),
+    )  # cap before 2025-12-20
 
     second_start = first_start + timedelta(weeks=6)
-    second_end = second_start + timedelta(days=24)  # 3.5 weeks inclusive
+    second_end = min(
+        second_start + timedelta(days=24),
+        date(2026, 2, 3) - timedelta(days=1),
+    )  # cap before 2026-02-03
 
     def _iso(d: date) -> str:
         return d.strftime("%Y-%m-%d")
