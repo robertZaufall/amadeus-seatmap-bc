@@ -1,0 +1,135 @@
+{
+  "data": [
+    {
+      "type": "flight-offer",
+      "id": "1",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "oneWay": false,
+      "isUpsellOffer": false,
+      "lastTicketingDate": "2025-12-10",
+      "lastTicketingDateTime": "2025-12-10",
+      "numberOfBookableSeats": 7,
+      "itineraries": [
+        {
+          "duration": "PT14H40M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "MUC",
+                "terminal": "1",
+                "at": "2025-12-10T21:25:00"
+              },
+              "arrival": {
+                "iataCode": "DXB",
+                "terminal": "3",
+                "at": "2025-12-11T06:35:00"
+              },
+              "carrierCode": "EK",
+              "number": "52",
+              "aircraft": {
+                "code": "388"
+              },
+              "operating": {
+                "carrierCode": "EK"
+              },
+              "duration": "PT6H10M",
+              "id": "1",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            },
+            {
+              "departure": {
+                "iataCode": "DXB",
+                "terminal": "3",
+                "at": "2025-12-11T08:55:00"
+              },
+              "arrival": {
+                "iataCode": "BKK",
+                "at": "2025-12-11T18:05:00"
+              },
+              "carrierCode": "EK",
+              "number": "370",
+              "aircraft": {
+                "code": "77W"
+              },
+              "operating": {
+                "carrierCode": "EK"
+              },
+              "duration": "PT6H10M",
+              "id": "2",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "EUR",
+        "total": "3039.48",
+        "base": "2108.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          }
+        ],
+        "grandTotal": "3039.48"
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": true
+      },
+      "validatingAirlineCodes": [
+        "EK"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "3039.48",
+            "base": "2108.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "BUSINESS",
+              "fareBasis": "ISSOSDE1",
+              "class": "I",
+              "includedCheckedBags": {
+                "weight": 40,
+                "weightUnit": "KG"
+              },
+              "includedCabinBags": {
+                "quantity": 2
+              }
+            },
+            {
+              "segmentId": "2",
+              "cabin": "BUSINESS",
+              "fareBasis": "ISSOSDE1",
+              "class": "I",
+              "includedCheckedBags": {
+                "weight": 40,
+                "weightUnit": "KG"
+              },
+              "includedCabinBags": {
+                "quantity": 2
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

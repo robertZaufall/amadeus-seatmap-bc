@@ -3,3 +3,9 @@ __pycache__/**
 test/__pycache__/**
 data/**
 !data/*_template.json
+!data/flights/
+!data/flights/**
+data/flights/**/seatmaps.json
+data/flights/**/flight_offers.json
+data/flights/**/flight_offer_request.json
+**/.DS_Store
