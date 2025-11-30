@@ -453,71 +453,82 @@ def main() -> None:
     cache_paths = _cache_paths(cache_dir)
     seatmaps_request_path = cache_paths["seatmaps_request"]
 
-    seatmaps_request: dict[str, Any] | None = None
-    cached_seatmaps_request = _load_json(seatmaps_request_path)
+    seatmaps_request: dict[str, Any] | None = _load_json(seatmaps_request_path)
+    seatmap_records: list[dict[str, Any]] = []
+    cache_meta: dict[str, Any] | None = None
     cached_offers = _load_json(cache_paths["offers"])
-    cached_payload = None if args.force_refresh else _load_cache(cache_dir, args.cache_ttl_hours)
-    if cached_payload:
-        print(f"Using cached data from {cache_dir}.")
-        flight_offers, seatmap_records, cache_meta = cached_payload
-        if isinstance(cached_seatmaps_request, dict):
-            seatmaps_request = cached_seatmaps_request
-    elif isinstance(cached_seatmaps_request, dict):
-        print(
-            "Refreshing seatmaps using existing seatmaps_request.json "
-            "(skipping flight-offer search)."
+    flight_offers: list[dict[str, Any]] = cached_offers if isinstance(cached_offers, list) else []
+
+    if isinstance(seatmaps_request, dict):
+        cached_seatmaps = _load_json(cache_paths["seatmaps"])
+        cache_meta = _load_json(cache_paths["meta"])
+        use_cached_seatmaps = (
+            not args.force_refresh
+            and _is_fresh(cache_paths["seatmaps"], args.cache_ttl_hours)
+            and isinstance(cached_seatmaps, list)
         )
-        amadeus = build_amadeus_client(args.environment)
-        seatmaps_request = cached_seatmaps_request
-        seatmap_records = fetch_seatmaps(amadeus, seatmaps_request)
-        _dump_json(cache_paths["seatmaps"], seatmap_records)
-        cache_meta = {"fetched_at": datetime.now().astimezone().isoformat(), "seatmaps_cached": True}
-        _dump_json(cache_paths["meta"], cache_meta)
-        flight_offers = cached_offers if isinstance(cached_offers, list) else []
+        if use_cached_seatmaps:
+            print(f"Using cached seatmaps from {cache_dir}.")
+            seatmap_records = cached_seatmaps  # type: ignore[assignment]
+        else:
+            print("Refreshing seatmaps using existing seatmaps_request.json (skipping flight-offer search).")
+            amadeus = build_amadeus_client(args.environment)
+            seatmap_records = fetch_seatmaps(amadeus, seatmaps_request)
+            _dump_json(cache_paths["seatmaps"], seatmap_records)
+            cache_meta = {"fetched_at": datetime.now().astimezone().isoformat(), "seatmaps_cached": True}
+            _dump_json(cache_paths["meta"], cache_meta)
     else:
-        amadeus = build_amadeus_client(args.environment)
-        flight_offer_request = build_flight_offer_request(
-            origin=args.origin,
-            destination=args.destination,
-            date=args.date,
-            time=args.time,
-            travel_class=args.travel_class,
-            airline=args.airline,
-            currency=args.currency,
-            max_offers=args.max_offers,
-        )
+        cached_payload = None if args.force_refresh else _load_cache(cache_dir, args.cache_ttl_hours)
+        if cached_payload:
+            print(f"Using cached data from {cache_dir}.")
+            flight_offers, seatmap_records, cache_meta = cached_payload
+        else:
+            amadeus = build_amadeus_client(args.environment)
+            flight_offer_request = build_flight_offer_request(
+                origin=args.origin,
+                destination=args.destination,
+                date=args.date,
+                time=args.time,
+                travel_class=args.travel_class,
+                airline=args.airline,
+                currency=args.currency,
+                max_offers=args.max_offers,
+            )
 
-        flight_offers = fetch_flight_offers(amadeus, flight_offer_request)
-        _write_cache(cache_dir, request_body=flight_offer_request, flight_offers=flight_offers, seatmaps=None)
+            flight_offers = fetch_flight_offers(amadeus, flight_offer_request)
+            _write_cache(cache_dir, request_body=flight_offer_request, flight_offers=flight_offers, seatmaps=None)
 
-        offer_count = len(flight_offers)
-        print(f"Flight-offer search returned {offer_count} result(s).")
+            offer_count = len(flight_offers)
+            print(f"Flight-offer search returned {offer_count} result(s).")
 
-        if offer_count != 1:
-            print("Seatmaps are only fetched when the search returns exactly one offer.")
-            return
+            if offer_count != 1:
+                print("Seatmaps are only fetched when the search returns exactly one offer.")
+                return
 
-        seatmaps_request = build_seatmaps_request(flight_offers[0])
-        seatmap_records = fetch_seatmaps(amadeus, seatmaps_request)
-        _write_cache(
-            cache_dir,
-            request_body=flight_offer_request,
-            flight_offers=flight_offers,
-            seatmaps_request=seatmaps_request,
-            seatmaps=seatmap_records,
-        )
-        cache_meta = {"fetched_at": datetime.now().astimezone().isoformat(), "seatmaps_cached": True}
+            seatmaps_request = build_seatmaps_request(flight_offers[0])
+            seatmap_records = fetch_seatmaps(amadeus, seatmaps_request)
+            _write_cache(
+                cache_dir,
+                request_body=flight_offer_request,
+                flight_offers=flight_offers,
+                seatmaps_request=seatmaps_request,
+                seatmaps=seatmap_records,
+            )
+            cache_meta = {"fetched_at": datetime.now().astimezone().isoformat(), "seatmaps_cached": True}
 
     offer_count = len(flight_offers)
+    if isinstance(seatmaps_request, dict) and offer_count == 0:
+        data = seatmaps_request.get("data")
+        if isinstance(data, list):
+            offer_count = len(data)
     print(f"Flight-offer search returned {offer_count} result(s).")
-    if offer_count != 1:
+    if seatmaps_request is None and offer_count != 1:
         print("Seatmaps are only fetched when the search returns exactly one offer.")
         return
 
-    if seatmaps_request is None and flight_offers and len(flight_offers) == 1:
-        if not seatmaps_request_path.exists():
-            seatmaps_request = build_seatmaps_request(flight_offers[0])
-            _dump_json(seatmaps_request_path, seatmaps_request)
+    if seatmaps_request is None and flight_offers and len(flight_offers) == 1 and not seatmaps_request_path.exists():
+        seatmaps_request = build_seatmaps_request(flight_offers[0])
+        _dump_json(seatmaps_request_path, seatmaps_request)
 
     render_seatmaps(
         build_seatmap_objects(seatmap_records, travel_class=args.travel_class),
