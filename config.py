@@ -90,9 +90,12 @@ STATUS_SYMBOLS = {
 }
 
 WINDOW_AVAILABLE_SYMBOL = "🟩"
+HIGHLIGHT_CHARACTERISTIC_CODES = {"H"}  # seats with these characteristic codes get a highlight when available
+HIGHLIGHT_AVAILABLE_SYMBOL = "🟨"
 
 COMPACT_BACKGROUND_COLORS = {
     "AVAILABLE_WINDOW": "bg_dark_green",
+    "AVAILABLE_HIGHLIGHT": "bg_yellow",
     "AVAILABLE": "bg_dark_blue",
     "OCCUPIED": "",
     "BLOCKED": "",
@@ -101,6 +104,7 @@ COMPACT_BACKGROUND_COLORS = {
 
 COMPACT_SYMBOLS = {
     "AVAILABLE_WINDOW": " ",
+    "AVAILABLE_HIGHLIGHT": " ",
     "AVAILABLE": " ",
     "OCCUPIED": "✘",
     "BLOCKED": "✘",
@@ -109,6 +113,7 @@ COMPACT_SYMBOLS = {
 
 COMPACT_SYMBOL_COLORS = {
     "AVAILABLE_WINDOW": "",
+    "AVAILABLE_HIGHLIGHT": "",
     "AVAILABLE": "",
     "OCCUPIED": "fg_red",
     "BLOCKED": "fg_grey",

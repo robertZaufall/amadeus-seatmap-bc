@@ -7,6 +7,8 @@ from config import (
     COMPACT_BACKGROUND_COLORS,
     COMPACT_SYMBOL_COLORS,
     COMPACT_SYMBOLS,
+    HIGHLIGHT_AVAILABLE_SYMBOL,
+    HIGHLIGHT_CHARACTERISTIC_CODES,
     STATUS_SYMBOLS,
     SUPPRESS_COMPACT_SECOND_HEADER,
     WINDOW_AVAILABLE_SYMBOL as CONFIG_WINDOW_AVAILABLE_SYMBOL,
@@ -31,6 +33,8 @@ class SeatMaps:
     COMPACT_BACKGROUND = COMPACT_BACKGROUND_COLORS
     COMPACT_SYMBOLS = COMPACT_SYMBOLS
     COMPACT_SYMBOL_COLORS = COMPACT_SYMBOL_COLORS
+    HIGHLIGHT_CHARACTERISTIC_CODES = HIGHLIGHT_CHARACTERISTIC_CODES
+    HIGHLIGHT_AVAILABLE_SYMBOL = HIGHLIGHT_AVAILABLE_SYMBOL
 
     def __init__(self, seatmaps: list[SeatMap] | None = None):
         self.seatmaps = seatmaps or []
@@ -52,6 +56,7 @@ class SeatMaps:
         highlight: str | None = None,
         style: str = 'ascii',
         thick_border: bool = False,
+        show_header: bool = True,
     ) -> str:
         render_fn = self._render_ascii_deck if style != 'compact' else self._render_compact_deck
         rendered_decks: list[str] = []
@@ -61,16 +66,20 @@ class SeatMaps:
                 rendered_decks.append(rendered)
 
         header_width = display_width(rendered_decks[0].splitlines()[0]) if rendered_decks else None
-        header = self._format_header(seatmap, style=style, width=header_width)
-        output = [f"\n{header}"]
+        header = self._format_header(seatmap, style=style, width=header_width) if show_header else ''
+        output: list[str] = []
+        if header:
+            output.append(header)
         output.extend(rendered_decks)
         return '\n'.join(output)
 
     def _render_ascii_deck(self, deck: dict, *, highlight: str | None = None, thick_border: bool = False) -> str:
         rows, column_layout = self._build_seat_grid(deck)
-        symbol_width = max(
-            [display_width(symbol) for symbol in self.STATUS_SYMBOL.values()] + [display_width(self.WINDOW_AVAILABLE_SYMBOL)]
-        )
+        symbol_candidates = list(self.STATUS_SYMBOL.values()) + [
+            self.WINDOW_AVAILABLE_SYMBOL,
+            self.HIGHLIGHT_AVAILABLE_SYMBOL,
+        ]
+        symbol_width = max(display_width(symbol) for symbol in symbol_candidates)
         seat_column_width = max(symbol_width, 1)
         aisle_column_width = max(1, seat_column_width // 2) + 1
 
@@ -128,7 +137,10 @@ class SeatMaps:
             return ' '
         availability = seat_info.get('availability') or 'UNKNOWN'
         is_window = seat_info.get('is_window', False)
-        if availability == 'AVAILABLE' and is_window:
+        is_highlighted = seat_info.get('has_highlight_code', False)
+        if availability == 'AVAILABLE' and is_highlighted:
+            color_key = 'AVAILABLE_HIGHLIGHT'
+        elif availability == 'AVAILABLE' and is_window:
             color_key = 'AVAILABLE_WINDOW'
         elif availability == 'AVAILABLE':
             color_key = 'AVAILABLE'
@@ -159,49 +171,75 @@ class SeatMaps:
         seats = deck.get('seats', [])
         columns_by_position: dict[int, str] = {}
         rows: dict[str, dict[int, dict]] = {}
+
+        # First pass: collect columns and seat entries so we can infer windows even when codes are missing.
+        seat_entries: list[tuple[int, dict]] = []
         for seat in seats:
             coords = seat.get('coordinates', {})
             column_position = coords.get('y')
             if column_position is None:
                 continue
-
             seat_number = seat.get('number', '?')
             row_label, column_label = extract_row_and_column(seat_number)
             columns_by_position.setdefault(column_position, column_label)
+            seat_entries.append((column_position, seat))
 
+        if columns_by_position:
+            ordered_cols = sorted(columns_by_position)
+            window_positions = {ordered_cols[0], ordered_cols[-1]}
+        else:
+            window_positions = set()
+
+        for column_position, seat in seat_entries:
+            seat_number = seat.get('number', '?')
+            row_label, _ = extract_row_and_column(seat_number)
             row_bucket = rows.setdefault(row_label, {})
             traveler_pricing = seat.get('travelerPricing', [])
             availability = traveler_pricing[0].get('seatAvailabilityStatus') if traveler_pricing else 'UNKNOWN'
-            is_window = 'W' in seat.get('characteristicsCodes', [])
+            codes = seat.get('characteristicsCodes') or []
+            has_window_code = 'W' in codes
+            has_highlight_code = any(code in self.HIGHLIGHT_CHARACTERISTIC_CODES for code in codes)
+            is_window = has_window_code or column_position in window_positions
             seat_symbol = self.STATUS_SYMBOL.get(availability, '?')
-            if availability == 'AVAILABLE' and is_window:
+            if availability == 'AVAILABLE' and has_highlight_code:
+                seat_symbol = self.HIGHLIGHT_AVAILABLE_SYMBOL
+            elif availability == 'AVAILABLE' and is_window:
                 seat_symbol = self.WINDOW_AVAILABLE_SYMBOL
             elif availability == 'OCCUPIED':
-                seat_symbol = apply_color('fg_red', '✘')
+                seat_symbol = apply_color('fg_red', '×')
             row_bucket[column_position] = {
                 'symbol': seat_symbol,
                 'availability': availability,
                 'is_window': is_window,
+                'has_highlight_code': has_highlight_code,
             }
 
         column_layout = self._build_column_layout(columns_by_position)
         return rows, column_layout
 
     def _build_column_layout(self, columns_by_position: dict[int, str]) -> list[dict]:
+        """Build ordered columns, inserting aisles when there are gaps or known splits."""
         ordered_columns = sorted(columns_by_position)
         layout: list[dict] = []
         last_label = None
+        last_pos: int | None = None
         for pos in ordered_columns:
             label = columns_by_position[pos]
-            if self._has_aisle_between(last_label, label):
+            gap = (pos - last_pos) if last_pos is not None else 0
+            if last_pos is not None and (gap > 1 or self._has_aisle_between(last_label, label)):
                 layout.append({'position': None, 'label': '', 'is_aisle': True})
             layout.append({'position': pos, 'label': label, 'is_aisle': False})
             last_label = label
+            last_pos = pos
         return layout
 
     @staticmethod
     def _has_aisle_between(previous_label: str | None, next_label: str | None) -> bool:
-        return (previous_label, next_label) in {('B', 'D'), ('G', 'J')}
+        return (previous_label, next_label) in {
+            ('B', 'D'),
+            ('F', 'J'),
+            ('G', 'J'),
+        }
 
     def _format_header(self, seatmap: SeatMap, *, style: str, width: int | None = None) -> str:
         day_label = self._format_day_of_month(seatmap.departure_date)
