@@ -19,7 +19,7 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Python Debugger: flight_offer_seatmaps MUC-BKK EK BUSINESS",
+            "name": "flight_offer_seatmaps MUC-BKK EK",
             "type": "debugpy",
             "request": "launch",
             "program": "flight_offer_seatmaps.py",
@@ -29,12 +29,13 @@
                 "--from", "MUC",
                 "--to", "BKK",
                 "--class", "BUSINESS",
-                "--airline", "EK"
+                "--airline", "EK",
+                // "--force-refresh"
             ],
             "console": "integratedTerminal"
         },
         {
-            "name": "Python Debugger: flight_offer_seatmaps MUC-BKK TG BUSINESS",
+            "name": "flight_offer_seatmaps MUC-BKK TG",
             "type": "debugpy",
             "request": "launch",
             "program": "flight_offer_seatmaps.py",
@@ -44,7 +45,8 @@
                 "--from", "MUC",
                 "--to", "BKK",
                 "--class", "BUSINESS",
-                "--airline", "TG"
+                "--airline", "TG",
+                // "--force-refresh"
             ],
             "console": "integratedTerminal"
         }
