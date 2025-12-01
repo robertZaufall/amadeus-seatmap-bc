@@ -1,0 +1,2109 @@
+[
+  {
+    "id": "1",
+    "type": "seatmap",
+    "departure": {
+      "iataCode": "MUC",
+      "terminal": "1",
+      "at": "2025-12-10T21:25:00"
+    },
+    "arrival": {
+      "iataCode": "DXB",
+      "terminal": "3",
+      "at": "2025-12-11T06:35:00"
+    },
+    "carrierCode": "EK",
+    "number": "52",
+    "operating": {
+      "carrierCode": "EK"
+    },
+    "aircraft": {
+      "code": "388"
+    },
+    "class": "I",
+    "flightOfferId": "1",
+    "segmentId": "1",
+    "decks": [
+      {
+        "deckType": "UPPER",
+        "deckConfiguration": {
+          "width": 12,
+          "length": 20,
+          "startSeatRow": 6,
+          "endSeatRow": 26,
+          "startWingsX": 0,
+          "endWingsX": 12,
+          "startWingsRow": 6,
+          "endWingsRow": 19
+        },
+        "seats": [
+          {
+            "cabin": "BUSINESS",
+            "number": "6D",
+            "characteristicsCodes": [
+              "UP",
+              "B",
+              "1",
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 0,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "6G",
+            "characteristicsCodes": [
+              "UP",
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 0,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "7A",
+            "characteristicsCodes": [
+              "UP",
+              "B",
+              "1",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 1,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "7E",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 1,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "7F",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 1,
+              "y": 6
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "7K",
+            "characteristicsCodes": [
+              "UP",
+              "B",
+              "1",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 1,
+              "y": 11
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "8B",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 2,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "8D",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 2,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "8G",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 2,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "8J",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 2,
+              "y": 10
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "9A",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 3,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "9E",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 3,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "9F",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 3,
+              "y": 6
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "9K",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 3,
+              "y": 11
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "10B",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 4,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "10D",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 4,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "10G",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 4,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "10J",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 4,
+              "y": 10
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "11A",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 5,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "11E",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 5,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "11F",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 5,
+              "y": 6
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "11K",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 5,
+              "y": 11
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "12B",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 6,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "12D",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 6,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "12G",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 6,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "12J",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 6,
+              "y": 10
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "14A",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 7,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "14E",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 7,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "14F",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 7,
+              "y": 6
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "14K",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 7,
+              "y": 11
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "15B",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 8,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "15D",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 8,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "15G",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 8,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "15J",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 8,
+              "y": 10
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "16A",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 9,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "16E",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 9,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "16F",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 9,
+              "y": 6
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "16K",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 9,
+              "y": 11
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "17B",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 10,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "17D",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 10,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "17G",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 10,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "17J",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 10,
+              "y": 10
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "18A",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 11,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "18E",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 11,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "18F",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 11,
+              "y": 6
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "18K",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 11,
+              "y": 11
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "19B",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 12,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "19D",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 12,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "19G",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 12,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "19J",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 12,
+              "y": 10
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "20A",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 13,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "20E",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 13,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "20F",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 13,
+              "y": 6
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "20K",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 13,
+              "y": 11
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "21B",
+            "characteristicsCodes": [
+              "UP",
+              "B",
+              "1",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 14,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "21D",
+            "characteristicsCodes": [
+              "UP",
+              "B",
+              "1",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 14,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "21G",
+            "characteristicsCodes": [
+              "UP",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 14,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "21J",
+            "characteristicsCodes": [
+              "UP",
+              "B",
+              "1",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 14,
+              "y": 10
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "22D",
+            "characteristicsCodes": [
+              "UP",
+              "B",
+              "1",
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 15,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "22G",
+            "characteristicsCodes": [
+              "UP",
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 15,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "23A",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 16,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "23E",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 16,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "23F",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 16,
+              "y": 6
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "23K",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 16,
+              "y": 11
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "24B",
+            "characteristicsCodes": [
+              "UP",
+              "H"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 17,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "24D",
+            "characteristicsCodes": [
+              "UP",
+              "H"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 17,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "24G",
+            "characteristicsCodes": [
+              "UP",
+              "H"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 17,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "24J",
+            "characteristicsCodes": [
+              "UP",
+              "H"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 17,
+              "y": 10
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "25A",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 18,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "25E",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 18,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "25F",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 18,
+              "y": 6
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "25K",
+            "characteristicsCodes": [
+              "UP"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 18,
+              "y": 11
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "26B",
+            "characteristicsCodes": [
+              "UP",
+              "H"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 19,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "26D",
+            "characteristicsCodes": [
+              "UP",
+              "H"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 19,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "26G",
+            "characteristicsCodes": [
+              "UP",
+              "H"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 19,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "26J",
+            "characteristicsCodes": [
+              "UP",
+              "H"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 19,
+              "y": 10
+            }
+          }
+        ]
+      },
+      {
+        "deckType": "MAIN",
+        "deckConfiguration": {
+          "width": 12,
+          "length": 0,
+          "startSeatRow": 13,
+          "endSeatRow": 13,
+          "startWingsRow": 13,
+          "endWingsRow": 13
+        }
+      }
+    ],
+    "aircraftCabinAmenities": {
+      "power": {
+        "isChargeable": false,
+        "powerType": "PLUG_OR_USB_PORT",
+        "usbType": "USB_A"
+      },
+      "seat": {
+        "legSpace": 70,
+        "spaceUnit": "INCHES",
+        "tilt": "FULL_FLAT"
+      },
+      "wifi": {
+        "isChargeable": true,
+        "wifiCoverage": "FULL"
+      },
+      "food": {
+        "isChargeable": false,
+        "foodType": "MEAL"
+      },
+      "beverage": {
+        "isChargeable": false,
+        "beverageType": "ALCOHOLIC"
+      }
+    },
+    "availableSeatsCounters": [
+      {
+        "travelerId": "1",
+        "value": 30
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "type": "seatmap",
+    "departure": {
+      "iataCode": "DXB",
+      "terminal": "3",
+      "at": "2025-12-11T08:55:00"
+    },
+    "arrival": {
+      "iataCode": "BKK",
+      "at": "2025-12-11T18:05:00"
+    },
+    "carrierCode": "EK",
+    "number": "370",
+    "operating": {
+      "carrierCode": "EK"
+    },
+    "aircraft": {
+      "code": "77W"
+    },
+    "class": "I",
+    "flightOfferId": "1",
+    "segmentId": "2",
+    "decks": [
+      {
+        "deckType": "MAIN",
+        "deckConfiguration": {
+          "width": 9,
+          "length": 5,
+          "startSeatRow": 1,
+          "endSeatRow": 5
+        },
+        "seats": [
+          {
+            "cabin": "BUSINESS",
+            "number": "1A",
+            "characteristicsCodes": [
+              "B",
+              "1",
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "1B",
+            "characteristicsCodes": [
+              "H",
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 0,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "1D",
+            "characteristicsCodes": [
+              "H",
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 0,
+              "y": 3
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "1E",
+            "characteristicsCodes": [
+              "B",
+              "1",
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 0,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "1F",
+            "characteristicsCodes": [
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 0,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "1J",
+            "characteristicsCodes": [
+              "B",
+              "1",
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 0,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "1K",
+            "characteristicsCodes": [
+              "W"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 0,
+              "y": 8
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "2A",
+            "characteristicsCodes": [
+              "W"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 1,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "2B",
+            "characteristicsCodes": [
+              "A",
+              "A"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 1,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "2D",
+            "characteristicsCodes": [
+              "H"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 1,
+              "y": 3
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "2E",
+            "characteristicsCodes": [
+              "9"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 1,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "2F",
+            "characteristicsCodes": [
+              "H"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 1,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "2J",
+            "characteristicsCodes": [
+              "9"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 1,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "2K",
+            "characteristicsCodes": [
+              "W"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 1,
+              "y": 8
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "3A",
+            "characteristicsCodes": [
+              "W"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 2,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "3B",
+            "characteristicsCodes": [
+              "A",
+              "A"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 2,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "3D",
+            "characteristicsCodes": [
+              "9"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 2,
+              "y": 3
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "3E",
+            "characteristicsCodes": [
+              "9"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 2,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "3F",
+            "characteristicsCodes": [
+              "A",
+              "A"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 2,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "3J",
+            "characteristicsCodes": [
+              "9"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 2,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "3K",
+            "characteristicsCodes": [
+              "W"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 2,
+              "y": 8
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "4A",
+            "characteristicsCodes": [
+              "W"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 3,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "4B",
+            "characteristicsCodes": [
+              "A",
+              "A"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 3,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "4D",
+            "characteristicsCodes": [
+              "H"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 3,
+              "y": 3
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "4E",
+            "characteristicsCodes": [
+              "9"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 3,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "4F",
+            "characteristicsCodes": [
+              "A",
+              "A"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 3,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "4J",
+            "characteristicsCodes": [
+              "9"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 3,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "4K",
+            "characteristicsCodes": [
+              "W"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "OCCUPIED"
+              }
+            ],
+            "coordinates": {
+              "x": 3,
+              "y": 8
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "5A",
+            "characteristicsCodes": [
+              "B",
+              "1",
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 4,
+              "y": 0
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "5B",
+            "characteristicsCodes": [
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 4,
+              "y": 1
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "5D",
+            "characteristicsCodes": [
+              "B",
+              "1",
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 4,
+              "y": 3
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "5E",
+            "characteristicsCodes": [
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 4,
+              "y": 4
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "5F",
+            "characteristicsCodes": [
+              "B",
+              "1",
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 4,
+              "y": 5
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "5J",
+            "characteristicsCodes": [
+              "B",
+              "1",
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "BLOCKED"
+              }
+            ],
+            "coordinates": {
+              "x": 4,
+              "y": 7
+            }
+          },
+          {
+            "cabin": "BUSINESS",
+            "number": "5K",
+            "characteristicsCodes": [
+              "K",
+              "I"
+            ],
+            "travelerPricing": [
+              {
+                "travelerId": "1",
+                "seatAvailabilityStatus": "AVAILABLE"
+              }
+            ],
+            "coordinates": {
+              "x": 4,
+              "y": 8
+            }
+          }
+        ]
+      }
+    ],
+    "aircraftCabinAmenities": {
+      "power": {
+        "isChargeable": false,
+        "powerType": "PLUG_OR_USB_PORT",
+        "usbType": "USB_A"
+      },
+      "seat": {
+        "legSpace": 60,
+        "spaceUnit": "INCHES",
+        "tilt": "ANGLE_FLAT"
+      },
+      "wifi": {
+        "isChargeable": true,
+        "wifiCoverage": "FULL"
+      },
+      "food": {
+        "isChargeable": false,
+        "foodType": "MEAL"
+      },
+      "beverage": {
+        "isChargeable": false,
+        "beverageType": "ALCOHOLIC"
+      }
+    },
+    "availableSeatsCounters": [
+      {
+        "travelerId": "1",
+        "value": 12
+      }
+    ]
+  }
+]
