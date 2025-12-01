@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import argparse
+import difflib
+import hashlib
 import json
 import os
 from datetime import datetime
@@ -90,6 +92,95 @@ def _load_json(path: Path) -> Any | None:
         return None
 
 
+def _hash_file(path: Path) -> str | None:
+    try:
+        digest = hashlib.sha256()
+        with path.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(8192), b""):
+                digest.update(chunk)
+        return digest.hexdigest()
+    except OSError:
+        return None
+
+
+def _build_metadata(
+    seatmaps_cached: bool,
+    seatmaps_path: Path,
+    existing_meta: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    existing_meta = existing_meta if isinstance(existing_meta, dict) else {}
+    seatmaps_hash = existing_meta.get("seatmaps_hash")
+    previous_hash = existing_meta.get("previous_seatmaps_hash")
+
+    if seatmaps_cached and seatmaps_path.exists():
+        new_hash = _hash_file(seatmaps_path)
+        if new_hash == seatmaps_hash:
+            # If unchanged across runs, keep backup aligned with the current hash.
+            previous_hash = new_hash
+        else:
+            # When the hash changes, shift the current hash into the backup slot.
+            previous_hash = seatmaps_hash
+            seatmaps_hash = new_hash
+    return {
+        "fetched_at": datetime.now().astimezone().isoformat(),
+        "seatmaps_cached": seatmaps_cached,
+        "seatmaps_hash": seatmaps_hash,
+        "previous_seatmaps_hash": previous_hash,
+    }
+
+
+def _strip_medias(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {k: _strip_medias(v) for k, v in value.items() if k != "medias"}
+    if isinstance(value, list):
+        return [_strip_medias(item) for item in value]
+    return value
+
+
+def _sanitize_seatmaps(seatmaps: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [_strip_medias(entry) if isinstance(entry, dict) else entry for entry in seatmaps]
+
+
+def _write_seatmaps_with_diff(path: Path, seatmaps: list[dict[str, Any]]) -> Path | None:
+    seatmaps = _sanitize_seatmaps(seatmaps)
+    diff_path = path.with_suffix(".diff")
+    try:
+        previous_text = path.read_text(encoding="utf-8")
+    except OSError:
+        previous_text = None
+
+    new_text = json.dumps(seatmaps, indent=2)
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(new_text, encoding="utf-8")
+
+    if previous_text is None:
+        if diff_path.exists():
+            diff_path.unlink(missing_ok=True)
+        return None
+
+    if previous_text == new_text:
+        if diff_path.exists():
+            diff_path.unlink(missing_ok=True)
+        return None
+
+    diff_lines = difflib.unified_diff(
+        previous_text.splitlines(),
+        new_text.splitlines(),
+        fromfile=f"{path.name} (previous)",
+        tofile=f"{path.name} (new)",
+        lineterm="",
+    )
+    diff_text = "\n".join(diff_lines)
+    if not diff_text.strip():
+        if diff_path.exists():
+            diff_path.unlink(missing_ok=True)
+        return None
+
+    diff_path.write_text(diff_text + "\n", encoding="utf-8")
+    return diff_path
+
+
 def _sanitize_segment(value: str) -> str:
     cleaned = "".join(ch if ch.isalnum() or ch in {"-", "_"} else "-" for ch in str(value))
     while "--" in cleaned:
@@ -171,18 +262,18 @@ def _write_cache(
     flight_offers: list[dict[str, Any]],
     seatmaps_request: dict[str, Any] | None = None,
     seatmaps: list[dict[str, Any]] | None = None,
-) -> None:
+) -> dict[str, Any]:
     paths = _cache_paths(cache_dir)
+    existing_meta = _load_json(paths["meta"])
     _dump_json(paths["request"], request_body)
     _dump_json(paths["offers"], flight_offers)
     if seatmaps_request is not None:
         _dump_json(paths["seatmaps_request"], seatmaps_request)
     if seatmaps is not None:
-        _dump_json(paths["seatmaps"], seatmaps)
-    _dump_json(
-        paths["meta"],
-        {"fetched_at": datetime.now().astimezone().isoformat(), "seatmaps_cached": seatmaps is not None},
-    )
+        _write_seatmaps_with_diff(paths["seatmaps"], seatmaps)
+    metadata = _build_metadata(seatmaps is not None, paths["seatmaps"], existing_meta)
+    _dump_json(paths["meta"], metadata)
+    return metadata
 
 
 def build_flight_offer_request(
@@ -347,13 +438,9 @@ def render_seatmaps(
     png_lines: list[str] = []
 
     for style in styles:
-        heading = "=== Seatmaps ===" if style == "ascii" else f"=== Seatmaps ({style}) ==="
-        print(f"\n{heading}")
-        print()
         if image_output_path is not None:
             if png_lines:
                 png_lines.append("")
-            png_lines.append(heading)
         for idx, (seatmap_obj, label) in enumerate(entries):
             label_text = label or "Seatmap"
             if idx > 0:
@@ -374,13 +461,7 @@ def render_seatmaps(
                 png_lines.extend(cleaned.splitlines())
                 png_lines.append("")
 
-    ts = data_timestamp or datetime.now().astimezone()
-    timestamp_label = f"Data timestamp: {ts.strftime('%Y-%m-%d %H:%M:%S %Z')}"
-    print()
-    print(timestamp_label)
-
     if image_output_path is not None and png_lines:
-        png_lines.append(timestamp_label)
         combined_text = "\n".join(line.rstrip() for line in png_lines).rstrip()
         save_text_block_png(
             image_output_path.stem,
@@ -473,9 +554,10 @@ def main() -> None:
         else:
             print("Refreshing seatmaps using existing seatmaps_request.json (skipping flight-offer search).")
             amadeus = build_amadeus_client(args.environment)
-            seatmap_records = fetch_seatmaps(amadeus, seatmaps_request)
-            _dump_json(cache_paths["seatmaps"], seatmap_records)
-            cache_meta = {"fetched_at": datetime.now().astimezone().isoformat(), "seatmaps_cached": True}
+            seatmap_records = _sanitize_seatmaps(fetch_seatmaps(amadeus, seatmaps_request))
+            _write_seatmaps_with_diff(cache_paths["seatmaps"], seatmap_records)
+            existing_meta = _load_json(cache_paths["meta"])
+            cache_meta = _build_metadata(True, cache_paths["seatmaps"], existing_meta)
             _dump_json(cache_paths["meta"], cache_meta)
     else:
         cached_payload = None if args.force_refresh else _load_cache(cache_dir, args.cache_ttl_hours)
@@ -506,15 +588,14 @@ def main() -> None:
                 return
 
             seatmaps_request = build_seatmaps_request(flight_offers[0])
-            seatmap_records = fetch_seatmaps(amadeus, seatmaps_request)
-            _write_cache(
+            seatmap_records = _sanitize_seatmaps(fetch_seatmaps(amadeus, seatmaps_request))
+            cache_meta = _write_cache(
                 cache_dir,
                 request_body=flight_offer_request,
                 flight_offers=flight_offers,
                 seatmaps_request=seatmaps_request,
                 seatmaps=seatmap_records,
             )
-            cache_meta = {"fetched_at": datetime.now().astimezone().isoformat(), "seatmaps_cached": True}
 
     offer_count = len(flight_offers)
     if isinstance(seatmaps_request, dict) and offer_count == 0:
