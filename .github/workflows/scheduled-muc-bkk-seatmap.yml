@@ -17,6 +17,7 @@ jobs:
       REQUEST_FILE: "data/flights/production-MUC-BKK-2025-12-10-143000-BUSINESS-EK-EUR/seatmaps_request.json"
       PNG_FILE: "data/flights/production-MUC-BKK-2025-12-10-143000-BUSINESS-EK-EUR/seatmaps.png"
       METADATA_FILE: "data/flights/production-MUC-BKK-2025-12-10-143000-BUSINESS-EK-EUR/metadata.json"
+      SEATMAPS_FILE: "data/flights/production-MUC-BKK-2025-12-10-143000-BUSINESS-EK-EUR/seatmaps.json"
 
     steps:
       - name: Check schedule end date
@@ -69,7 +70,7 @@ jobs:
         if: env.RUN_ALLOWED == 'true'
         run: |
           set -euo pipefail
-          for target in "$REQUEST_FILE" "$PNG_FILE" "$METADATA_FILE"; do
+          for target in "$REQUEST_FILE" "$PNG_FILE" "$METADATA_FILE" "$SEATMAPS_FILE"; do
             if [ ! -f "$target" ]; then
               echo "Expected file missing: $target"
               exit 1
@@ -83,7 +84,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add "$REQUEST_FILE" "$PNG_FILE" "$METADATA_FILE"
+          git add "$REQUEST_FILE" "$PNG_FILE" "$METADATA_FILE" "$SEATMAPS_FILE"
 
           if git diff --cached --quiet; then
             echo "No seatmap updates to commit."
