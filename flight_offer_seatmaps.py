@@ -551,6 +551,8 @@ def main() -> None:
         if use_cached_seatmaps:
             print(f"Using cached seatmaps from {cache_dir}.")
             seatmap_records = cached_seatmaps  # type: ignore[assignment]
+            cache_meta = _build_metadata(True, cache_paths["seatmaps"], cache_meta)
+            _dump_json(cache_paths["meta"], cache_meta)
         else:
             print("Refreshing seatmaps using existing seatmaps_request.json (skipping flight-offer search).")
             amadeus = build_amadeus_client(args.environment)
@@ -564,6 +566,8 @@ def main() -> None:
         if cached_payload:
             print(f"Using cached data from {cache_dir}.")
             flight_offers, seatmap_records, cache_meta = cached_payload
+            cache_meta = _build_metadata(True, cache_paths["seatmaps"], cache_meta)
+            _dump_json(cache_paths["meta"], cache_meta)
         else:
             amadeus = build_amadeus_client(args.environment)
             flight_offer_request = build_flight_offer_request(
