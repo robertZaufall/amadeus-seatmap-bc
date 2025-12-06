@@ -60,7 +60,7 @@ class SeatMaps:
     ) -> str:
         render_fn = self._render_ascii_deck if style != 'compact' else self._render_compact_deck
         rendered_decks: list[str] = []
-        for deck in seatmap.decks:
+        for deck in self._sorted_decks(seatmap):
             rendered = render_fn(deck, highlight=highlight, thick_border=thick_border)
             if rendered:
                 rendered_decks.append(rendered)
@@ -75,6 +75,8 @@ class SeatMaps:
 
     def _render_ascii_deck(self, deck: dict, *, highlight: str | None = None, thick_border: bool = False) -> str:
         rows, column_layout = self._build_seat_grid(deck)
+        if not rows or not column_layout:
+            return ''
         symbol_candidates = list(self.STATUS_SYMBOL.values()) + [
             self.WINDOW_AVAILABLE_SYMBOL,
             self.HIGHLIGHT_AVAILABLE_SYMBOL,
@@ -112,7 +114,7 @@ class SeatMaps:
 
     def _render_compact_deck(self, deck: dict, *, highlight: str | None = None, thick_border: bool = False) -> str:
         rows, column_layout = self._build_seat_grid(deck)
-        if not rows:
+        if not rows or not column_layout:
             return ''
 
         aisle_fill = '  '
@@ -394,6 +396,29 @@ class SeatMaps:
     @staticmethod
     def _row_sort_key(row_name: str):
         return (0, int(row_name)) if row_name.isdigit() else (1, row_name)
+
+    # Internal helpers for deck ordering
+    def _sorted_decks(self, seatmap: SeatMap) -> list[dict]:
+        """Sort decks so the lowest row appears first when multiple decks exist."""
+        return sorted(seatmap.decks or [], key=self._deck_sort_key)
+
+    def _deck_sort_key(self, deck: dict) -> tuple[int, int]:
+        min_row = None
+        for seat in deck.get('seats', []) or []:
+            seat_number = seat.get('number')
+            row_label, _ = extract_row_and_column(str(seat_number or ''))
+            if row_label.isdigit():
+                value = int(row_label)
+            else:
+                coords = seat.get('coordinates') or {}
+                coord_row = coords.get('x')
+                value = int(coord_row) if isinstance(coord_row, (int, float)) and coord_row > 0 else None
+            if value is None:
+                continue
+            min_row = value if min_row is None else min(min_row, value)
+        deck_number = deck.get('deckNumber')
+        deck_hint = int(deck_number) if isinstance(deck_number, int) else 0
+        return (min_row if min_row is not None else 10**9, deck_hint)
 
 
 def render_text_box(

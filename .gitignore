@@ -7,4 +7,6 @@ data/**
 !data/flights/**
 data/flights/**/flight_offers.json
 data/flights/**/flight_offer_request.json
+data/flights/**/flight_offer_request_business.json
+data/flights/**/flight_offer_request_economy.json
 **/.DS_Store

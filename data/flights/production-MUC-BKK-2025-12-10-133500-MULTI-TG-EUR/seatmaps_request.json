@@ -1,0 +1,194 @@
+{
+  "data": [
+    {
+      "type": "flight-offer",
+      "id": "1",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "oneWay": false,
+      "isUpsellOffer": false,
+      "lastTicketingDate": "2025-12-10",
+      "lastTicketingDateTime": "2025-12-10",
+      "numberOfBookableSeats": 1,
+      "itineraries": [
+        {
+          "duration": "PT10H35M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "MUC",
+                "terminal": "2",
+                "at": "2025-12-10T13:35:00"
+              },
+              "arrival": {
+                "iataCode": "BKK",
+                "at": "2025-12-11T06:10:00"
+              },
+              "carrierCode": "TG",
+              "number": "925",
+              "aircraft": {
+                "code": "359"
+              },
+              "operating": {
+                "carrierCode": "TG"
+              },
+              "duration": "PT10H35M",
+              "id": "1",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "EUR",
+        "total": "2154.15",
+        "base": "1830.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          }
+        ],
+        "grandTotal": "2154.15"
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": true
+      },
+      "validatingAirlineCodes": [
+        "TG"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "2154.15",
+            "base": "1830.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "BUSINESS",
+              "fareBasis": "ZLOST",
+              "class": "Z",
+              "includedCheckedBags": {
+                "weight": 50,
+                "weightUnit": "KG"
+              },
+              "includedCabinBags": {
+                "weight": 7,
+                "weightUnit": "KG"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "flight-offer",
+      "id": "1-2",
+      "source": "GDS",
+      "instantTicketingRequired": false,
+      "nonHomogeneous": false,
+      "oneWay": false,
+      "isUpsellOffer": false,
+      "lastTicketingDate": "2025-12-10",
+      "lastTicketingDateTime": "2025-12-10",
+      "numberOfBookableSeats": 2,
+      "itineraries": [
+        {
+          "duration": "PT10H35M",
+          "segments": [
+            {
+              "departure": {
+                "iataCode": "MUC",
+                "terminal": "2",
+                "at": "2025-12-10T13:35:00"
+              },
+              "arrival": {
+                "iataCode": "BKK",
+                "at": "2025-12-11T06:10:00"
+              },
+              "carrierCode": "TG",
+              "number": "925",
+              "aircraft": {
+                "code": "359"
+              },
+              "operating": {
+                "carrierCode": "TG"
+              },
+              "duration": "PT10H35M",
+              "id": "1",
+              "numberOfStops": 0,
+              "blacklistedInEU": false
+            }
+          ]
+        }
+      ],
+      "price": {
+        "currency": "EUR",
+        "total": "620.25",
+        "base": "369.00",
+        "fees": [
+          {
+            "amount": "0.00",
+            "type": "SUPPLIER"
+          },
+          {
+            "amount": "0.00",
+            "type": "TICKETING"
+          }
+        ],
+        "grandTotal": "620.25"
+      },
+      "pricingOptions": {
+        "fareType": [
+          "PUBLISHED"
+        ],
+        "includedCheckedBagsOnly": true
+      },
+      "validatingAirlineCodes": [
+        "TG"
+      ],
+      "travelerPricings": [
+        {
+          "travelerId": "1",
+          "fareOption": "STANDARD",
+          "travelerType": "ADULT",
+          "price": {
+            "currency": "EUR",
+            "total": "620.25",
+            "base": "369.00"
+          },
+          "fareDetailsBySegment": [
+            {
+              "segmentId": "1",
+              "cabin": "ECONOMY",
+              "fareBasis": "VLOST",
+              "class": "V",
+              "includedCheckedBags": {
+                "weight": 23,
+                "weightUnit": "KG"
+              },
+              "includedCabinBags": {
+                "weight": 7,
+                "weightUnit": "KG"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

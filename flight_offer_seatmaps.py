@@ -5,6 +5,7 @@ import difflib
 import hashlib
 import json
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -107,10 +108,12 @@ def _build_metadata(
     seatmaps_cached: bool,
     seatmaps_path: Path,
     existing_meta: dict[str, Any] | None = None,
+    command_args: list[str] | None = None,
 ) -> dict[str, Any]:
     existing_meta = existing_meta if isinstance(existing_meta, dict) else {}
     seatmaps_hash = existing_meta.get("seatmaps_hash")
     previous_hash = existing_meta.get("previous_seatmaps_hash")
+    stored_args = existing_meta.get("command_args")
 
     if seatmaps_cached and seatmaps_path.exists():
         new_hash = _hash_file(seatmaps_path)
@@ -121,12 +124,20 @@ def _build_metadata(
             # When the hash changes, shift the current hash into the backup slot.
             previous_hash = seatmaps_hash
             seatmaps_hash = new_hash
+    if command_args is None:
+        command_args = stored_args
     return {
         "fetched_at": datetime.now().astimezone().isoformat(),
         "seatmaps_cached": seatmaps_cached,
         "seatmaps_hash": seatmaps_hash,
         "previous_seatmaps_hash": previous_hash,
+        "command_args": command_args,
     }
+
+
+def _current_command_args() -> list[str]:
+    """Return the current CLI arguments (excluding the program name)."""
+    return sys.argv[1:]
 
 
 def _strip_medias(value: Any) -> Any:
@@ -272,7 +283,12 @@ def _write_cache(
         _dump_json(paths["seatmaps_request"], seatmaps_request)
     if seatmaps is not None:
         _write_seatmaps_with_diff(paths["seatmaps"], seatmaps)
-    metadata = _build_metadata(seatmaps is not None, paths["seatmaps"], existing_meta)
+    metadata = _build_metadata(
+        seatmaps is not None,
+        paths["seatmaps"],
+        existing_meta,
+        _current_command_args(),
+    )
     _dump_json(paths["meta"], metadata)
     return metadata
 
@@ -336,22 +352,53 @@ def build_flight_offer_request(
     }
 
 
-def fetch_flight_offers(amadeus: Client, request_body: dict[str, Any]) -> list[dict[str, Any]]:
+def _post_flight_offer_search(amadeus: Client, payload: dict[str, Any]) -> list[dict[str, Any]]:
     try:
-        response = amadeus.post("/v2/shopping/flight-offers", request_body)
+        response = amadeus.post("/v2/shopping/flight-offers", payload)
     except ResponseError as error:
         details = getattr(error, "response", None)
         message = details.body if details and hasattr(details, "body") else str(error)
         raise RuntimeError(f"Flight-offer search failed: {message}") from error
 
     offers = response.data or []
+    if isinstance(offers, list) and offers and all(isinstance(item, dict) and "data" in item for item in offers):
+        flattened: list[dict[str, Any]] = []
+        for entry in offers:
+            entry_data = entry.get("data")
+            if isinstance(entry_data, list):
+                flattened.extend(entry_data)
+        offers = flattened
+    elif isinstance(offers, list) and offers and all(isinstance(item, list) for item in offers):
+        flattened = []
+        for entry in offers:
+            flattened.extend(entry)
+        offers = flattened
     if not isinstance(offers, list):
         raise RuntimeError("Unexpected flight-offer response format; expected a list.")
     return offers
 
 
-def build_seatmaps_request(flight_offer: dict[str, Any]) -> dict[str, Any]:
-    return {"data": [flight_offer]}
+def fetch_flight_offers(amadeus: Client, request_body: dict[str, Any]) -> list[dict[str, Any]]:
+    batched = request_body.get("requests")
+    if isinstance(batched, list):
+        combined: list[dict[str, Any]] = []
+        for idx, payload in enumerate(batched, start=1):
+            if not isinstance(payload, dict):
+                continue
+            print(f"Fetching flight offers for batched query {idx}/{len(batched)}.")
+            source_cabin = _payload_cabin(payload)
+            offers = _post_flight_offer_search(amadeus, payload)
+            for offer in offers:
+                offer_copy = json.loads(json.dumps(offer))
+                if source_cabin:
+                    offer_copy["__source_cabin"] = source_cabin
+                combined.append(offer_copy)
+        return combined
+    return _post_flight_offer_search(amadeus, request_body)
+
+
+def build_seatmaps_request(flight_offers: list[dict[str, Any]]) -> dict[str, Any]:
+    return {"data": flight_offers}
 
 
 def fetch_seatmaps(amadeus: Client, seatmap_request: dict[str, Any]) -> list[dict[str, Any]]:
@@ -412,6 +459,7 @@ def build_seatmap_objects(
 
         label_parts = [
             f"{seatmap.carrier}{seatmap.number}".strip(),
+            _cabin_label_from_seatmap_record(record, travel_class),
             f"{seatmap.origin}->{seatmap.destination}",
             departure_label or departure_at or departure_iso or "",
         ]
@@ -435,6 +483,110 @@ def _format_departure_label(value: str | None) -> str:
                 return f"{date_part} {trimmed_time[0]}:{trimmed_time[1]}"
             return f"{date_part} {time_part}"
         return value
+
+
+def _extract_offer_cabin(flight_offer: dict[str, Any]) -> str | None:
+    """Extract the cabin (BUSINESS/ECONOMY/ETC) from the first segment pricing."""
+    pr = flight_offer.get("travelerPricings") or []
+    if not pr:
+        return None
+    fare_details = pr[0].get("fareDetailsBySegment") or []
+    if not fare_details:
+        return None
+    cabin = fare_details[0].get("cabin")
+    return str(cabin).upper() if cabin else None
+
+
+def _select_offers_for_cabins(
+    flight_offers: list[dict[str, Any]],
+    cabins: list[str],
+) -> list[dict[str, Any]]:
+    """Pick the best matching offer for each requested cabin, preferring offers sourced from that cabin request."""
+    def itinerary_signature(offer: dict[str, Any]) -> list[tuple[str, str]]:
+        sig: list[tuple[str, str]] = []
+        for itinerary in offer.get("itineraries") or []:
+            for seg in itinerary.get("segments") or []:
+                carrier = str(seg.get("carrierCode") or "").upper()
+                number = str(seg.get("number") or "")
+                sig.append((carrier, number))
+        return sig
+
+    def score_against_anchor(candidate: dict[str, Any], anchor: dict[str, Any]) -> tuple[int, int]:
+        cand_sig = itinerary_signature(candidate)
+        anchor_sig = itinerary_signature(anchor)
+        # Score by positional matches first, then total overlap size, then shorter length diff.
+        positional = sum(1 for a, b in zip(cand_sig, anchor_sig) if a == b)
+        overlap = len(set(cand_sig) & set(anchor_sig))
+        length_penalty = abs(len(cand_sig) - len(anchor_sig))
+        return (positional, overlap, -length_penalty)
+
+    remaining = [c.upper() for c in cabins]
+    selected: list[dict[str, Any]] = []
+    anchor_offer: dict[str, Any] | None = None
+    for cabin in remaining:
+        # Prefer an offer tagged with the matching source cabin
+        tagged_candidates = [offer for offer in flight_offers if offer.get("__source_cabin") == cabin]
+        fallback_candidates = [offer for offer in flight_offers if _extract_offer_cabin(offer) == cabin]
+
+        candidates = tagged_candidates or fallback_candidates
+        if not candidates:
+            continue
+
+        if anchor_offer is not None:
+            best = max(candidates, key=lambda cand: score_against_anchor(cand, anchor_offer))
+        else:
+            best = candidates[0]
+
+        selected.append(best)
+        if anchor_offer is None:
+            anchor_offer = best
+    return selected
+
+
+def _payload_cabin(payload: dict[str, Any]) -> str | None:
+    """Return the cabin restriction from a flight-offer request payload, if present."""
+    try:
+        restrictions = payload["searchCriteria"]["flightFilters"]["cabinRestrictions"]
+        if isinstance(restrictions, list) and restrictions:
+            cabin = restrictions[0].get("cabin")
+            return str(cabin).upper() if cabin else None
+    except Exception:
+        return None
+    return None
+
+
+def _cabin_label_from_seatmap_record(record: dict[str, Any], travel_class: str | None) -> str:
+    """Derive a displayable cabin label from seat entries or fallback to requested class."""
+    cabins: set[str] = set()
+    for deck in record.get("decks") or []:
+        for seat in deck.get("seats", []) or []:
+            cabin = seat.get("cabin")
+            if cabin:
+                cabins.add(str(cabin).upper())
+    if cabins:
+        return "/".join(sorted(c.title() for c in cabins))
+    if travel_class:
+        return travel_class.title()
+    return ""
+
+
+def _dedupe_offer_ids_for_seatmaps(offers: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return deep-copied offers with unique IDs to satisfy seatmap API requirements."""
+    deduped: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for offer in offers:
+        copy_offer = json.loads(json.dumps(offer))
+        copy_offer.pop("__source_cabin", None)
+        base_id = str(copy_offer.get("id") or "offer")
+        unique_id = base_id
+        counter = 1
+        while unique_id in seen:
+            counter += 1
+            unique_id = f"{base_id}-{counter}"
+        copy_offer["id"] = unique_id
+        seen.add(unique_id)
+        deduped.append(copy_offer)
+    return deduped
 
 
 def _extract_row_number(seat: dict[str, Any]) -> int | None:
@@ -542,8 +694,8 @@ def render_seatmaps(
     ordered_entries = sorted(
         entries,
         key=lambda item: (
-            _seatmap_cabin_priority(item[0]),
             _seatmap_departure_sort_key(item[0], item[2]),
+            _seatmap_cabin_priority(item[0]),
             _seatmap_row_bounds(item[0]),
             item[1],
         ),
@@ -553,15 +705,79 @@ def render_seatmaps(
     styles = styles[:1] or ["ascii"]  # render only the first configured style (skip compact/others)
     png_lines: list[str] = []
 
-    for style in styles:
-        if image_output_path is not None:
-            if png_lines:
-                png_lines.append("")
-        for idx, (seatmap_obj, label, _) in enumerate(ordered_entries):
-            label_text = label or "Seatmap"
+    def _pad_to_width(text: str, width: int) -> str:
+        from display_utils import display_width as _dw
+
+        pad = max(width - _dw(text), 0)
+        return text + (" " * pad)
+
+    def _collapse_group(group_entries: list[tuple[str, list[str]]]) -> list[str]:
+        lines: list[str] = []
+        for idx, (label, content) in enumerate(group_entries):
             if idx > 0:
-                print()
-            print(label_text)
+                lines.append("")
+            parts = label.split(" | ")
+            if parts:
+                title = " | ".join(parts[:-1]) if len(parts) > 1 else parts[0]
+                subtitle = parts[-1] if len(parts) > 1 else ""
+                lines.append(title)
+                if subtitle:
+                    lines.append(subtitle)
+            else:
+                lines.append(label)
+            lines.extend(content)
+        return lines
+
+    def _combine_columns(left: list[str], right: list[str]) -> list[str]:
+        if not right:
+            return left
+        from display_utils import display_width as _dw
+
+        left_width = max((_dw(line) for line in left), default=0)
+        combined: list[str] = []
+        max_len = max(len(left), len(right))
+        for idx in range(max_len):
+            l_text = left[idx] if idx < len(left) else ""
+            r_text = right[idx] if idx < len(right) else ""
+            combined.append(f"{_pad_to_width(l_text, left_width)}    {r_text}")
+        return combined
+
+    def _group_entries(rendered: list[tuple[SeatMap, str, list[str], str]]) -> list[list[tuple[str, list[str]]]]:
+        """Group seatmaps into pairs (Business/Economy) per flight, preserving order."""
+        if not rendered:
+            return []
+        groups: list[list[tuple[str, list[str]]]] = []
+        for idx in range(0, len(rendered), 2):
+            chunk = rendered[idx : idx + 2]
+            groups.append([(label, lines) for _, label, lines, _ in chunk])
+        return groups
+
+    def _pad_group_to_align(groups: list[list[tuple[str, list[str]]]]) -> list[list[str]]:
+        """Pad business blocks so economies start aligned across columns."""
+        padded_columns: list[list[str]] = []
+        max_business_height = 0
+        business_blocks: list[list[str]] = []
+        economy_blocks: list[list[str]] = []
+        for group in groups:
+            biz_lines = _collapse_group(group[:1]) if group else []
+            econ_lines = _collapse_group(group[1:2]) if len(group) > 1 else []
+            business_blocks.append(biz_lines)
+            economy_blocks.append(econ_lines)
+            max_business_height = max(max_business_height, len(biz_lines))
+        for biz, econ in zip(business_blocks, economy_blocks):
+            padded = list(biz)
+            if len(padded) < max_business_height:
+                padded.extend([""] * (max_business_height - len(padded)))
+            if econ:
+                if padded:
+                    padded.append("")
+                padded.extend(econ)
+            padded_columns.append(padded)
+        return padded_columns
+
+    def _render_style(style: str) -> list[str]:
+        rendered_entries: list[tuple[SeatMap, str, list[str], str]] = []
+        for seatmap_obj, label, departure_at in ordered_entries:
             rendered = seatmaps_renderer.render_map(
                 seatmap_obj,
                 style=style,
@@ -569,12 +785,31 @@ def render_seatmaps(
                 show_header=False,
             )
             cleaned = rendered.lstrip("\n")
-            print(cleaned)
+            rendered_entries.append((seatmap_obj, label, cleaned.splitlines(), departure_at))
+
+        grouped = _group_entries(rendered_entries)
+        grouped = _pad_group_to_align(grouped)
+        blocks: list[str] = []
+        for idx in range(0, len(grouped), 2):
+            left_group = grouped[idx]
+            right_group = grouped[idx + 1] if idx + 1 < len(grouped) else None
+            left_lines = left_group
+            right_lines = right_group if right_group else []
+            combined = _combine_columns(left_lines, right_lines)
+            if blocks and combined:
+                blocks.append("")
+            blocks.extend(combined)
+        return blocks
+
+    for style in styles:
+        lines = _render_style(style)
+        if lines:
+            for line in lines:
+                print(line)
             if image_output_path is not None:
-                if idx > 0:
+                if png_lines:
                     png_lines.append("")
-                png_lines.append(label_text)
-                png_lines.extend(cleaned.splitlines())
+                png_lines.extend(lines)
                 png_lines.append("")
 
     if image_output_path is not None and png_lines:
@@ -666,6 +901,8 @@ def main() -> None:
         if not (isinstance(data_entries, list) and len(data_entries) >= len(cabins)):
             # Rebuild the seatmaps request to include all cabins when missing.
             seatmaps_request = None
+        else:
+            seatmaps_request = build_seatmaps_request(_dedupe_offer_ids_for_seatmaps(data_entries))
     seatmap_records: list[dict[str, Any]] = []
     cache_meta: dict[str, Any] | None = None
     cached_offers = _load_json(cache_paths["offers"])
@@ -683,7 +920,7 @@ def main() -> None:
         if use_cached_seatmaps:
             print(f"Using cached seatmaps from {cache_dir}.")
             seatmap_records = cached_seatmaps  # type: ignore[assignment]
-            cache_meta = _build_metadata(True, cache_paths["seatmaps"], cache_meta)
+            cache_meta = _build_metadata(True, cache_paths["seatmaps"], cache_meta, _current_command_args())
             _dump_json(cache_paths["meta"], cache_meta)
         else:
             print("Refreshing seatmaps using existing seatmaps_request.json (skipping flight-offer search).")
@@ -691,7 +928,7 @@ def main() -> None:
             seatmap_records = _sanitize_seatmaps(fetch_seatmaps(amadeus, seatmaps_request))
             _write_seatmaps_with_diff(cache_paths["seatmaps"], seatmap_records)
             existing_meta = _load_json(cache_paths["meta"])
-            cache_meta = _build_metadata(True, cache_paths["seatmaps"], existing_meta)
+            cache_meta = _build_metadata(True, cache_paths["seatmaps"], existing_meta, _current_command_args())
             _dump_json(cache_paths["meta"], cache_meta)
     else:
         cached_payload = None if args.force_refresh else _load_cache(cache_dir, args.cache_ttl_hours)
@@ -704,51 +941,62 @@ def main() -> None:
                 seatmap_records = []
                 flight_offers = []
             else:
-                cache_meta = _build_metadata(True, cache_paths["seatmaps"], cache_meta)
+                cache_meta = _build_metadata(True, cache_paths["seatmaps"], cache_meta, _current_command_args())
                 _dump_json(cache_paths["meta"], cache_meta)
         if not cached_payload:
             amadeus = build_amadeus_client(args.environment)
-            flight_offers = []
-            flight_offer_requests: list[dict[str, Any]] = []
-            offer_ids: set[str] = set()
-            for cabin in cabins:
-                request = build_flight_offer_request(
+            if travel_class is None:
+                batched_requests = [
+                    build_flight_offer_request(
+                        origin=args.origin,
+                        destination=args.destination,
+                        date=args.date,
+                        time=args.time,
+                        travel_class=cabin,
+                        airline=args.airline,
+                        currency=args.currency,
+                        max_offers=(2 if cabin.upper() == "ECONOMY" else args.max_offers),
+                    )
+                    for cabin in cabins
+                ]
+                flight_offer_request: dict[str, Any] = {"requests": batched_requests}
+                for cabin, payload in zip(cabins, batched_requests):
+                    out_path = cache_dir / f"flight_offer_request_{cabin.lower()}.json"
+                    _dump_json(out_path, payload)
+            else:
+                flight_offer_request = build_flight_offer_request(
                     origin=args.origin,
                     destination=args.destination,
                     date=args.date,
                     time=args.time,
-                    travel_class=cabin,
+                    travel_class=travel_class,
                     airline=args.airline,
                     currency=args.currency,
                     max_offers=args.max_offers,
                 )
-                offers = fetch_flight_offers(amadeus, request)
-                flight_offer_requests.append(request)
-                if len(offers) != 1:
-                    print(f"Flight-offer search for cabin {cabin} returned {len(offers)} result(s); skipping this cabin.")
-                    continue
-                offer = json.loads(json.dumps(offers[0]))  # shallow copy to allow ID tweaks
-                offer_id = str(offer.get("id")) if offer.get("id") is not None else ""
-                unique_id = offer_id or f"offer-{cabin.lower()}"
-                if unique_id in offer_ids:
-                    unique_id = f"{unique_id}-{cabin.lower()}"
-                offer["id"] = unique_id
-                offer_ids.add(unique_id)
-                flight_offers.append(offer)
+
+            flight_offers = fetch_flight_offers(amadeus, flight_offer_request)
+            _write_cache(cache_dir, request_body=flight_offer_request, flight_offers=flight_offers, seatmaps=None)
 
             offer_count = len(flight_offers)
-            print(f"Flight-offer search returned {offer_count} result(s) across cabins {', '.join(cabins)}.")
+            if travel_class is None:
+                print(f"Flight-offer search returned {offer_count} result(s) across cabins {', '.join(cabins)}.")
+                selected_offers = _select_offers_for_cabins(flight_offers, cabins)
+                if not selected_offers:
+                    print("No matching offers found for requested cabins; skipping seatmaps.")
+                    return
+                seatmaps_request = build_seatmaps_request(_dedupe_offer_ids_for_seatmaps(selected_offers))
+            else:
+                print(f"Flight-offer search returned {offer_count} result(s).")
+                if offer_count != 1:
+                    print("Seatmaps are only fetched when the search returns exactly one offer.")
+                    return
+                seatmaps_request = build_seatmaps_request(_dedupe_offer_ids_for_seatmaps([flight_offers[0]]))
 
-            if offer_count == 0:
-                print("No offers available to fetch seatmaps.")
-                return
-
-            combined_request_body: dict[str, Any] = {"requests": flight_offer_requests}
-            seatmaps_request = {"data": flight_offers}
             seatmap_records = _sanitize_seatmaps(fetch_seatmaps(amadeus, seatmaps_request))
             cache_meta = _write_cache(
                 cache_dir,
-                request_body=combined_request_body,
+                request_body=flight_offer_request,
                 flight_offers=flight_offers,
                 seatmaps_request=seatmaps_request,
                 seatmaps=seatmap_records,
@@ -765,7 +1013,7 @@ def main() -> None:
         return
 
     if seatmaps_request is None and flight_offers and len(flight_offers) == 1 and not seatmaps_request_path.exists():
-        seatmaps_request = build_seatmaps_request(flight_offers[0])
+        seatmaps_request = build_seatmaps_request(_dedupe_offer_ids_for_seatmaps([flight_offers[0]]))
         _dump_json(seatmaps_request_path, seatmaps_request)
 
     render_seatmaps(
