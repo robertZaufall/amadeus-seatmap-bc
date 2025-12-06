@@ -155,7 +155,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "BLOCKED"
               }
             ],
             "coordinates": {
@@ -227,7 +227,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "BLOCKED"
               }
             ],
             "coordinates": {
@@ -240,8 +240,7 @@
             "number": "12G",
             "characteristicsCodes": [
               "A",
-              "H",
-              "1"
+              "H"
             ],
             "travelerPricing": [
               {
@@ -365,7 +364,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "BLOCKED"
               }
             ],
             "coordinates": {
@@ -378,8 +377,7 @@
             "number": "15G",
             "characteristicsCodes": [
               "A",
-              "H",
-              "1"
+              "H"
             ],
             "travelerPricing": [
               {
@@ -745,7 +743,7 @@
     "availableSeatsCounters": [
       {
         "travelerId": "1",
-        "value": 3
+        "value": 0
       }
     ]
   },
@@ -1765,8 +1763,7 @@
               "A",
               "H",
               "O",
-              "OW",
-              "1"
+              "OW"
             ],
             "travelerPricing": [
               {
@@ -1805,8 +1802,7 @@
               "A",
               "H",
               "O",
-              "OW",
-              "1"
+              "OW"
             ],
             "travelerPricing": [
               {

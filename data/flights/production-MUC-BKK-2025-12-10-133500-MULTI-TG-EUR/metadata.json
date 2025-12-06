@@ -1,6 +1,18 @@
 {
-  "fetched_at": "2025-12-06T13:41:07.178279+01:00",
+  "fetched_at": "2025-12-07T00:00:50.819486+01:00",
   "seatmaps_cached": true,
-  "seatmaps_hash": "fb1e6fe7ab82d83355f69cc2d5117e51cd7c3b818136a135e9aac2704f56cafb",
-  "previous_seatmaps_hash": null
+  "seatmaps_hash": "ccfc1489563a3d211fb67abafcea52b72c7ca30ba3fc36c4c22f6fd3085d90fe",
+  "previous_seatmaps_hash": "fb1e6fe7ab82d83355f69cc2d5117e51cd7c3b818136a135e9aac2704f56cafb",
+  "command_args": [
+    "--date",
+    "2025-12-10",
+    "--time",
+    "13:35",
+    "--from",
+    "MUC",
+    "--to",
+    "BKK",
+    "--airline",
+    "TG"
+  ]
 }
