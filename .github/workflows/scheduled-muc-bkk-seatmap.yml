@@ -84,7 +84,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add "$REQUEST_FILE" "$PNG_FILE" "$METADATA_FILE" "$SEATMAPS_FILE"
+          git add .
 
           if git diff --cached --quiet; then
             echo "No seatmap updates to commit."
