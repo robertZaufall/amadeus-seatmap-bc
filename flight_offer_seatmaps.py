@@ -13,7 +13,7 @@ from amadeus import Client, ResponseError
 from dotenv import load_dotenv
 
 from config import ENVIRONMENT, SEATMAP_OUTPUT_STYLE
-from display_utils import resolve_seatmap_style
+from display_utils import extract_row_and_column, resolve_seatmap_style
 from png_utils import save_text_block_png
 from seatmap_data import SeatMap
 from seatmap_display import SeatMaps
@@ -195,18 +195,19 @@ def _cache_dir_for_request(
     destination: str,
     date: str,
     time: str,
-    travel_class: str,
+    travel_class: str | None,
     airline: str,
     currency: str,
 ) -> Path:
     time_squeezed = time.replace(":", "")
+    travel_class_label = (travel_class or "MULTI").upper()
     parts = [
         environment.lower(),
         origin.upper(),
         destination.upper(),
         date,
         time_squeezed,
-        travel_class.upper(),
+        travel_class_label,
         airline.upper(),
         currency.upper(),
     ]
@@ -282,11 +283,33 @@ def build_flight_offer_request(
     destination: str,
     date: str,
     time: str,
-    travel_class: str,
+    travel_class: str | list[str] | None,
     airline: str,
     currency: str,
     max_offers: int,
 ) -> dict[str, Any]:
+    cabin_restrictions: list[dict[str, Any]] | None
+    if travel_class is None:
+        cabin_restrictions = None  # allow all cabins in a single request
+    elif isinstance(travel_class, list):
+        cabins = [c.upper() for c in travel_class if c]
+        cabin_restrictions = [
+            {
+                "cabin": cabin,
+                "coverage": "MOST_SEGMENTS",
+                "originDestinationIds": ["1"],
+            }
+            for cabin in cabins
+        ]
+    else:
+        cabin_restrictions = [
+            {
+                "cabin": travel_class.upper(),
+                "coverage": "MOST_SEGMENTS",
+                "originDestinationIds": ["1"],
+            }
+        ]
+
     return {
         "currencyCode": currency.upper(),
         "originDestinations": [
@@ -302,13 +325,11 @@ def build_flight_offer_request(
         "searchCriteria": {
             "maxFlightOffers": max_offers,
             "flightFilters": {
-                "cabinRestrictions": [
-                    {
-                        "cabin": travel_class.upper(),
-                        "coverage": "MOST_SEGMENTS",
-                        "originDestinationIds": ["1"],
-                    }
-                ],
+                **(
+                    {"cabinRestrictions": cabin_restrictions}
+                    if cabin_restrictions is not None
+                    else {}
+                ),
                 "carrierRestrictions": {"includedCarrierCodes": [airline.upper()]},
             },
         },
@@ -366,8 +387,8 @@ def build_seatmap_objects(
     records: list[dict[str, Any]],
     *,
     travel_class: str | None = None,
-) -> list[tuple[SeatMap, str]]:
-    mapped: list[tuple[SeatMap, str]] = []
+) -> list[tuple[SeatMap, str, str]]:
+    mapped: list[tuple[SeatMap, str, str]] = []
     for record in records:
         departure_info = record.get("departure", {}) or {}
         arrival_info = record.get("arrival", {}) or {}
@@ -375,6 +396,7 @@ def build_seatmap_objects(
         departure_at = str(departure_info.get("at") or "")
         departure_iso = departure_at.split("T")[0] if "T" in departure_at else departure_at
         departure_date = departure_iso.replace("-", "") if departure_iso else ""
+        departure_label = _format_departure_label(departure_at)
 
         decks = _filter_decks_for_cabin(record.get("decks"), travel_class)
         seatmap = SeatMap(
@@ -391,11 +413,96 @@ def build_seatmap_objects(
         label_parts = [
             f"{seatmap.carrier}{seatmap.number}".strip(),
             f"{seatmap.origin}->{seatmap.destination}",
-            departure_at or departure_iso or "",
+            departure_label or departure_at or departure_iso or "",
         ]
         label = " | ".join(part for part in label_parts if part)
-        mapped.append((seatmap, label))
+        mapped.append((seatmap, label, departure_at))
     return mapped
+
+
+def _format_departure_label(value: str | None) -> str:
+    """Format an ISO-like departure datetime as 'YYYY-MM-DD HH:MM'."""
+    if not value:
+        return ""
+    try:
+        dt = datetime.fromisoformat(value)
+        return dt.strftime("%Y-%m-%d %H:%M")
+    except ValueError:
+        if "T" in value:
+            date_part, time_part = value.split("T", 1)
+            trimmed_time = time_part.split(":")
+            if len(trimmed_time) >= 2:
+                return f"{date_part} {trimmed_time[0]}:{trimmed_time[1]}"
+            return f"{date_part} {time_part}"
+        return value
+
+
+def _extract_row_number(seat: dict[str, Any]) -> int | None:
+    """Best-effort extraction of the numeric row from a seat entry."""
+    seat_number = seat.get("number")
+    row_str, _ = extract_row_and_column(str(seat_number or ""))
+    if row_str.isdigit():
+        return int(row_str)
+
+    coords = seat.get("coordinates") or {}
+    for key in ("x", "row", "rowNumber"):
+        value = coords.get(key)
+        if isinstance(value, (int, float)) and value > 0:
+            return int(value)
+    return None
+
+
+def _seatmap_min_row(seatmap: SeatMap) -> int:
+    """Return the lowest numeric row present in a seatmap (used for consistent ordering)."""
+    min_row: int | None = None
+    for deck in seatmap.decks or []:
+        for seat in deck.get("seats", []):
+            row_value = _extract_row_number(seat)
+            if row_value is None:
+                continue
+            min_row = row_value if min_row is None else min(min_row, row_value)
+    return min_row if min_row is not None else 10**9
+
+
+def _seatmap_row_bounds(seatmap: SeatMap) -> tuple[int, int]:
+    """Return (min_row, deck_hint) for sorting seatmaps that share the same flight."""
+    min_row: int | None = None
+    deck_hint: int | None = None
+    for deck in seatmap.decks or []:
+        if deck_hint is None:
+            try:
+                deck_hint = int(deck.get("deckNumber", 0) or 0)
+            except (TypeError, ValueError):
+                deck_hint = 0
+        for seat in deck.get("seats", []):
+            row_value = _extract_row_number(seat)
+            if row_value is None:
+                continue
+            min_row = row_value if min_row is None else min(min_row, row_value)
+    return (min_row if min_row is not None else 10**9, deck_hint if deck_hint is not None else 10**6)
+
+
+def _seatmap_departure_sort_key(seatmap: SeatMap, departure_at: str | None) -> tuple[int, Any]:
+    """Sort primarily by departure timestamp, then fall back to date-only or empty."""
+    parsed = _parse_timestamp(departure_at)
+    if parsed is not None:
+        return (0, parsed)
+    if seatmap.departure_date:
+        return (1, seatmap.departure_date)
+    return (2, "")
+
+
+def _seatmap_cabin_priority(seatmap: SeatMap) -> int:
+    """Return a priority value to render business-class layouts before economy when grouped."""
+    cabins: set[str] = set()
+    for deck in seatmap.decks or []:
+        for seat in deck.get("seats", []) or []:
+            cabin = seat.get("cabin")
+            if cabin:
+                cabins.add(str(cabin).upper())
+    if "BUSINESS" in cabins:
+        return 0
+    return 1
 def _parse_timestamp(value: str | None) -> datetime | None:
     if not value:
         return None
@@ -423,7 +530,7 @@ def _resolve_data_timestamp(meta: dict[str, Any] | None, seatmaps_path: Path | N
 
 
 def render_seatmaps(
-    entries: list[tuple[SeatMap, str]],
+    entries: list[tuple[SeatMap, str, str]],
     *,
     image_output_path: Path | None = None,
     data_timestamp: datetime | None = None,
@@ -432,7 +539,16 @@ def render_seatmaps(
         print("No seatmaps returned for this flight offer.")
         return
 
-    seatmaps_renderer = SeatMaps([entry[0] for entry in entries])
+    ordered_entries = sorted(
+        entries,
+        key=lambda item: (
+            _seatmap_cabin_priority(item[0]),
+            _seatmap_departure_sort_key(item[0], item[2]),
+            _seatmap_row_bounds(item[0]),
+            item[1],
+        ),
+    )
+    seatmaps_renderer = SeatMaps([entry[0] for entry in ordered_entries])
     styles = resolve_seatmap_style(SEATMAP_OUTPUT_STYLE)
     styles = styles[:1] or ["ascii"]  # render only the first configured style (skip compact/others)
     png_lines: list[str] = []
@@ -441,7 +557,7 @@ def render_seatmaps(
         if image_output_path is not None:
             if png_lines:
                 png_lines.append("")
-        for idx, (seatmap_obj, label) in enumerate(entries):
+        for idx, (seatmap_obj, label, _) in enumerate(ordered_entries):
             label_text = label or "Seatmap"
             if idx > 0:
                 print()
@@ -486,7 +602,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--from", dest="origin", required=True, help="Origin IATA code.")
     parser.add_argument("--to", dest="destination", required=True, help="Destination IATA code.")
-    parser.add_argument("--class", dest="travel_class", default="BUSINESS", help="Travel class, default BUSINESS.")
+    parser.add_argument(
+        "--class",
+        dest="travel_class",
+        default=None,
+        help="Travel class (omit to query both BUSINESS and ECONOMY).",
+    )
     parser.add_argument("--airline", required=True, help="Airline IATA code to filter on (e.g., TG).")
     parser.add_argument("--currency", default="EUR", help="Currency code for pricing (default: EUR).")
     parser.add_argument(
@@ -519,6 +640,9 @@ def main() -> None:
     load_dotenv()
     args = parse_args()
 
+    travel_class = args.travel_class
+    cabins = [travel_class] if travel_class else ["BUSINESS", "ECONOMY"]
+    expected_seatmaps = len(cabins)
     CACHE_BASE_DIR.mkdir(parents=True, exist_ok=True)
     cache_dir = _cache_dir_for_request(
         environment=args.environment,
@@ -526,7 +650,7 @@ def main() -> None:
         destination=args.destination,
         date=args.date,
         time=args.time,
-        travel_class=args.travel_class,
+        travel_class=travel_class,
         airline=args.airline,
         currency=args.currency,
     )
@@ -535,6 +659,13 @@ def main() -> None:
     seatmaps_request_path = cache_paths["seatmaps_request"]
 
     seatmaps_request: dict[str, Any] | None = _load_json(seatmaps_request_path)
+    if args.force_refresh:
+        seatmaps_request = None
+    elif travel_class is None and isinstance(seatmaps_request, dict):
+        data_entries = seatmaps_request.get("data")
+        if not (isinstance(data_entries, list) and len(data_entries) >= len(cabins)):
+            # Rebuild the seatmaps request to include all cabins when missing.
+            seatmaps_request = None
     seatmap_records: list[dict[str, Any]] = []
     cache_meta: dict[str, Any] | None = None
     cached_offers = _load_json(cache_paths["offers"])
@@ -547,6 +678,7 @@ def main() -> None:
             not args.force_refresh
             and _is_fresh(cache_paths["seatmaps"], args.cache_ttl_hours)
             and isinstance(cached_seatmaps, list)
+            and len(cached_seatmaps) >= expected_seatmaps
         )
         if use_cached_seatmaps:
             print(f"Using cached seatmaps from {cache_dir}.")
@@ -566,36 +698,57 @@ def main() -> None:
         if cached_payload:
             print(f"Using cached data from {cache_dir}.")
             flight_offers, seatmap_records, cache_meta = cached_payload
-            cache_meta = _build_metadata(True, cache_paths["seatmaps"], cache_meta)
-            _dump_json(cache_paths["meta"], cache_meta)
-        else:
+            if len(seatmap_records) < expected_seatmaps:
+                print("Cached seatmaps incomplete for requested cabins; refreshing.")
+                cached_payload = None
+                seatmap_records = []
+                flight_offers = []
+            else:
+                cache_meta = _build_metadata(True, cache_paths["seatmaps"], cache_meta)
+                _dump_json(cache_paths["meta"], cache_meta)
+        if not cached_payload:
             amadeus = build_amadeus_client(args.environment)
-            flight_offer_request = build_flight_offer_request(
-                origin=args.origin,
-                destination=args.destination,
-                date=args.date,
-                time=args.time,
-                travel_class=args.travel_class,
-                airline=args.airline,
-                currency=args.currency,
-                max_offers=args.max_offers,
-            )
-
-            flight_offers = fetch_flight_offers(amadeus, flight_offer_request)
-            _write_cache(cache_dir, request_body=flight_offer_request, flight_offers=flight_offers, seatmaps=None)
+            flight_offers = []
+            flight_offer_requests: list[dict[str, Any]] = []
+            offer_ids: set[str] = set()
+            for cabin in cabins:
+                request = build_flight_offer_request(
+                    origin=args.origin,
+                    destination=args.destination,
+                    date=args.date,
+                    time=args.time,
+                    travel_class=cabin,
+                    airline=args.airline,
+                    currency=args.currency,
+                    max_offers=args.max_offers,
+                )
+                offers = fetch_flight_offers(amadeus, request)
+                flight_offer_requests.append(request)
+                if len(offers) != 1:
+                    print(f"Flight-offer search for cabin {cabin} returned {len(offers)} result(s); skipping this cabin.")
+                    continue
+                offer = json.loads(json.dumps(offers[0]))  # shallow copy to allow ID tweaks
+                offer_id = str(offer.get("id")) if offer.get("id") is not None else ""
+                unique_id = offer_id or f"offer-{cabin.lower()}"
+                if unique_id in offer_ids:
+                    unique_id = f"{unique_id}-{cabin.lower()}"
+                offer["id"] = unique_id
+                offer_ids.add(unique_id)
+                flight_offers.append(offer)
 
             offer_count = len(flight_offers)
-            print(f"Flight-offer search returned {offer_count} result(s).")
+            print(f"Flight-offer search returned {offer_count} result(s) across cabins {', '.join(cabins)}.")
 
-            if offer_count != 1:
-                print("Seatmaps are only fetched when the search returns exactly one offer.")
+            if offer_count == 0:
+                print("No offers available to fetch seatmaps.")
                 return
 
-            seatmaps_request = build_seatmaps_request(flight_offers[0])
+            combined_request_body: dict[str, Any] = {"requests": flight_offer_requests}
+            seatmaps_request = {"data": flight_offers}
             seatmap_records = _sanitize_seatmaps(fetch_seatmaps(amadeus, seatmaps_request))
             cache_meta = _write_cache(
                 cache_dir,
-                request_body=flight_offer_request,
+                request_body=combined_request_body,
                 flight_offers=flight_offers,
                 seatmaps_request=seatmaps_request,
                 seatmaps=seatmap_records,
@@ -616,7 +769,7 @@ def main() -> None:
         _dump_json(seatmaps_request_path, seatmaps_request)
 
     render_seatmaps(
-        build_seatmap_objects(seatmap_records, travel_class=args.travel_class),
+        build_seatmap_objects(seatmap_records, travel_class=travel_class),
         image_output_path=cache_dir / "seatmaps.png",
         data_timestamp=_resolve_data_timestamp(cache_meta, cache_paths.get("seatmaps")),
     )
