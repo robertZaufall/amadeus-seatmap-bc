@@ -2,20 +2,6 @@
 
 CLI utility for browsing Amadeus seat-map availability across a set of long-haul trips. It pulls live data from the Amadeus Self-Service APIs and caches each day's responses under `data/<YYYYMMDD>` so you can re-render the output without hitting the API again.
 
-## Example output
-
-![Example output: weekly grid of ASCII seat maps](docs/seatmaps.png)
-_Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun)._
-
-![Example output: window-seat ledger](docs/window_seats.png)
-_Figure: Example terminal output showing the date-sorted ledger of available window seats including calendar heatmap for the price._
-
-![Example output: price heatmaps](docs/price_heatmaps.png)
-_Figure: Example terminal output showing the price heatmaps for all flight combinations - one for just windows seats (cumulated), one for all (cumulated) and one for all with actual return fares._
-
-<!-- ![Example output: weekly grid of ASCII seat maps - compact](docs/seatmaps_compact.png)
-_Figure: Example terminal output showing the weekly ASCII seat maps (Mon–Sun) - compact._ -->
-
 ## Highlights
 - Builds ASCII seat maps with wide-character awareness so layouts stay aligned even when using emoji markers.
 - Highlights the lowest fare per route with a green border so deals stand out immediately.
@@ -82,6 +68,27 @@ Flight-offer search filters live in `config.FLIGHT_SEARCH_FILTERS`, so you can t
    ```bash
    python flight_search.py
    ```
+
+## One-off seatmap lookup
+Use `flight_offer_seatmaps.py` to fetch seatmaps for a single flight offer without running the full pipeline. It searches `/v2/shopping/flight-offers`, requests seatmaps for the result, and caches everything under `data/flights/<ENV>-<FROM>-<TO>-<DATE>-<TIME>-<CLASS>-<AIRLINE>-<CURRENCY>/`.
+
+Example (queries business class; omit `--class` to fetch both cabins):
+```bash
+python flight_offer_seatmaps.py \
+  --date 2024-12-05 \
+  --time 22:25 \
+  --from BKK \
+  --to FRA \
+  --airline TG \
+  --class BUSINESS \
+  --currency EUR
+```
+
+Notes:
+- Seatmaps print to the terminal and save as `seatmaps.png` plus JSON files (`flight_offers.json`, `seatmaps.json`, `metadata.json`) in the cache folder.
+- Seatmaps are fetched when the flight-offer search yields exactly one matching offer per requested cabin; tweak `--max-offers` or specify `--class` if you get multiple hits.
+- Cached responses stay fresh for 4 hours by default (`--cache-ttl-hours 0` or `--force-refresh` to bypass); diffs for seatmaps write to `seatmaps.diff` when content changes.
+- Use `--environment test|production` to select the Amadeus host; credentials are read from `.env` just like the main pipeline.
 
 ### Data directory layout
 All generated API responses are timestamped by run date: `data/<YYYYMMDD>/`. Common files include:

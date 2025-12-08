@@ -1,0 +1,5023 @@
+Directory structure:
+└── amadeus-seatmap-bc/
+    ├── colors.py
+    ├── config.py
+    ├── display_utils.py
+    ├── flight_offer_seatmaps.py
+    ├── flight_search.py
+    ├── get_availability.py
+    ├── get_prices_oneway.py
+    ├── get_prices_return.py
+    ├── get_seatmaps.py
+    ├── png_utils.py
+    ├── run_pipeline.py
+    ├── seatmap_data.py
+    ├── seatmap_display.py
+    ├── .env.template
+    └── .github/
+        └── workflows/
+            ├── run-seatmap.yml
+            ├── scheduled-muc-bkk-seatmap.yml
+            └── static.yml
+
+================================================
+FILE: colors.py
+================================================
+from typing import Optional
+
+ANSI_RESET = "\033[0m"
+
+# Semantic token -> ANSI escape sequence mapping. Keep tokens descriptive so
+# config.py can use readable names instead of raw escape sequences.
+TOKEN_MAP: dict[str, str] = {
+    # foreground
+    "fg_black": "\033[30m",
+    "fg_red": "\033[31m",
+    "fg_green": "\033[32m",
+    "fg_yellow": "\033[33m",
+    "fg_grey": "\033[90m",
+    "fg_white": "\033[97m",
+    "fg_bright_black": "\033[90m",
+    # background
+    "bg_white": "\033[47m",
+    "bg_bright_white": "\033[107m",
+    "bg_green": "\033[42m",
+    "bg_red": "\033[41m",
+    "bg_grey": "\033[100m",
+    "bg_yellow": "\033[43m",
+    "bg_black": "\033[40m",
+    "bg_light_blue": "\033[104m",
+    "bg_dark_blue": "\033[44m",
+    "bg_dark_red": "\033[101m",
+    "bg_dark_green": "\033[102m",
+}
+
+
+def resolve(color_or_token: Optional[str]) -> Optional[str]:
+    if not color_or_token:
+        return None
+    if color_or_token.startswith("\033["):
+        return color_or_token
+    return TOKEN_MAP.get(color_or_token, None)
+
+
+def apply(color: Optional[str], text: str) -> str:
+    resolved = resolve(color)
+    if not resolved:
+        return text
+    return f"{resolved}{text}{ANSI_RESET}"
+
+
+def strip_ansi(text: str) -> str:
+    return text.replace(ANSI_RESET, "")
+
+
+
+================================================
+FILE: config.py
+================================================
+from datetime import date, timedelta
+
+ENVIRONMENT = "production"
+
+def _build_travel_windows(today: date | None = None) -> list[dict[str, str]]:
+    base = today or date.today()
+    first_start = base + timedelta(days=3)
+    first_end = min(
+        first_start + timedelta(days=20),
+        date(2025, 12, 20) - timedelta(days=1),
+    )  # cap before 2025-12-20
+
+    second_start = first_start + timedelta(weeks=6)
+    second_end = min(
+        second_start + timedelta(days=24),
+        date(2026, 2, 3) - timedelta(days=1),
+    )  # cap before 2026-02-03
+
+    def _iso(d: date) -> str:
+        return d.strftime("%Y-%m-%d")
+
+    return [
+        {
+            "origin": "MUC",
+            "destination": "BKK",
+            "start_date": _iso(first_start),
+            "end_date": _iso(first_end),
+        },
+        {
+            "origin": "BKK",
+            "destination": "MUC",
+            "start_date": _iso(second_start),
+            "end_date": _iso(second_end),
+        },
+    ]
+
+
+TRAVEL_WINDOWS = _build_travel_windows()
+
+# Default filters applied when requesting flight offers from Amadeus.
+FLIGHT_SEARCH_FILTERS = {
+    "travel_class": "BUSINESS",
+    "non_stop": "true",
+    "included_airline_codes": "TG",
+}
+
+# Toggle displaying the price below each rendered seatmap block.
+SHOW_SEATMAP_PRICE = False
+
+# Seatmap render style ("compact", "normal", or "both").
+SEATMAP_OUTPUT_STYLE = "both"
+#SEATMAP_OUTPUT_STYLE = "compact"
+#SEATMAP_OUTPUT_STYLE = "normal"
+
+# For compact view
+SUPPRESS_COMPACT_SECOND_HEADER = True
+
+# Controls whether highlighted heatmap cells render bold and/or italic.
+HEATMAP_EMPHASIS_STYLES = {
+    "bold": True,
+    "italic": True,
+}
+
+CURRENCY_SYMBOLS = {
+    "USD": "$",
+    "EUR": "€",
+    "GBP": "£",
+    "JPY": "¥",
+    "CNY": "¥",
+    "THB": "฿",
+    "AUD": "$",
+    "CAD": "$",
+    "SGD": "$",
+}
+
+ANSI_RESET = "\033[0m"
+
+BORDER_COLORS = {
+    # semantic tokens; resolved at apply-time by colors.resolve/apply
+    "default": "fg_bright_black",
+    "best": "fg_green",
+    "worst": "fg_red",
+}
+
+# 🟦 / 🟪 / 🟥 / 🟧 / 🟨 / 🟩 / 🟫
+STATUS_SYMBOLS = {
+    "AVAILABLE": "🟦",
+    "OCCUPIED": "❌",
+    "BLOCKED": "⬛",
+}
+
+WINDOW_AVAILABLE_SYMBOL = "🟩"
+HIGHLIGHT_CHARACTERISTIC_CODES = {"H"}  # seats with these characteristic codes get a highlight when available
+HIGHLIGHT_AVAILABLE_SYMBOL = "🟨"
+
+COMPACT_BACKGROUND_COLORS = {
+    "AVAILABLE_WINDOW": "bg_dark_green",
+    "AVAILABLE_HIGHLIGHT": "bg_yellow",
+    "AVAILABLE": "bg_dark_blue",
+    "OCCUPIED": "",
+    "BLOCKED": "",
+    "UNKNOWN": "bg_white",
+}
+
+COMPACT_SYMBOLS = {
+    "AVAILABLE_WINDOW": " ",
+    "AVAILABLE_HIGHLIGHT": " ",
+    "AVAILABLE": " ",
+    "OCCUPIED": "✘",
+    "BLOCKED": "✘",
+    "UNKNOWN": " ",
+}
+
+COMPACT_SYMBOL_COLORS = {
+    "AVAILABLE_WINDOW": "",
+    "AVAILABLE_HIGHLIGHT": "",
+    "AVAILABLE": "",
+    "OCCUPIED": "fg_red",
+    "BLOCKED": "fg_grey",
+    "UNKNOWN": "",
+}
+
+HEATMAP_SYMBOLS = {
+    "min": "🟩",
+    "default": "🟨",
+    "max": "🟥",
+}
+
+HEATMAP_COLORS = {
+    "min": BORDER_COLORS["best"],
+    "default": "fg_yellow",
+    "max": BORDER_COLORS["worst"],
+}
+
+HEATMAP_HEADER_COLOR = "fg_grey"
+
+STATIC_LABELS = {
+    "compact_seatmap_heading": "\nSeatmaps:\n",
+    "normal_seatmap_heading": "\nSeatmaps (normal view):\n",
+    "availability_heading": "\nAvailable window seats by date:",
+    "price_label": "Price",
+    "no_window_seats": "No window seats",
+    "roundtrip_window_title": "Round-trip price heatmap (window-seat prices)",
+    "roundtrip_all_title": "Round-trip price heatmap (all prices, bold+italic = window-seat available)",
+    "roundtrip_return_prices_title": "Round-trip price heatmap (return prices data)",
+    "roundtrip_title_template": "Round-trip price heatmap ({outbound_route} + {return_route})",
+}
+
+
+
+================================================
+FILE: display_utils.py
+================================================
+from __future__ import annotations
+
+import re
+import unicodedata
+from datetime import date
+
+from colors import apply as apply_color
+from config import (
+    ANSI_RESET as CONFIG_ANSI_RESET,
+    HEATMAP_EMPHASIS_STYLES,
+    HEATMAP_HEADER_COLOR,
+)
+
+
+ANSI_ESCAPE_RE = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
+EMPHASIS_CODE_MAP = {
+    'bold': '\033[1m',
+    'italic': '\033[3m',
+}
+WEEKDAY_SHORT_NAMES = ('Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su')
+
+
+def extract_row_and_column(seat_number: str):
+    row = ''.join(ch for ch in seat_number if ch.isdigit())
+    column = ''.join(ch for ch in seat_number if ch.isalpha())
+    return row, column
+
+
+def char_display_width(character: str) -> int:
+    """Return the display width of a single character."""
+    return 2 if unicodedata.east_asian_width(character) in {'F', 'W'} else 1
+
+
+def strip_ansi(text: str) -> str:
+    """Remove ANSI escape codes from text."""
+    if not text:
+        return ''
+    return ANSI_ESCAPE_RE.sub('', text)
+
+
+def display_width(text: str) -> int:
+    """Return the printable width of text accounting for wide characters."""
+    visible = strip_ansi(text or '')
+    return sum(char_display_width(ch) for ch in visible)
+
+
+def resolve_seatmap_style(value: str | None) -> list[str]:
+    """Normalize the configured seatmap style to the list of styles to render."""
+    normalized = (value or '').strip().lower()
+    if normalized == 'compact':
+        return ['compact']
+    if normalized == 'both':
+        return ['ascii', 'compact']
+    return ['ascii']
+
+
+def apply_emphasis_styles(text: str, *, enabled: bool) -> str:
+    """Wrap text with configured ANSI emphasis codes when enabled."""
+    if not enabled or not text:
+        return text
+    segments: list[str] = []
+    if HEATMAP_EMPHASIS_STYLES.get('italic'):
+        segments.append(EMPHASIS_CODE_MAP['italic'])
+    if HEATMAP_EMPHASIS_STYLES.get('bold'):
+        segments.append(EMPHASIS_CODE_MAP['bold'])
+    if not segments:
+        return text
+    prefix = ''.join(segments)
+    return f"{prefix}{text}{CONFIG_ANSI_RESET}"
+
+
+def apply_italic_only(text: str) -> str:
+    """Wrap text with ANSI italic without inheriting bold config."""
+    if not text:
+        return text
+    italic_code = EMPHASIS_CODE_MAP.get('italic')
+    if not italic_code:
+        return text
+    return f"{italic_code}{text}{CONFIG_ANSI_RESET}"
+
+
+def apply_bold_italic(text: str) -> str:
+    """Apply both bold and italic emphasis regardless of config."""
+    if not text:
+        return text
+    bold_code = EMPHASIS_CODE_MAP.get('bold')
+    italic_code = EMPHASIS_CODE_MAP.get('italic')
+    segments = [segment for segment in (italic_code, bold_code) if segment]
+    if not segments:
+        return text
+    prefix = ''.join(segments)
+    return f"{prefix}{text}{CONFIG_ANSI_RESET}"
+
+
+def pad_to_width(text: str, width: int) -> str:
+    """Pad or trim text so that its display width equals the provided width."""
+    if width <= 0:
+        return ''
+    current_width = 0
+    trimmed_parts: list[str] = []
+    text = text or ''
+    idx = 0
+    while idx < len(text):
+        if text[idx] == '\x1b':
+            match = ANSI_ESCAPE_RE.match(text, idx)
+            if match:
+                trimmed_parts.append(match.group(0))
+                idx = match.end()
+                continue
+        ch = text[idx]
+        ch_width = char_display_width(ch)
+        if current_width + ch_width > width:
+            break
+        trimmed_parts.append(ch)
+        current_width += ch_width
+        idx += 1
+    result = ''.join(trimmed_parts)
+    if current_width < width:
+        result += ' ' * (width - current_width)
+    return result
+
+
+def pad_to_width_centered(text: str, width: int) -> str:
+    """Pad text to the provided width while keeping the content centered."""
+    if width <= 0:
+        return ''
+    trimmed = pad_to_width(text, width)
+    trimmed_content = trimmed.rstrip()
+    content_width = display_width(trimmed_content)
+    if content_width >= width:
+        return trimmed_content
+    padding = width - content_width
+    left_padding = padding // 2
+    right_padding = padding - left_padding
+    return f"{' ' * left_padding}{trimmed_content}{' ' * right_padding}"
+
+
+def weekday_short_name(value: date) -> str:
+    """Return a two-letter weekday abbreviation starting on Monday."""
+    return WEEKDAY_SHORT_NAMES[value.weekday()]
+
+
+def apply_heatmap_header_color(text: str) -> str:
+    """Color header cells using the configured darker grey tone."""
+    if not text or not HEATMAP_HEADER_COLOR:
+        return text
+    return apply_color(HEATMAP_HEADER_COLOR, text)
+
+
+
+================================================
+FILE: flight_offer_seatmaps.py
+================================================
+from __future__ import annotations
+
+import argparse
+import difflib
+import hashlib
+import json
+import os
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+from amadeus import Client, ResponseError
+from dotenv import load_dotenv
+
+from config import ENVIRONMENT, SEATMAP_OUTPUT_STYLE
+from display_utils import extract_row_and_column, resolve_seatmap_style
+from png_utils import save_text_block_png
+from seatmap_data import SeatMap
+from seatmap_display import SeatMaps
+
+
+CACHE_BASE_DIR = Path(__file__).parent / "data" / "flights"
+DEFAULT_CACHE_TTL_HOURS = 4.0
+
+
+def build_amadeus_client(environment: str) -> Client:
+    env = environment.lower()
+    if env not in {"test", "production"}:
+        raise RuntimeError("ENVIRONMENT must be 'test' or 'production' for live API calls.")
+
+    if env == "test":
+        client_id = os.getenv("TEST_AMADEUS_CLIENT_ID")
+        client_secret = os.getenv("TEST_AMADEUS_CLIENT_SECRET")
+    else:
+        client_id = os.getenv("AMADEUS_CLIENT_ID")
+        client_secret = os.getenv("AMADEUS_CLIENT_SECRET")
+
+    if not client_id or not client_secret:
+        raise RuntimeError("Missing Amadeus credentials in environment variables.")
+
+    return Client(
+        client_id=client_id,
+        client_secret=client_secret,
+        hostname=env,
+    )
+
+
+def _parse_date(value: str) -> str:
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date().isoformat()
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("Date must be in YYYY-MM-DD format.") from exc
+
+
+def _parse_time(value: str) -> str:
+    for fmt in ("%H:%M", "%H:%M:%S"):
+        try:
+            parsed = datetime.strptime(value, fmt).time()
+            return parsed.strftime("%H:%M:%S")
+        except ValueError:
+            continue
+    raise argparse.ArgumentTypeError("Time must be HH:MM or HH:MM:SS.")
+
+
+def _collect_available_window_seats(decks: list[dict[str, Any]] | None) -> list[str]:
+    available: list[str] = []
+    for deck in decks or []:
+        for seat in deck.get("seats", []):
+            traveler_pricing = seat.get("travelerPricing", [])
+            availability = traveler_pricing[0].get("seatAvailabilityStatus") if traveler_pricing else None
+            if availability != "AVAILABLE":
+                continue
+            if "W" not in seat.get("characteristicsCodes", []):
+                continue
+            seat_number = seat.get("number")
+            if seat_number:
+                available.append(seat_number)
+    return available
+
+
+def _dump_json(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2)
+
+
+def _load_json(path: Path) -> Any | None:
+    try:
+        with path.open(encoding="utf-8") as handle:
+            return json.load(handle)
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def _hash_file(path: Path) -> str | None:
+    try:
+        digest = hashlib.sha256()
+        with path.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(8192), b""):
+                digest.update(chunk)
+        return digest.hexdigest()
+    except OSError:
+        return None
+
+
+def _build_metadata(
+    seatmaps_cached: bool,
+    seatmaps_path: Path,
+    existing_meta: dict[str, Any] | None = None,
+    command_args: list[str] | None = None,
+) -> dict[str, Any]:
+    existing_meta = existing_meta if isinstance(existing_meta, dict) else {}
+    seatmaps_hash = existing_meta.get("seatmaps_hash")
+    previous_hash = existing_meta.get("previous_seatmaps_hash")
+    stored_args = existing_meta.get("command_args")
+
+    if seatmaps_cached and seatmaps_path.exists():
+        new_hash = _hash_file(seatmaps_path)
+        if new_hash == seatmaps_hash:
+            # If unchanged across runs, keep backup aligned with the current hash.
+            previous_hash = new_hash
+        else:
+            # When the hash changes, shift the current hash into the backup slot.
+            previous_hash = seatmaps_hash
+            seatmaps_hash = new_hash
+    if command_args is None:
+        command_args = stored_args
+    return {
+        "fetched_at": datetime.now().astimezone().isoformat(),
+        "seatmaps_cached": seatmaps_cached,
+        "seatmaps_hash": seatmaps_hash,
+        "previous_seatmaps_hash": previous_hash,
+        "command_args": command_args,
+    }
+
+
+def _current_command_args() -> list[str]:
+    """Return the current CLI arguments (excluding the program name)."""
+    return sys.argv[1:]
+
+
+def _strip_medias(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {k: _strip_medias(v) for k, v in value.items() if k != "medias"}
+    if isinstance(value, list):
+        return [_strip_medias(item) for item in value]
+    return value
+
+
+def _sanitize_seatmaps(seatmaps: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [_strip_medias(entry) if isinstance(entry, dict) else entry for entry in seatmaps]
+
+
+def _write_seatmaps_with_diff(path: Path, seatmaps: list[dict[str, Any]]) -> Path | None:
+    seatmaps = _sanitize_seatmaps(seatmaps)
+    diff_path = path.with_suffix(".diff")
+    try:
+        previous_text = path.read_text(encoding="utf-8")
+    except OSError:
+        previous_text = None
+
+    new_text = json.dumps(seatmaps, indent=2)
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(new_text, encoding="utf-8")
+
+    if previous_text is None:
+        if diff_path.exists():
+            diff_path.unlink(missing_ok=True)
+        return None
+
+    if previous_text == new_text:
+        if diff_path.exists():
+            diff_path.unlink(missing_ok=True)
+        return None
+
+    diff_lines = difflib.unified_diff(
+        previous_text.splitlines(),
+        new_text.splitlines(),
+        fromfile=f"{path.name} (previous)",
+        tofile=f"{path.name} (new)",
+        lineterm="",
+    )
+    diff_text = "\n".join(diff_lines)
+    if not diff_text.strip():
+        if diff_path.exists():
+            diff_path.unlink(missing_ok=True)
+        return None
+
+    diff_path.write_text(diff_text + "\n", encoding="utf-8")
+    return diff_path
+
+
+def _sanitize_segment(value: str) -> str:
+    cleaned = "".join(ch if ch.isalnum() or ch in {"-", "_"} else "-" for ch in str(value))
+    while "--" in cleaned:
+        cleaned = cleaned.replace("--", "-")
+    return cleaned.strip("-") or "value"
+
+
+def _cache_dir_for_request(
+    *,
+    environment: str,
+    origin: str,
+    destination: str,
+    date: str,
+    time: str,
+    travel_class: str | None,
+    airline: str,
+    currency: str,
+) -> Path:
+    time_squeezed = time.replace(":", "")
+    travel_class_label = (travel_class or "MULTI").upper()
+    parts = [
+        environment.lower(),
+        origin.upper(),
+        destination.upper(),
+        date,
+        time_squeezed,
+        travel_class_label,
+        airline.upper(),
+        currency.upper(),
+    ]
+    slug = "-".join(_sanitize_segment(part) for part in parts)
+    return CACHE_BASE_DIR / slug
+
+
+def _cache_paths(cache_dir: Path) -> dict[str, Path]:
+    return {
+        "request": cache_dir / "flight_offer_request.json",
+        "offers": cache_dir / "flight_offers.json",
+        "seatmaps": cache_dir / "seatmaps.json",
+        "seatmaps_request": cache_dir / "seatmaps_request.json",
+        "meta": cache_dir / "metadata.json",
+    }
+
+
+def _is_fresh(path: Path, ttl_hours: float) -> bool:
+    if ttl_hours <= 0:
+        return False
+    if not path.exists():
+        return False
+    age_seconds = (datetime.now().timestamp() - path.stat().st_mtime)
+    return age_seconds <= (ttl_hours * 3600)
+
+
+def _load_cache(
+    cache_dir: Path,
+    ttl_hours: float,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any] | None] | None:
+    paths = _cache_paths(cache_dir)
+    seatmaps_path = paths["seatmaps"]
+    offers_path = paths["offers"]
+    meta_path = paths["meta"]
+
+    if not _is_fresh(seatmaps_path, ttl_hours):
+        return None
+    if not _is_fresh(offers_path, ttl_hours):
+        return None
+
+    seatmaps = _load_json(seatmaps_path)
+    offers = _load_json(offers_path)
+    meta = _load_json(meta_path)
+    if not isinstance(seatmaps, list) or not isinstance(offers, list):
+        return None
+    return offers, seatmaps, meta
+
+
+def _write_cache(
+    cache_dir: Path,
+    *,
+    request_body: dict[str, Any],
+    flight_offers: list[dict[str, Any]],
+    seatmaps_request: dict[str, Any] | None = None,
+    seatmaps: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    paths = _cache_paths(cache_dir)
+    existing_meta = _load_json(paths["meta"])
+    _dump_json(paths["request"], request_body)
+    _dump_json(paths["offers"], flight_offers)
+    if seatmaps_request is not None:
+        _dump_json(paths["seatmaps_request"], seatmaps_request)
+    if seatmaps is not None:
+        _write_seatmaps_with_diff(paths["seatmaps"], seatmaps)
+    metadata = _build_metadata(
+        seatmaps is not None,
+        paths["seatmaps"],
+        existing_meta,
+        _current_command_args(),
+    )
+    _dump_json(paths["meta"], metadata)
+    return metadata
+
+
+def build_flight_offer_request(
+    *,
+    origin: str,
+    destination: str,
+    date: str,
+    time: str,
+    travel_class: str | list[str] | None,
+    airline: str,
+    currency: str,
+    max_offers: int,
+) -> dict[str, Any]:
+    cabin_restrictions: list[dict[str, Any]] | None
+    if travel_class is None:
+        cabin_restrictions = None  # allow all cabins in a single request
+    elif isinstance(travel_class, list):
+        cabins = [c.upper() for c in travel_class if c]
+        cabin_restrictions = [
+            {
+                "cabin": cabin,
+                "coverage": "MOST_SEGMENTS",
+                "originDestinationIds": ["1"],
+            }
+            for cabin in cabins
+        ]
+    else:
+        cabin_restrictions = [
+            {
+                "cabin": travel_class.upper(),
+                "coverage": "MOST_SEGMENTS",
+                "originDestinationIds": ["1"],
+            }
+        ]
+
+    return {
+        "currencyCode": currency.upper(),
+        "originDestinations": [
+            {
+                "id": "1",
+                "originLocationCode": origin.upper(),
+                "destinationLocationCode": destination.upper(),
+                "departureDateTimeRange": {"date": date, "time": time},
+            }
+        ],
+        "travelers": [{"id": "1", "travelerType": "ADULT"}],
+        "sources": ["GDS"],
+        "searchCriteria": {
+            "maxFlightOffers": max_offers,
+            "flightFilters": {
+                **(
+                    {"cabinRestrictions": cabin_restrictions}
+                    if cabin_restrictions is not None
+                    else {}
+                ),
+                "carrierRestrictions": {"includedCarrierCodes": [airline.upper()]},
+            },
+        },
+    }
+
+
+def _post_flight_offer_search(amadeus: Client, payload: dict[str, Any]) -> list[dict[str, Any]]:
+    try:
+        response = amadeus.post("/v2/shopping/flight-offers", payload)
+    except ResponseError as error:
+        details = getattr(error, "response", None)
+        message = details.body if details and hasattr(details, "body") else str(error)
+        raise RuntimeError(f"Flight-offer search failed: {message}") from error
+
+    offers = response.data or []
+    if isinstance(offers, list) and offers and all(isinstance(item, dict) and "data" in item for item in offers):
+        flattened: list[dict[str, Any]] = []
+        for entry in offers:
+            entry_data = entry.get("data")
+            if isinstance(entry_data, list):
+                flattened.extend(entry_data)
+        offers = flattened
+    elif isinstance(offers, list) and offers and all(isinstance(item, list) for item in offers):
+        flattened = []
+        for entry in offers:
+            flattened.extend(entry)
+        offers = flattened
+    if not isinstance(offers, list):
+        raise RuntimeError("Unexpected flight-offer response format; expected a list.")
+    return offers
+
+
+def fetch_flight_offers(amadeus: Client, request_body: dict[str, Any]) -> list[dict[str, Any]]:
+    batched = request_body.get("requests")
+    if isinstance(batched, list):
+        combined: list[dict[str, Any]] = []
+        for idx, payload in enumerate(batched, start=1):
+            if not isinstance(payload, dict):
+                continue
+            print(f"Fetching flight offers for batched query {idx}/{len(batched)}.")
+            source_cabin = _payload_cabin(payload)
+            offers = _post_flight_offer_search(amadeus, payload)
+            for offer in offers:
+                offer_copy = json.loads(json.dumps(offer))
+                if source_cabin:
+                    offer_copy["__source_cabin"] = source_cabin
+                combined.append(offer_copy)
+        return combined
+    return _post_flight_offer_search(amadeus, request_body)
+
+
+def build_seatmaps_request(flight_offers: list[dict[str, Any]]) -> dict[str, Any]:
+    return {"data": flight_offers}
+
+
+def fetch_seatmaps(amadeus: Client, seatmap_request: dict[str, Any]) -> list[dict[str, Any]]:
+    try:
+        response = amadeus.post("/v1/shopping/seatmaps", seatmap_request)
+    except ResponseError as error:
+        details = getattr(error, "response", None)
+        message = details.body if details and hasattr(details, "body") else str(error)
+        raise RuntimeError(f"Seatmap fetch failed: {message}") from error
+
+    seatmaps = response.data or []
+    if not isinstance(seatmaps, list):
+        raise RuntimeError("Unexpected seatmap response format; expected a list.")
+    return seatmaps
+
+
+def _filter_decks_for_cabin(decks: list[dict[str, Any]] | None, travel_class: str | None) -> list[dict[str, Any]]:
+    if not travel_class:
+        return decks or []
+    cabin = travel_class.upper()
+    filtered: list[dict[str, Any]] = []
+    for deck in decks or []:
+        seats = [seat for seat in deck.get("seats", []) if str(seat.get("cabin", "")).upper() == cabin]
+        if not seats:
+            continue
+        deck_copy = dict(deck)
+        deck_copy["seats"] = seats
+        filtered.append(deck_copy)
+    return filtered or (decks or [])
+
+
+def build_seatmap_objects(
+    records: list[dict[str, Any]],
+    *,
+    travel_class: str | None = None,
+) -> list[tuple[SeatMap, str, str]]:
+    mapped: list[tuple[SeatMap, str, str]] = []
+    for record in records:
+        departure_info = record.get("departure", {}) or {}
+        arrival_info = record.get("arrival", {}) or {}
+
+        departure_at = str(departure_info.get("at") or "")
+        departure_iso = departure_at.split("T")[0] if "T" in departure_at else departure_at
+        departure_date = departure_iso.replace("-", "") if departure_iso else ""
+        departure_label = _format_departure_label(departure_at)
+
+        decks = _filter_decks_for_cabin(record.get("decks"), travel_class)
+        seatmap = SeatMap(
+            departure_date=departure_date,
+            origin=departure_info.get("iataCode") or "",
+            destination=arrival_info.get("iataCode") or "",
+            carrier=record.get("carrierCode") or "",
+            number=str(record.get("number") or ""),
+            aircraft_code=(record.get("aircraft") or {}).get("code") or "N/A",
+            decks=decks,
+            window_seats=_collect_available_window_seats(decks),
+        )
+
+        label_parts = [
+            f"{seatmap.carrier}{seatmap.number}".strip(),
+            _cabin_label_from_seatmap_record(record, travel_class),
+            f"{seatmap.origin}->{seatmap.destination}",
+            departure_label or departure_at or departure_iso or "",
+        ]
+        label = " | ".join(part for part in label_parts if part)
+        mapped.append((seatmap, label, departure_at))
+    return mapped
+
+
+def _format_departure_label(value: str | None) -> str:
+    """Format an ISO-like departure datetime as 'YYYY-MM-DD HH:MM'."""
+    if not value:
+        return ""
+    try:
+        dt = datetime.fromisoformat(value)
+        return dt.strftime("%Y-%m-%d %H:%M")
+    except ValueError:
+        if "T" in value:
+            date_part, time_part = value.split("T", 1)
+            trimmed_time = time_part.split(":")
+            if len(trimmed_time) >= 2:
+                return f"{date_part} {trimmed_time[0]}:{trimmed_time[1]}"
+            return f"{date_part} {time_part}"
+        return value
+
+
+def _extract_offer_cabin(flight_offer: dict[str, Any]) -> str | None:
+    """Extract the cabin (BUSINESS/ECONOMY/ETC) from the first segment pricing."""
+    pr = flight_offer.get("travelerPricings") or []
+    if not pr:
+        return None
+    fare_details = pr[0].get("fareDetailsBySegment") or []
+    if not fare_details:
+        return None
+    cabin = fare_details[0].get("cabin")
+    return str(cabin).upper() if cabin else None
+
+
+def _select_offers_for_cabins(
+    flight_offers: list[dict[str, Any]],
+    cabins: list[str],
+) -> list[dict[str, Any]]:
+    """Pick the best matching offer for each requested cabin, preferring offers sourced from that cabin request."""
+    def itinerary_signature(offer: dict[str, Any]) -> list[tuple[str, str]]:
+        sig: list[tuple[str, str]] = []
+        for itinerary in offer.get("itineraries") or []:
+            for seg in itinerary.get("segments") or []:
+                carrier = str(seg.get("carrierCode") or "").upper()
+                number = str(seg.get("number") or "")
+                sig.append((carrier, number))
+        return sig
+
+    def score_against_anchor(candidate: dict[str, Any], anchor: dict[str, Any]) -> tuple[int, int]:
+        cand_sig = itinerary_signature(candidate)
+        anchor_sig = itinerary_signature(anchor)
+        # Score by positional matches first, then total overlap size, then shorter length diff.
+        positional = sum(1 for a, b in zip(cand_sig, anchor_sig) if a == b)
+        overlap = len(set(cand_sig) & set(anchor_sig))
+        length_penalty = abs(len(cand_sig) - len(anchor_sig))
+        return (positional, overlap, -length_penalty)
+
+    remaining = [c.upper() for c in cabins]
+    selected: list[dict[str, Any]] = []
+    anchor_offer: dict[str, Any] | None = None
+    for cabin in remaining:
+        # Prefer an offer tagged with the matching source cabin
+        tagged_candidates = [offer for offer in flight_offers if offer.get("__source_cabin") == cabin]
+        fallback_candidates = [offer for offer in flight_offers if _extract_offer_cabin(offer) == cabin]
+
+        candidates = tagged_candidates or fallback_candidates
+        if not candidates:
+            continue
+
+        if anchor_offer is not None:
+            best = max(candidates, key=lambda cand: score_against_anchor(cand, anchor_offer))
+        else:
+            best = candidates[0]
+
+        selected.append(best)
+        if anchor_offer is None:
+            anchor_offer = best
+    return selected
+
+
+def _payload_cabin(payload: dict[str, Any]) -> str | None:
+    """Return the cabin restriction from a flight-offer request payload, if present."""
+    try:
+        restrictions = payload["searchCriteria"]["flightFilters"]["cabinRestrictions"]
+        if isinstance(restrictions, list) and restrictions:
+            cabin = restrictions[0].get("cabin")
+            return str(cabin).upper() if cabin else None
+    except Exception:
+        return None
+    return None
+
+
+def _cabin_label_from_seatmap_record(record: dict[str, Any], travel_class: str | None) -> str:
+    """Derive a displayable cabin label from seat entries or fallback to requested class."""
+    cabins: set[str] = set()
+    for deck in record.get("decks") or []:
+        for seat in deck.get("seats", []) or []:
+            cabin = seat.get("cabin")
+            if cabin:
+                cabins.add(str(cabin).upper())
+    if cabins:
+        return "/".join(sorted(c.title() for c in cabins))
+    if travel_class:
+        return travel_class.title()
+    return ""
+
+
+def _dedupe_offer_ids_for_seatmaps(offers: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return deep-copied offers with unique IDs to satisfy seatmap API requirements."""
+    deduped: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for offer in offers:
+        copy_offer = json.loads(json.dumps(offer))
+        copy_offer.pop("__source_cabin", None)
+        base_id = str(copy_offer.get("id") or "offer")
+        unique_id = base_id
+        counter = 1
+        while unique_id in seen:
+            counter += 1
+            unique_id = f"{base_id}-{counter}"
+        copy_offer["id"] = unique_id
+        seen.add(unique_id)
+        deduped.append(copy_offer)
+    return deduped
+
+
+def _extract_row_number(seat: dict[str, Any]) -> int | None:
+    """Best-effort extraction of the numeric row from a seat entry."""
+    seat_number = seat.get("number")
+    row_str, _ = extract_row_and_column(str(seat_number or ""))
+    if row_str.isdigit():
+        return int(row_str)
+
+    coords = seat.get("coordinates") or {}
+    for key in ("x", "row", "rowNumber"):
+        value = coords.get(key)
+        if isinstance(value, (int, float)) and value > 0:
+            return int(value)
+    return None
+
+
+def _seatmap_min_row(seatmap: SeatMap) -> int:
+    """Return the lowest numeric row present in a seatmap (used for consistent ordering)."""
+    min_row: int | None = None
+    for deck in seatmap.decks or []:
+        for seat in deck.get("seats", []):
+            row_value = _extract_row_number(seat)
+            if row_value is None:
+                continue
+            min_row = row_value if min_row is None else min(min_row, row_value)
+    return min_row if min_row is not None else 10**9
+
+
+def _seatmap_row_bounds(seatmap: SeatMap) -> tuple[int, int]:
+    """Return (min_row, deck_hint) for sorting seatmaps that share the same flight."""
+    min_row: int | None = None
+    deck_hint: int | None = None
+    for deck in seatmap.decks or []:
+        if deck_hint is None:
+            try:
+                deck_hint = int(deck.get("deckNumber", 0) or 0)
+            except (TypeError, ValueError):
+                deck_hint = 0
+        for seat in deck.get("seats", []):
+            row_value = _extract_row_number(seat)
+            if row_value is None:
+                continue
+            min_row = row_value if min_row is None else min(min_row, row_value)
+    return (min_row if min_row is not None else 10**9, deck_hint if deck_hint is not None else 10**6)
+
+
+def _seatmap_departure_sort_key(seatmap: SeatMap, departure_at: str | None) -> tuple[int, Any]:
+    """Sort primarily by departure timestamp, then fall back to date-only or empty."""
+    parsed = _parse_timestamp(departure_at)
+    if parsed is not None:
+        return (0, parsed)
+    if seatmap.departure_date:
+        return (1, seatmap.departure_date)
+    return (2, "")
+
+
+def _seatmap_cabin_priority(seatmap: SeatMap) -> int:
+    """Return a priority value to render business-class layouts before economy when grouped."""
+    cabins: set[str] = set()
+    for deck in seatmap.decks or []:
+        for seat in deck.get("seats", []) or []:
+            cabin = seat.get("cabin")
+            if cabin:
+                cabins.add(str(cabin).upper())
+    if "BUSINESS" in cabins:
+        return 0
+    return 1
+def _parse_timestamp(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(value)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return parsed.astimezone()
+    return parsed
+
+
+def _resolve_data_timestamp(meta: dict[str, Any] | None, seatmaps_path: Path | None = None) -> datetime | None:
+    ts = None
+    if isinstance(meta, dict):
+        ts = _parse_timestamp(meta.get("fetched_at"))
+    if ts:
+        return ts
+    if seatmaps_path and seatmaps_path.exists():
+        try:
+            return datetime.fromtimestamp(seatmaps_path.stat().st_mtime).astimezone()
+        except OSError:
+            return None
+    return None
+
+
+def render_seatmaps(
+    entries: list[tuple[SeatMap, str, str]],
+    *,
+    image_output_path: Path | None = None,
+    data_timestamp: datetime | None = None,
+) -> None:
+    if not entries:
+        print("No seatmaps returned for this flight offer.")
+        return
+
+    ordered_entries = sorted(
+        entries,
+        key=lambda item: (
+            _seatmap_departure_sort_key(item[0], item[2]),
+            _seatmap_cabin_priority(item[0]),
+            _seatmap_row_bounds(item[0]),
+            item[1],
+        ),
+    )
+    seatmaps_renderer = SeatMaps([entry[0] for entry in ordered_entries])
+    styles = resolve_seatmap_style(SEATMAP_OUTPUT_STYLE)
+    styles = styles[:1] or ["ascii"]  # render only the first configured style (skip compact/others)
+    png_lines: list[str] = []
+
+    def _pad_to_width(text: str, width: int) -> str:
+        from display_utils import display_width as _dw
+
+        pad = max(width - _dw(text), 0)
+        return text + (" " * pad)
+
+    def _collapse_group(group_entries: list[tuple[str, list[str]]]) -> list[str]:
+        lines: list[str] = []
+        for idx, (label, content) in enumerate(group_entries):
+            if idx > 0:
+                lines.append("")
+            parts = label.split(" | ")
+            if parts:
+                title = " | ".join(parts[:-1]) if len(parts) > 1 else parts[0]
+                subtitle = parts[-1] if len(parts) > 1 else ""
+                lines.append(title)
+                if subtitle:
+                    lines.append(subtitle)
+            else:
+                lines.append(label)
+            lines.extend(content)
+        return lines
+
+    def _combine_columns(left: list[str], right: list[str]) -> list[str]:
+        if not right:
+            return left
+        from display_utils import display_width as _dw
+
+        left_width = max((_dw(line) for line in left), default=0)
+        combined: list[str] = []
+        max_len = max(len(left), len(right))
+        for idx in range(max_len):
+            l_text = left[idx] if idx < len(left) else ""
+            r_text = right[idx] if idx < len(right) else ""
+            combined.append(f"{_pad_to_width(l_text, left_width)}    {r_text}")
+        return combined
+
+    def _group_entries(rendered: list[tuple[SeatMap, str, list[str], str]]) -> list[list[tuple[str, list[str]]]]:
+        """Group seatmaps into pairs (Business/Economy) per flight, preserving order."""
+        if not rendered:
+            return []
+        groups: list[list[tuple[str, list[str]]]] = []
+        for idx in range(0, len(rendered), 2):
+            chunk = rendered[idx : idx + 2]
+            groups.append([(label, lines) for _, label, lines, _ in chunk])
+        return groups
+
+    def _pad_group_to_align(groups: list[list[tuple[str, list[str]]]]) -> list[list[str]]:
+        """Pad business blocks so economies start aligned across columns."""
+        padded_columns: list[list[str]] = []
+        max_business_height = 0
+        business_blocks: list[list[str]] = []
+        economy_blocks: list[list[str]] = []
+        for group in groups:
+            biz_lines = _collapse_group(group[:1]) if group else []
+            econ_lines = _collapse_group(group[1:2]) if len(group) > 1 else []
+            business_blocks.append(biz_lines)
+            economy_blocks.append(econ_lines)
+            max_business_height = max(max_business_height, len(biz_lines))
+        for biz, econ in zip(business_blocks, economy_blocks):
+            padded = list(biz)
+            if len(padded) < max_business_height:
+                padded.extend([""] * (max_business_height - len(padded)))
+            if econ:
+                if padded:
+                    padded.append("")
+                padded.extend(econ)
+            padded_columns.append(padded)
+        return padded_columns
+
+    def _render_style(style: str) -> list[str]:
+        rendered_entries: list[tuple[SeatMap, str, list[str], str]] = []
+        for seatmap_obj, label, departure_at in ordered_entries:
+            rendered = seatmaps_renderer.render_map(
+                seatmap_obj,
+                style=style,
+                thick_border=True,
+                show_header=False,
+            )
+            cleaned = rendered.lstrip("\n")
+            rendered_entries.append((seatmap_obj, label, cleaned.splitlines(), departure_at))
+
+        grouped = _group_entries(rendered_entries)
+        grouped = _pad_group_to_align(grouped)
+        blocks: list[str] = []
+        for idx in range(0, len(grouped), 2):
+            left_group = grouped[idx]
+            right_group = grouped[idx + 1] if idx + 1 < len(grouped) else None
+            left_lines = left_group
+            right_lines = right_group if right_group else []
+            combined = _combine_columns(left_lines, right_lines)
+            if blocks and combined:
+                blocks.append("")
+            blocks.extend(combined)
+        return blocks
+
+    for style in styles:
+        lines = _render_style(style)
+        if lines:
+            for line in lines:
+                print(line)
+            if image_output_path is not None:
+                if png_lines:
+                    png_lines.append("")
+                png_lines.extend(lines)
+                png_lines.append("")
+
+    if image_output_path is not None and png_lines:
+        combined_text = "\n".join(line.rstrip() for line in png_lines).rstrip()
+        save_text_block_png(
+            image_output_path.stem,
+            combined_text,
+            output_path=image_output_path,
+            occupied_replacement="XX",
+        )
+        print(f"\nSaved seatmap image to {image_output_path}")
+
+
+def parse_args() -> argparse.Namespace:
+    default_env = ENVIRONMENT if ENVIRONMENT in {"test", "production"} else "test"
+    parser = argparse.ArgumentParser(
+        description="Fetch seatmaps for a single flight offer and render them."
+    )
+    parser.add_argument("--date", required=True, type=_parse_date, help="Departure date (YYYY-MM-DD).")
+    parser.add_argument(
+        "--time",
+        required=True,
+        type=_parse_time,
+        help="Departure time (HH:MM or HH:MM:SS; sent to the API as HH:MM:SS).",
+    )
+    parser.add_argument("--from", dest="origin", required=True, help="Origin IATA code.")
+    parser.add_argument("--to", dest="destination", required=True, help="Destination IATA code.")
+    parser.add_argument(
+        "--class",
+        dest="travel_class",
+        default=None,
+        help="Travel class (omit to query both BUSINESS and ECONOMY).",
+    )
+    parser.add_argument("--airline", required=True, help="Airline IATA code to filter on (e.g., TG).")
+    parser.add_argument("--currency", default="EUR", help="Currency code for pricing (default: EUR).")
+    parser.add_argument(
+        "--max-offers",
+        type=int,
+        default=1,
+        help="Maximum flight offers to request (seatmaps fetched only when exactly one is returned).",
+    )
+    parser.add_argument(
+        "--environment",
+        default=default_env,
+        choices=["test", "production"],
+        help=f"Amadeus host to use (default: {default_env}).",
+    )
+    parser.add_argument(
+        "--cache-ttl-hours",
+        type=float,
+        default=DEFAULT_CACHE_TTL_HOURS,
+        help="Max age for cached responses before refetching (hours). Use 0 to force refresh.",
+    )
+    parser.add_argument(
+        "--force-refresh",
+        action="store_true",
+        help="Ignore cached data and fetch fresh responses.",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    load_dotenv()
+    args = parse_args()
+
+    travel_class = args.travel_class
+    cabins = [travel_class] if travel_class else ["BUSINESS", "ECONOMY"]
+    expected_seatmaps = len(cabins)
+    CACHE_BASE_DIR.mkdir(parents=True, exist_ok=True)
+    cache_dir = _cache_dir_for_request(
+        environment=args.environment,
+        origin=args.origin,
+        destination=args.destination,
+        date=args.date,
+        time=args.time,
+        travel_class=travel_class,
+        airline=args.airline,
+        currency=args.currency,
+    )
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_paths = _cache_paths(cache_dir)
+    seatmaps_request_path = cache_paths["seatmaps_request"]
+
+    seatmaps_request: dict[str, Any] | None = _load_json(seatmaps_request_path)
+    if args.force_refresh:
+        seatmaps_request = None
+    elif travel_class is None and isinstance(seatmaps_request, dict):
+        data_entries = seatmaps_request.get("data")
+        if not (isinstance(data_entries, list) and len(data_entries) >= len(cabins)):
+            # Rebuild the seatmaps request to include all cabins when missing.
+            seatmaps_request = None
+        else:
+            seatmaps_request = build_seatmaps_request(_dedupe_offer_ids_for_seatmaps(data_entries))
+    seatmap_records: list[dict[str, Any]] = []
+    cache_meta: dict[str, Any] | None = None
+    cached_offers = _load_json(cache_paths["offers"])
+    flight_offers: list[dict[str, Any]] = cached_offers if isinstance(cached_offers, list) else []
+
+    if isinstance(seatmaps_request, dict):
+        cached_seatmaps = _load_json(cache_paths["seatmaps"])
+        cache_meta = _load_json(cache_paths["meta"])
+        use_cached_seatmaps = (
+            not args.force_refresh
+            and _is_fresh(cache_paths["seatmaps"], args.cache_ttl_hours)
+            and isinstance(cached_seatmaps, list)
+            and len(cached_seatmaps) >= expected_seatmaps
+        )
+        if use_cached_seatmaps:
+            print(f"Using cached seatmaps from {cache_dir}.")
+            seatmap_records = cached_seatmaps  # type: ignore[assignment]
+            cache_meta = _build_metadata(True, cache_paths["seatmaps"], cache_meta, _current_command_args())
+            _dump_json(cache_paths["meta"], cache_meta)
+        else:
+            print("Refreshing seatmaps using existing seatmaps_request.json (skipping flight-offer search).")
+            amadeus = build_amadeus_client(args.environment)
+            seatmap_records = _sanitize_seatmaps(fetch_seatmaps(amadeus, seatmaps_request))
+            _write_seatmaps_with_diff(cache_paths["seatmaps"], seatmap_records)
+            existing_meta = _load_json(cache_paths["meta"])
+            cache_meta = _build_metadata(True, cache_paths["seatmaps"], existing_meta, _current_command_args())
+            _dump_json(cache_paths["meta"], cache_meta)
+    else:
+        cached_payload = None if args.force_refresh else _load_cache(cache_dir, args.cache_ttl_hours)
+        if cached_payload:
+            print(f"Using cached data from {cache_dir}.")
+            flight_offers, seatmap_records, cache_meta = cached_payload
+            if len(seatmap_records) < expected_seatmaps:
+                print("Cached seatmaps incomplete for requested cabins; refreshing.")
+                cached_payload = None
+                seatmap_records = []
+                flight_offers = []
+            else:
+                cache_meta = _build_metadata(True, cache_paths["seatmaps"], cache_meta, _current_command_args())
+                _dump_json(cache_paths["meta"], cache_meta)
+        if not cached_payload:
+            amadeus = build_amadeus_client(args.environment)
+            if travel_class is None:
+                batched_requests = [
+                    build_flight_offer_request(
+                        origin=args.origin,
+                        destination=args.destination,
+                        date=args.date,
+                        time=args.time,
+                        travel_class=cabin,
+                        airline=args.airline,
+                        currency=args.currency,
+                        max_offers=(2 if cabin.upper() == "ECONOMY" else args.max_offers),
+                    )
+                    for cabin in cabins
+                ]
+                flight_offer_request: dict[str, Any] = {"requests": batched_requests}
+                for cabin, payload in zip(cabins, batched_requests):
+                    out_path = cache_dir / f"flight_offer_request_{cabin.lower()}.json"
+                    _dump_json(out_path, payload)
+            else:
+                flight_offer_request = build_flight_offer_request(
+                    origin=args.origin,
+                    destination=args.destination,
+                    date=args.date,
+                    time=args.time,
+                    travel_class=travel_class,
+                    airline=args.airline,
+                    currency=args.currency,
+                    max_offers=args.max_offers,
+                )
+
+            flight_offers = fetch_flight_offers(amadeus, flight_offer_request)
+            _write_cache(cache_dir, request_body=flight_offer_request, flight_offers=flight_offers, seatmaps=None)
+
+            offer_count = len(flight_offers)
+            if travel_class is None:
+                print(f"Flight-offer search returned {offer_count} result(s) across cabins {', '.join(cabins)}.")
+                selected_offers = _select_offers_for_cabins(flight_offers, cabins)
+                if not selected_offers:
+                    print("No matching offers found for requested cabins; skipping seatmaps.")
+                    return
+                seatmaps_request = build_seatmaps_request(_dedupe_offer_ids_for_seatmaps(selected_offers))
+            else:
+                print(f"Flight-offer search returned {offer_count} result(s).")
+                if offer_count != 1:
+                    print("Seatmaps are only fetched when the search returns exactly one offer.")
+                    return
+                seatmaps_request = build_seatmaps_request(_dedupe_offer_ids_for_seatmaps([flight_offers[0]]))
+
+            seatmap_records = _sanitize_seatmaps(fetch_seatmaps(amadeus, seatmaps_request))
+            cache_meta = _write_cache(
+                cache_dir,
+                request_body=flight_offer_request,
+                flight_offers=flight_offers,
+                seatmaps_request=seatmaps_request,
+                seatmaps=seatmap_records,
+            )
+
+    offer_count = len(flight_offers)
+    if isinstance(seatmaps_request, dict) and offer_count == 0:
+        data = seatmaps_request.get("data")
+        if isinstance(data, list):
+            offer_count = len(data)
+    print(f"Flight-offer search returned {offer_count} result(s).")
+    if seatmaps_request is None and offer_count != 1:
+        print("Seatmaps are only fetched when the search returns exactly one offer.")
+        return
+
+    if seatmaps_request is None and flight_offers and len(flight_offers) == 1 and not seatmaps_request_path.exists():
+        seatmaps_request = build_seatmaps_request(_dedupe_offer_ids_for_seatmaps([flight_offers[0]]))
+        _dump_json(seatmaps_request_path, seatmaps_request)
+
+    render_seatmaps(
+        build_seatmap_objects(seatmap_records, travel_class=travel_class),
+        image_output_path=cache_dir / "seatmaps.png",
+        data_timestamp=_resolve_data_timestamp(cache_meta, cache_paths.get("seatmaps")),
+    )
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
+FILE: flight_search.py
+================================================
+import json
+from collections import defaultdict
+from dataclasses import dataclass
+from datetime import date, datetime, timedelta
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+from pathlib import Path
+import io
+import sys
+
+from display_utils import (
+    apply_bold_italic,
+    apply_emphasis_styles,
+    apply_italic_only,
+    apply_heatmap_header_color,
+    display_width,
+    pad_to_width,
+    pad_to_width_centered,
+    resolve_seatmap_style,
+    WEEKDAY_SHORT_NAMES,
+    weekday_short_name,
+)
+from png_utils import save_text_block_png
+from seatmap_display import SeatMaps, render_text_box
+from seatmap_data import (
+    SeatMap,
+    build_heatmap_entries,
+    build_heatmap_price_stats,
+    build_price_entries_all_dates,
+    compute_best_price_by_route,
+    compute_worst_price_by_route,
+    has_best_price_for_route,
+    has_worst_price_for_route,
+    iter_dates,
+    parse_total_price,
+)
+
+from config import (
+    HEATMAP_COLORS,
+    HEATMAP_SYMBOLS,
+    SEATMAP_OUTPUT_STYLE,
+    SHOW_SEATMAP_PRICE,
+    STATIC_LABELS,
+    HEATMAP_HEADER_COLOR,
+    TRAVEL_WINDOWS,
+)
+from colors import apply as apply_color, resolve as resolve_color, ANSI_RESET as COLORS_ANSI_RESET
+
+travel_windows = TRAVEL_WINDOWS
+
+travel_window_ranges = [
+    (
+        datetime.fromisoformat(window["start_date"]).date(),
+        datetime.fromisoformat(window["end_date"]).date(),
+    )
+    for window in travel_windows
+]
+
+route_travel_windows: dict[str, list[tuple[date, date]]] = defaultdict(list)
+for window in travel_windows:
+    start = datetime.fromisoformat(window["start_date"]).date()
+    end = datetime.fromisoformat(window["end_date"]).date()
+    route = f"{window['origin']}->{window['destination']}"
+    route_travel_windows[route].append((start, end))
+
+DATA_ROOT = Path(__file__).parent / "data"
+
+
+def _find_latest_data_dir(
+    base_dir: Path = DATA_ROOT,
+    filename_candidates: tuple[str, ...] | None = None,
+) -> Path:
+    """Return newest dated data dir; prefer ones containing any of filename_candidates."""
+    today_dir = base_dir / datetime.now().strftime("%Y%m%d")
+    dated_dirs: list[Path] = []
+    matching: list[Path] = []
+    if base_dir.exists():
+        for path in base_dir.iterdir():
+            if not path.is_dir():
+                continue
+            name = path.name
+            if len(name) != 8 or not name.isdigit():
+                continue
+            dated_dirs.append(path)
+            if filename_candidates:
+                if any((path / fname).exists() for fname in filename_candidates):
+                    matching.append(path)
+    if matching:
+        return sorted(matching)[-1]
+    if dated_dirs:
+        return sorted(dated_dirs)[-1]
+    return today_dir
+SEATMAP_FILE_CANDIDATES: tuple[str, ...] = (
+    "seatmap_responses.json",
+    "seatmaps_responses.json",
+)
+RETURN_PRICE_FILE_CANDIDATES: tuple[str, ...] = (
+    "pricing_responses_simple.json",
+    "prices_responses_simple.json",
+)
+ONEWAY_PRICE_FILE_CANDIDATES: tuple[str, ...] = (
+    "pricing_responses_simple_oneway.json",
+    "prices_responses_simple_oneway.json",
+    "prices_responses_oneway_simple.json",
+)
+
+DATA_DIR = _find_latest_data_dir(filename_candidates=SEATMAP_FILE_CANDIDATES)
+
+def _resolve_data_file(filename_candidates: tuple[str, ...], base_dir: Path = DATA_DIR) -> Path | None:
+    for name in filename_candidates:
+        candidate = base_dir / name
+        if candidate.exists():
+            return candidate
+    return None
+
+
+SEATMAP_DATA_PATH = _resolve_data_file(SEATMAP_FILE_CANDIDATES)
+RETURN_PRICE_DATA_PATH = _resolve_data_file(RETURN_PRICE_FILE_CANDIDATES)
+ONEWAY_PRICE_DATA_PATH = _resolve_data_file(ONEWAY_PRICE_FILE_CANDIDATES)
+
+
+def _normalize_price_timestamp(value: datetime | str | None) -> datetime | None:
+    if isinstance(value, datetime):
+        return value
+    if isinstance(value, str):
+        try:
+            return datetime.fromisoformat(value)
+        except ValueError:
+            return None
+    return None
+
+
+def _load_json_rows(path: Path | None) -> list[dict]:
+    if path is None or not path.exists():
+        return []
+    try:
+        with path.open(encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except json.JSONDecodeError:
+        return []
+    if isinstance(payload, dict) and isinstance(payload.get("data"), list):
+        return payload["data"]
+    if isinstance(payload, list):
+        return payload
+    return []
+
+
+def _collect_available_window_seats(decks: list[dict]) -> list[str]:
+    available = []
+    for deck in decks or []:
+        for seat in deck.get("seats", []):
+            traveler_pricing = seat.get("travelerPricing", [])
+            availability = traveler_pricing[0].get("seatAvailabilityStatus") if traveler_pricing else None
+            if availability != "AVAILABLE":
+                continue
+            if "W" not in seat.get("characteristicsCodes", []):
+                continue
+            seat_number = seat.get("number")
+            if seat_number:
+                available.append(seat_number)
+    return available
+
+
+def _load_oneway_price_lookup(base_dir: Path = DATA_DIR) -> dict[tuple[str, str], dict[str, object]]:
+    lookup: dict[tuple[str, str], dict[str, object]] = {}
+    rows = _load_json_rows(ONEWAY_PRICE_DATA_PATH or _resolve_data_file(ONEWAY_PRICE_FILE_CANDIDATES, base_dir))
+    for entry in rows:
+        route = entry.get("outbound_route")
+        outbound_date_iso = entry.get("outbound_date")
+        price = entry.get("price")
+        if not route or not outbound_date_iso or price is None:
+            continue
+        date_key = str(outbound_date_iso).replace("-", "")
+        lookup[(route, date_key)] = {
+            "price": str(price),
+            "currency": entry.get("currency"),
+            "timestamp": _normalize_price_timestamp(entry.get("captured_at")),
+        }
+    return lookup
+
+
+def load_seatmaps_from_json(data_dir: Path = DATA_DIR) -> list[SeatMap]:
+    """Load seatmaps from the dated JSON fixtures instead of the database."""
+    rows = _load_json_rows(SEATMAP_DATA_PATH or _resolve_data_file(SEATMAP_FILE_CANDIDATES, data_dir))
+    if not rows:
+        return []
+
+    price_lookup = _load_oneway_price_lookup(data_dir)
+    seatmaps: list[SeatMap] = []
+    for record in rows:
+        if not isinstance(record, dict):
+            continue
+        departure_info = record.get("departure", {}) or {}
+        arrival_info = record.get("arrival", {}) or {}
+        departure_at = str(departure_info.get("at") or "")
+        if "T" in departure_at:
+            departure_at = departure_at.split("T", 1)[0]
+        if not departure_at:
+            continue
+        departure_date = departure_at.replace("-", "")
+        origin = departure_info.get("iataCode") or ""
+        destination = arrival_info.get("iataCode") or ""
+        route = f"{origin}->{destination}"
+        carrier = record.get("carrierCode") or ""
+        number = str(record.get("number") or "")
+        aircraft_code = (record.get("aircraft") or {}).get("code") or "N/A"
+        decks = record.get("decks") or []
+        window_seats = _collect_available_window_seats(decks)
+        price_info = price_lookup.get((route, departure_date), {})
+        seatmaps.append(
+            SeatMap(
+                departure_date=departure_date,
+                origin=origin,
+                destination=destination,
+                carrier=carrier,
+                number=number,
+                aircraft_code=aircraft_code,
+                decks=decks,
+                window_seats=window_seats,
+                price_total=price_info.get("price"),
+                price_currency=price_info.get("currency"),
+                price_timestamp=price_info.get("timestamp"),
+            )
+        )
+    return seatmaps
+
+seatmap_records = load_seatmaps_from_json()
+seatmaps = SeatMaps(seatmap_records)
+
+if not seatmaps:
+    print(f"No seat maps available in {DATA_DIR}. Ensure the JSON fixtures are present.")
+    exit()
+
+seatmaps_by_date = {
+    seatmap_obj.departure_date: seatmap_obj
+    for seatmap_obj in seatmap_records
+}
+
+best_price_by_route = compute_best_price_by_route(seatmap_records)
+worst_price_by_route = compute_worst_price_by_route(seatmap_records)
+
+
+def build_route_price_metadata(seatmaps_obj: SeatMaps) -> dict[str, dict[str, dict[str, object]]]:
+    metadata: dict[str, dict[str, dict[str, object]]] = defaultdict(dict)
+    for seatmap_obj in seatmaps_obj:
+        route_key = f"{seatmap_obj.origin}->{seatmap_obj.destination}"
+        timestamp = _normalize_price_timestamp(getattr(seatmap_obj, "price_timestamp", None))
+        metadata[route_key][seatmap_obj.departure_date] = {
+            'price': parse_total_price(seatmap_obj.price_total),
+            'currency': (seatmap_obj.price_currency or '').upper() or None,
+            'timestamp': timestamp,
+            'has_window': bool(seatmap_obj.window_seats),
+        }
+    return metadata
+
+
+route_price_metadata = build_route_price_metadata(seatmaps)
+
+
+def build_seatmap_context_label(seatmaps_by_date: dict[str, SeatMap]) -> str | None:
+    """Return a bold/italic header summarizing routes + months for the seatmap grid."""
+    if not seatmaps_by_date:
+        return None
+
+    seen_routes: set[tuple[str, str]] = set()
+    route_order: list[tuple[str, str]] = []
+    month_order: list[tuple[int, int]] = []
+    seen_months: set[tuple[int, int]] = set()
+
+    for date_key in sorted(seatmaps_by_date):
+        seatmap = seatmaps_by_date[date_key]
+        route = (seatmap.origin, seatmap.destination)
+        if route not in seen_routes:
+            seen_routes.add(route)
+            route_order.append(route)
+        try:
+            parsed_date = datetime.strptime(date_key, '%Y%m%d')
+        except ValueError:
+            continue
+        month_key = (parsed_date.year, parsed_date.month)
+        if month_key not in seen_months:
+            seen_months.add(month_key)
+            month_order.append(month_key)
+
+    route_label = ' / '.join(f"{origin} -> {destination}" for origin, destination in route_order)
+    month_label = ' | '.join(datetime(year, month, 1).strftime('%B %Y') for year, month in month_order)
+    label_parts = [part for part in (route_label, month_label) if part]
+    if not label_parts:
+        return None
+    return apply_bold_italic(' — '.join(label_parts))
+
+
+class _TeeWriter:
+    """Duplicate stdout writes to a secondary buffer so we can render PNGs later."""
+    def __init__(self, *targets):
+        self.targets = targets
+
+    def write(self, data: str):
+        for target in self.targets:
+            target.write(data)
+
+    def flush(self):
+        for target in self.targets:
+            target.flush()
+
+
+def extract_section(full_text: str, start_marker: str, end_markers: list[str]) -> str:
+    """Slice a text block between markers (inclusive of the start marker)."""
+    if not start_marker:
+        return ''
+    start_idx = full_text.find(start_marker)
+    if start_idx == -1:
+        return ''
+    end_positions = [
+        pos for pos in (
+            full_text.find(marker, start_idx + len(start_marker)) for marker in end_markers
+        ) if pos != -1
+    ]
+    end_idx = min(end_positions) if end_positions else len(full_text)
+    return full_text[start_idx:end_idx].strip('\n')
+
+
+def append_footer(block: str, footer: str | None) -> str:
+    if not footer:
+        return block
+    return f"{block.rstrip()}\n\n{footer}"
+
+
+def trim_leading_blank_lines(block: str) -> str:
+    return block.lstrip('\n')
+
+
+def window_seat_sort_key(seat_label: str):
+    numeric_part = ''.join(filter(str.isdigit, seat_label))
+    return int(numeric_part or 0), seat_label
+
+
+def spaced_upper(text: str) -> str:
+    """Return text uppercased with a space between every character."""
+    return ' '.join(text.upper())
+
+
+def normalize_block(lines: list[str], width: int, height: int) -> list[str]:
+    """Ensure a block of text occupies a consistent rectangle."""
+    padded = [pad_to_width(line, width) for line in lines]
+    blank_line = ' ' * width
+    while len(padded) < height:
+        padded.append(blank_line)
+    return padded
+
+
+def is_within_travel_windows(date_key: str) -> bool:
+    """Return True if the provided YYYYMMDD date falls inside a travel window."""
+    target_date = None
+    for fmt in ('%Y%m%d', '%Y-%m-%d'):
+        try:
+            target_date = datetime.strptime(date_key, fmt).date()
+            break
+        except ValueError:
+            continue
+    if target_date is None:
+        return False
+    for start, end in travel_window_ranges:
+        if start <= target_date <= end:
+            return True
+    return False
+
+
+def build_placeholder_block(date_key: str, width: int, height: int) -> list[str]:
+    """Create a placeholder block for dates without seatmap data."""
+    lines: list[str] = []
+    show_date = is_within_travel_windows(date_key)
+    day_label = SeatMaps._format_day_of_month(date_key) if show_date else ''
+    lines.append(pad_to_width_centered(day_label, width))
+
+    blank_line = pad_to_width('', width)
+    while len(lines) < height:
+        lines.append(blank_line)
+    return lines
+
+
+HEATMAP_SYMBOL_MIN = HEATMAP_SYMBOLS['min']
+HEATMAP_SYMBOL_DEFAULT = HEATMAP_SYMBOLS['default']
+HEATMAP_SYMBOL_MAX = HEATMAP_SYMBOLS['max']
+HEATMAP_COLOR_MIN = HEATMAP_COLORS['min']
+HEATMAP_COLOR_DEFAULT = HEATMAP_COLORS['default']
+HEATMAP_COLOR_MAX = HEATMAP_COLORS['max']
+HEATMAP_CELL_WIDTH = max(
+    display_width(HEATMAP_SYMBOL_MIN),
+    display_width(HEATMAP_SYMBOL_DEFAULT),
+    display_width(HEATMAP_SYMBOL_MAX),
+    2,
+)
+HEATMAP_BLOCK_COLOR_MAP = {
+    HEATMAP_COLOR_MIN: 'bg_dark_green',
+    HEATMAP_COLOR_DEFAULT: 'bg_yellow',
+    HEATMAP_COLOR_MAX: 'bg_dark_red',
+}
+HEADER_WINDOW_FONT_COLOR = 'fg_white'
+
+
+def _block_color_for(color: str | None) -> str | None:
+    if not color:
+        return None
+    return HEATMAP_BLOCK_COLOR_MAP.get(color, color)
+
+
+@dataclass(frozen=True)
+class RoundtripAxisEntry:
+    date_key: str
+    date_obj: date
+    price: Decimal | None
+    has_window: bool
+
+
+@dataclass
+class RoundtripMatrixData:
+    outbound_route: str
+    return_route: str
+    outbound_axis: list[RoundtripAxisEntry]
+    return_axis: list[RoundtripAxisEntry]
+    matrix: list[list[Decimal | None]]
+    min_value: Decimal | None
+    max_value: Decimal | None
+
+
+def colorize_symbol(symbol: str, color: str | None) -> str:
+    if not symbol:
+        return ''
+    if not color:
+        return symbol
+    return apply_color(color, symbol)
+
+
+def heatmap_symbol(
+    price: Decimal | None,
+    min_price: Decimal | None,
+    max_price: Decimal | None,
+    *,
+    symbol_override: str | None = None,
+) -> str:
+    if price is None:
+        return ''
+    if min_price is None or max_price is None or min_price == max_price:
+        symbol = HEATMAP_SYMBOL_MIN
+        color = HEATMAP_COLOR_MIN
+    elif price == min_price:
+        symbol = HEATMAP_SYMBOL_MIN
+        color = HEATMAP_COLOR_MIN
+    elif price == max_price:
+        symbol = HEATMAP_SYMBOL_MAX
+        color = HEATMAP_COLOR_MAX
+    else:
+        symbol = HEATMAP_SYMBOL_DEFAULT
+        color = HEATMAP_COLOR_DEFAULT
+
+    if symbol_override is not None:
+        symbol = symbol_override
+        color = _block_color_for(color)
+    return colorize_symbol(symbol, color)
+
+
+def heatmap_color_code(price: Decimal | None, min_price: Decimal | None, max_price: Decimal | None) -> str | None:
+    if price is None:
+        return None
+    if min_price is None or max_price is None or min_price == max_price:
+        return HEATMAP_COLOR_MIN
+    if price == min_price:
+        return HEATMAP_COLOR_MIN
+    if price == max_price:
+        return HEATMAP_COLOR_MAX
+    return HEATMAP_COLOR_DEFAULT
+
+
+def format_heatmap_calendar(
+    route_key: str,
+    entries_by_route: dict[str, dict[str, Decimal]],
+    stats_by_route: dict[str, tuple[Decimal, Decimal]]
+) -> list[str]:
+    entries = entries_by_route.get(route_key)
+    windows = route_travel_windows.get(route_key)
+    if not entries or not windows:
+        return []
+    min_price, max_price = stats_by_route.get(route_key, (None, None))
+
+    def month_start(value: date) -> date:
+        return value.replace(day=1)
+
+    def next_month(value: date) -> date:
+        if value.month == 12:
+            return value.replace(year=value.year + 1, month=1, day=1)
+        return value.replace(month=value.month + 1, day=1)
+
+    def build_month_calendar(
+        month_anchor: date,
+        window_start: date,
+        window_end: date,
+    ) -> list[str]:
+        month_begin = month_anchor
+        month_end = next_month(month_begin) - timedelta(days=1)
+        visible_start = max(window_start, month_begin)
+        visible_end = min(window_end, month_end)
+        if visible_start > visible_end:
+            return []
+
+        day_header_plain = ' '.join(pad_to_width(name, HEATMAP_CELL_WIDTH) for name in WEEKDAY_SHORT_NAMES)
+        day_header = apply_heatmap_header_color(day_header_plain)
+        header_width = display_width(day_header_plain)
+        month_year_label = f"{month_begin.strftime('%b')} {month_begin.year}"
+        month_year_line = apply_heatmap_header_color(
+            pad_to_width_centered(month_year_label, header_width)
+        )
+
+        window_lines: list[str] = []
+        current = month_begin - timedelta(days=month_begin.weekday())
+        month_cutoff = month_end + timedelta(days=(6 - month_end.weekday()))
+        while current <= month_cutoff:
+            week_boxes: list[str] = []
+            week_has_data = False
+            for offset in range(7):
+                day = current + timedelta(days=offset)
+                in_month = month_begin <= day <= month_end
+                in_window = visible_start <= day <= visible_end
+                day_label = day.strftime('%d') if (in_month and in_window) else ''
+                if in_month and in_window:
+                    date_key = day.strftime('%Y%m%d')
+                    price = entries.get(date_key)
+                    if price is not None:
+                        week_has_data = True
+                        week_boxes.append(
+                            heatmap_symbol(
+                                price,
+                                min_price,
+                                max_price,
+                                symbol_override=day_label,
+                            )
+                        )
+                    else:
+                        week_boxes.append(day_label)
+                else:
+                    week_boxes.append('')
+            if week_has_data:
+                formatted_boxes = ' '.join(pad_to_width(token, HEATMAP_CELL_WIDTH) for token in week_boxes)
+                window_lines.append(formatted_boxes)
+                window_lines.append('')
+            current += timedelta(days=7)
+
+        while window_lines and not window_lines[-1].strip():
+            window_lines.pop()
+        if not window_lines:
+            return []
+        month_lines: list[str] = [month_year_line, day_header, '']
+        month_lines.extend(window_lines)
+        return month_lines
+
+    month_blocks: list[list[str]] = []
+    for window_start, window_end in windows:
+        if window_start > window_end:
+            continue
+        month_cursor = month_start(window_start)
+        while month_cursor <= window_end:
+            month_lines = build_month_calendar(month_cursor, window_start, window_end)
+            if month_lines:
+                content_width = max((display_width(line) for line in month_lines), default=0)
+                content_height = len(month_lines)
+                month_box = render_text_box(
+                    month_lines,
+                    content_width=content_width,
+                    content_height=content_height,
+                    border_color=SeatMaps.BORDER_COLOR_DEFAULT,
+                )
+                month_blocks.append(month_box)
+            month_cursor = next_month(month_cursor)
+    if not month_blocks:
+        return []
+
+    lines: list[str] = []
+    columns = 2
+    for idx in range(0, len(month_blocks), columns):
+        row_blocks = month_blocks[idx:idx + columns]
+        if not row_blocks:
+            continue
+        block_widths = [
+            max((display_width(line) for line in block), default=0)
+            for block in row_blocks
+        ]
+        max_height = max(len(block) for block in row_blocks)
+        normalized_blocks: list[list[str]] = []
+        for block, width in zip(row_blocks, block_widths):
+            padded_lines = [pad_to_width(line, width) for line in block]
+            blank_line = ' ' * width
+            while len(padded_lines) < max_height:
+                padded_lines.append(blank_line)
+            normalized_blocks.append(padded_lines)
+        for line_idx in range(max_height):
+            lines.append('  '.join(block[line_idx] for block in normalized_blocks))
+        lines.append('')
+    while lines and not lines[-1].strip():
+        lines.pop()
+    return lines
+
+
+def _resolve_primary_roundtrip_routes() -> tuple[dict, dict, str, str] | None:
+    if len(travel_windows) < 2:
+        return None
+    outbound_window, return_window = travel_windows[:2]
+    outbound_route = f"{outbound_window['origin']}->{outbound_window['destination']}"
+    return_route = f"{return_window['origin']}->{return_window['destination']}"
+    return outbound_window, return_window, outbound_route, return_route
+
+
+def _build_roundtrip_axes(
+    outbound_window: dict,
+    return_window: dict,
+    *,
+    outbound_route: str,
+    return_route: str,
+    outbound_entries: dict[str, Decimal],
+    return_entries: dict[str, Decimal],
+    highlight_entries: dict[str, dict[str, Decimal]] | None = None,
+) -> tuple[list[RoundtripAxisEntry], list[RoundtripAxisEntry]]:
+    def build_axis(
+        window: dict,
+        route_entries: dict[str, Decimal],
+        highlight_lookup: dict[str, Decimal] | None,
+    ) -> list[RoundtripAxisEntry]:
+        axis: list[RoundtripAxisEntry] = []
+        for date_iso in iter_dates(window["start_date"], window["end_date"]):
+            date_obj = datetime.fromisoformat(date_iso).date()
+            date_key = date_obj.strftime('%Y%m%d')
+            has_window = bool(highlight_lookup and date_key in highlight_lookup)
+            axis.append(
+                RoundtripAxisEntry(
+                    date_key=date_key,
+                    date_obj=date_obj,
+                    price=route_entries.get(date_key),
+                    has_window=has_window,
+                )
+            )
+        return axis
+
+    outbound_highlights = highlight_entries.get(outbound_route) if highlight_entries else None
+    return_highlights = highlight_entries.get(return_route) if highlight_entries else None
+    outbound_axis = build_axis(outbound_window, outbound_entries, outbound_highlights)
+    return_axis = build_axis(return_window, return_entries, return_highlights)
+    return outbound_axis, return_axis
+
+
+def _build_axes_from_date_list(
+    outbound_dates: list[str],
+    return_dates: list[str],
+    *,
+    outbound_route: str,
+    return_route: str,
+    highlight_entries: dict[str, dict[str, Decimal]] | None = None,
+) -> tuple[list[RoundtripAxisEntry], list[RoundtripAxisEntry]]:
+    def build_axis(
+        iso_dates: list[str],
+        highlight_lookup: dict[str, Decimal] | None,
+    ) -> list[RoundtripAxisEntry]:
+        axis: list[RoundtripAxisEntry] = []
+        for iso_date in iso_dates:
+            date_obj = datetime.fromisoformat(iso_date).date()
+            date_key = date_obj.strftime('%Y%m%d')
+            has_window = bool(highlight_lookup and date_key in highlight_lookup)
+            axis.append(
+                RoundtripAxisEntry(
+                    date_key=date_key,
+                    date_obj=date_obj,
+                    price=None,
+                    has_window=has_window,
+                )
+            )
+        return axis
+
+    outbound_highlights = highlight_entries.get(outbound_route) if highlight_entries else None
+    return_highlights = highlight_entries.get(return_route) if highlight_entries else None
+    outbound_axis = build_axis(outbound_dates, outbound_highlights)
+    return_axis = build_axis(return_dates, return_highlights)
+    return outbound_axis, return_axis
+
+
+def build_roundtrip_matrix_data(
+    heatmap_entries: dict[str, dict[str, Decimal]],
+    *,
+    highlight_entries: dict[str, dict[str, Decimal]] | None = None,
+) -> RoundtripMatrixData | None:
+    route_info = _resolve_primary_roundtrip_routes()
+    if route_info is None or not heatmap_entries:
+        return None
+
+    outbound_window, return_window, outbound_route, return_route = route_info
+    outbound_entries = heatmap_entries.get(outbound_route, {})
+    return_entries = heatmap_entries.get(return_route, {})
+
+    outbound_axis, return_axis = _build_roundtrip_axes(
+        outbound_window,
+        return_window,
+        outbound_route=outbound_route,
+        return_route=return_route,
+        outbound_entries=outbound_entries,
+        return_entries=return_entries,
+        highlight_entries=highlight_entries,
+    )
+    if not outbound_axis or not return_axis:
+        return None
+
+    combined_matrix: list[list[Decimal | None]] = []
+    combined_values: list[Decimal] = []
+    for return_entry in return_axis:
+        row: list[Decimal | None] = []
+        for outbound_entry in outbound_axis:
+            outbound_price = outbound_entry.price
+            return_price = return_entry.price
+            if outbound_price is not None and return_price is not None:
+                combined = outbound_price + return_price
+                combined_values.append(combined)
+                row.append(combined)
+            else:
+                row.append(None)
+        combined_matrix.append(row)
+
+    min_combined = min(combined_values) if combined_values else None
+    max_combined = max(combined_values) if combined_values else None
+    return RoundtripMatrixData(
+        outbound_route=outbound_route,
+        return_route=return_route,
+        outbound_axis=outbound_axis,
+        return_axis=return_axis,
+        matrix=combined_matrix,
+        min_value=min_combined,
+        max_value=max_combined,
+    )
+
+
+def build_roundtrip_matrix_from_table(
+    table_name: str,
+    *,
+    highlight_entries: dict[str, dict[str, Decimal]] | None = None,
+) -> RoundtripMatrixData | None:
+    route_info = _resolve_primary_roundtrip_routes()
+    if route_info is None:
+        return None
+    if table_name != "return_prices":
+        raise ValueError(f"Unsupported table for roundtrip matrix: {table_name}")
+
+    _, _, outbound_route, return_route = route_info
+    rows = _load_json_rows(RETURN_PRICE_DATA_PATH or _resolve_data_file(RETURN_PRICE_FILE_CANDIDATES))
+    if not rows:
+        return None
+
+    price_lookup: dict[tuple[str, str], Decimal] = {}
+    for entry in rows:
+        if entry.get("outbound_route") != outbound_route or entry.get("return_route") != return_route:
+            continue
+        outbound_iso = str(entry.get("outbound_date") or "")
+        return_iso = str(entry.get("return_date") or "")
+        price_value = entry.get("price")
+        if not outbound_iso or not return_iso or price_value is None:
+            continue
+        try:
+            price_decimal = Decimal(str(price_value))
+        except (InvalidOperation, ValueError, TypeError):
+            continue
+        price_lookup[(outbound_iso, return_iso)] = price_decimal
+
+    if not price_lookup:
+        return None
+
+    outbound_iso_dates = sorted({key[0] for key in price_lookup})
+    return_iso_dates = sorted({key[1] for key in price_lookup})
+    if not outbound_iso_dates or not return_iso_dates:
+        return None
+
+    def build_continuous_dates(sorted_dates: list[str]) -> list[str]:
+        try:
+            start_date = datetime.fromisoformat(sorted_dates[0]).date()
+            end_date = datetime.fromisoformat(sorted_dates[-1]).date()
+        except ValueError:
+            return []
+        days = (end_date - start_date).days
+        return [
+            (start_date + timedelta(days=offset)).isoformat()
+            for offset in range(days + 1)
+        ]
+
+    outbound_range = build_continuous_dates(outbound_iso_dates)
+    return_range = build_continuous_dates(return_iso_dates)
+    if not outbound_range or not return_range:
+        return None
+
+    outbound_axis, return_axis = _build_axes_from_date_list(
+        outbound_range,
+        return_range,
+        outbound_route=outbound_route,
+        return_route=return_route,
+        highlight_entries=highlight_entries,
+    )
+    if not outbound_axis or not return_axis:
+        return None
+
+    combined_matrix: list[list[Decimal | None]] = []
+    combined_values: list[Decimal] = []
+    for return_entry in return_axis:
+        row: list[Decimal | None] = []
+        for outbound_entry in outbound_axis:
+            outbound_iso = outbound_entry.date_obj.strftime('%Y-%m-%d')
+            return_iso = return_entry.date_obj.strftime('%Y-%m-%d')
+            combined_value = price_lookup.get((outbound_iso, return_iso))
+            if combined_value is not None:
+                combined_values.append(combined_value)
+            row.append(combined_value)
+        combined_matrix.append(row)
+
+    min_combined = min(combined_values) if combined_values else None
+    max_combined = max(combined_values) if combined_values else None
+    return RoundtripMatrixData(
+        outbound_route=outbound_route,
+        return_route=return_route,
+        outbound_axis=outbound_axis,
+        return_axis=return_axis,
+        matrix=combined_matrix,
+        min_value=min_combined,
+        max_value=max_combined,
+    )
+
+
+def format_roundtrip_price_heatmap(
+    heatmap_entries: dict[str, dict[str, Decimal]],
+    *,
+    title: str | None = None,
+    highlight_entries: dict[str, dict[str, Decimal]] | None = None,
+    emphasize_highlights: bool = True,
+    highlight_emphasis: str = 'config',
+    matrix_data: RoundtripMatrixData | None = None,
+    show_price_sum_suffix: bool = True,
+) -> list[str]:
+    """Return a combined outbound/return heatmap covering the first two travel windows."""
+    matrix = matrix_data or build_roundtrip_matrix_data(
+        heatmap_entries,
+        highlight_entries=highlight_entries,
+    )
+    if matrix is None:
+        return []
+
+    outbound_axis = matrix.outbound_axis
+    return_axis = matrix.return_axis
+    combined_matrix = matrix.matrix
+    min_combined = matrix.min_value
+    max_combined = matrix.max_value
+
+    def apply_highlight_style(text: str, enabled: bool) -> str:
+        if not enabled or not text:
+            return text
+        if highlight_emphasis == 'italic':
+            return apply_italic_only(text)
+        if highlight_emphasis == 'bold_italic':
+            return apply_bold_italic(text)
+        return apply_emphasis_styles(text, enabled=True)
+
+    def style_header_label(text: str, *, available: bool, allow_highlight: bool = True) -> str:
+        if not text:
+            return text
+        if allow_highlight and available:
+            return apply_color(HEADER_WINDOW_FONT_COLOR, text)
+        return apply_heatmap_header_color(text)
+
+    def format_cell(value: Decimal | None, *, emphasize: bool = False) -> str:
+        if value is None:
+            return ''
+        rounded_value = value.quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+        color = heatmap_color_code(value, min_combined, max_combined)
+        text = str(rounded_value)
+        if color:
+            text = apply_color(color, text)
+        return apply_highlight_style(text, emphasize)
+
+    rendered_rows: list[list[str]] = []
+    should_emphasize = bool(highlight_entries) and emphasize_highlights
+    for row_idx, row in enumerate(combined_matrix):
+        return_has_window = return_axis[row_idx].has_window
+        rendered_row: list[str] = []
+        for col_idx, value in enumerate(row):
+            outbound_has_window = outbound_axis[col_idx].has_window
+            emphasize_cell = should_emphasize and outbound_has_window and return_has_window
+            rendered_row.append(format_cell(value, emphasize=emphasize_cell))
+        rendered_rows.append(rendered_row)
+
+    def format_date_label(value: date) -> str:
+        return value.strftime('%d')
+
+    row_labels = [
+        f"{weekday_short_name(entry.date_obj)} {format_date_label(entry.date_obj)}"
+        for entry in return_axis
+    ]
+    column_labels: list[str] = []
+    column_weekdays: list[str] = []
+    column_months: list[str] = []
+    previous_month: str | None = None
+    for entry in outbound_axis:
+        weekday_label = weekday_short_name(entry.date_obj)
+        date_label = format_date_label(entry.date_obj)
+        if weekday_label == 'Mo':
+            weekday_label = f"|{weekday_label}"
+            date_label = f"|{date_label}"
+        column_weekdays.append(weekday_label)
+        column_labels.append(date_label)
+        month_str = entry.date_obj.strftime('%b')
+        if month_str != previous_month:
+            column_months.append(month_str)
+            previous_month = month_str
+        else:
+            column_months.append('')
+
+    column_split_indices: set[int] = set()
+    previous_column_month: int | None = None
+    for idx, entry in enumerate(outbound_axis):
+        month_value = entry.date_obj.month
+        if previous_column_month is not None and month_value != previous_column_month:
+            column_split_indices.add(idx)
+        previous_column_month = month_value
+
+    row_months: list[str] = []
+    previous_row_month: str | None = None
+    for entry in return_axis:
+        month_str = entry.date_obj.strftime('%b')
+        if month_str != previous_row_month:
+            row_months.append(month_str)
+            previous_row_month = month_str
+        else:
+            row_months.append('')
+
+    row_split_indices: set[int] = set()
+    previous_row_month_value: int | None = None
+    for idx, entry in enumerate(return_axis):
+        month_value = entry.date_obj.month
+        if previous_row_month_value is not None and month_value != previous_row_month_value:
+            row_split_indices.add(idx)
+        previous_row_month_value = month_value
+
+    cell_width_candidates = [display_width(cell) for row in rendered_rows for cell in row]
+    cell_width_candidates.extend(display_width(label) for label in column_labels)
+    cell_width_candidates.extend(display_width(label) for label in column_weekdays)
+    cell_width_candidates.extend(display_width(label) for label in column_months)
+    cell_width = max(cell_width_candidates) if cell_width_candidates else 4
+
+    row_month_header = ''
+    row_month_width_candidates = [display_width(row_month_header)]
+    row_month_width_candidates.extend(display_width(label) for label in row_months)
+    row_month_width = max(row_month_width_candidates) if row_month_width_candidates else 0
+
+    row_label_header = ''
+    row_label_width_candidates = [display_width(row_label_header)]
+    row_label_width_candidates.extend(display_width(label) for label in row_labels)
+    row_label_width = max(row_label_width_candidates) if row_label_width_candidates else 0
+    default_title = STATIC_LABELS['roundtrip_title_template'].format(
+        outbound_route=matrix.outbound_route,
+        return_route=matrix.return_route,
+    )
+    suffix = "[prices sum two one-way fares]" if show_price_sum_suffix else ""
+    title_line = f"{title or default_title} {suffix}".strip()
+
+    separator_color = HEATMAP_HEADER_COLOR
+
+    def paint_separator(text: str) -> str:
+        return apply_color(separator_color, text) if separator_color else text
+
+    row_header_separator = paint_separator('│')
+    vertical_separator = paint_separator('│')
+
+    def build_separator_line() -> str:
+        parts: list[str] = [
+            '─' * max(1, row_month_width),
+            '─' * max(1, row_label_width),
+            '┼',
+        ]
+        for col_idx in range(len(outbound_axis)):
+            if col_idx in column_split_indices:
+                parts.append('┼')
+            parts.append('─' * max(1, cell_width))
+        colored_parts = [paint_separator(part) for part in parts]
+        joiner = paint_separator('─')
+        return joiner.join(colored_parts)
+
+    content_lines: list[str] = []
+    if column_labels:
+        left_padding_cells = [
+            pad_to_width('', row_month_width),
+            pad_to_width('', row_label_width),
+            row_header_separator,
+        ]
+        year_cells = left_padding_cells[:]
+        for idx, (axis_entry, label) in enumerate(zip(outbound_axis, column_months)):
+            if idx in column_split_indices:
+                year_cells.append(vertical_separator)
+            styled_label = style_header_label(label, available=axis_entry.has_window, allow_highlight=False)
+            year_cells.append(pad_to_width_centered(styled_label, cell_width))
+        content_lines.append(' '.join(year_cells))
+
+        weekday_cells = left_padding_cells[:]
+        for idx, (axis_entry, label) in enumerate(zip(outbound_axis, column_weekdays)):
+            if idx in column_split_indices:
+                weekday_cells.append(vertical_separator)
+            styled_label = style_header_label(label, available=axis_entry.has_window)
+            if label.startswith('|'):
+                weekday_cells.append(pad_to_width(styled_label, cell_width))
+            else:
+                weekday_cells.append(pad_to_width_centered(styled_label, cell_width))
+        content_lines.append(' '.join(weekday_cells))
+
+        date_cells = [
+            pad_to_width(row_month_header, row_month_width),
+            pad_to_width(row_label_header, row_label_width),
+            row_header_separator,
+        ]
+        for idx, (axis_entry, label) in enumerate(zip(outbound_axis, column_labels)):
+            if idx in column_split_indices:
+                date_cells.append(vertical_separator)
+            styled_label = style_header_label(label, available=axis_entry.has_window)
+            date_cells.append(pad_to_width_centered(styled_label, cell_width))
+        content_lines.append(' '.join(date_cells))
+        content_lines.append(build_separator_line())
+
+    horizontal_separator = paint_separator(pad_to_width('─' * max(1, row_month_width), row_month_width))
+    horizontal_label_separator = paint_separator(pad_to_width('─' * max(1, row_label_width), row_label_width))
+    data_separator_cell = paint_separator(pad_to_width('─' * max(1, cell_width), cell_width))
+    cross_separator = paint_separator('┼')
+
+    for row_idx, (axis_entry, month_label, label, row_cells) in enumerate(zip(return_axis, row_months, row_labels, rendered_rows)):
+        if row_idx in row_split_indices:
+            separator_line_parts = [
+                horizontal_separator,
+                horizontal_label_separator,
+                cross_separator,
+            ]
+            for col_idx in range(len(outbound_axis)):
+                if col_idx in column_split_indices:
+                    separator_line_parts.append(cross_separator)
+                separator_line_parts.append(data_separator_cell)
+            separator_joiner = paint_separator('─')
+            content_lines.append(separator_joiner.join(separator_line_parts))
+        styled_month = style_header_label(month_label, available=axis_entry.has_window, allow_highlight=False)
+        styled_label = style_header_label(label, available=axis_entry.has_window)
+        row_line = [
+            pad_to_width(styled_month, row_month_width),
+            pad_to_width(styled_label, row_label_width),
+            row_header_separator,
+        ]
+        for col_idx, cell in enumerate(row_cells):
+            if col_idx in column_split_indices:
+                row_line.append(vertical_separator)
+            row_line.append(pad_to_width(cell, cell_width))
+        content_lines.append(' '.join(row_line))
+
+    content_width = max((display_width(line) for line in content_lines), default=0)
+    bordered_lines = render_text_box(
+        content_lines,
+        content_width=content_width,
+        content_height=len(content_lines),
+        border_color=SeatMaps.BORDER_COLOR_DEFAULT,
+    )
+    return ['', title_line, *bordered_lines, '']
+
+
+def render_availability_boxes(
+    route_lines: dict[str, list[str]],
+    *,
+    route_order: list[str] | None = None,
+    heatmap_entries: dict[str, dict[str, Decimal]] | None = None,
+    heatmap_stats: dict[str, tuple[Decimal, Decimal]] | None = None,
+) -> None:
+    if not route_lines:
+        return
+    if route_order:
+        ordered_routes = [route for route in route_order if route in route_lines]
+    else:
+        ordered_routes = sorted(route_lines)
+    box_contents: list[tuple[list[str], list[str] | None]] = []
+    for route in ordered_routes:
+        entries = route_lines[route] or [STATIC_LABELS['no_window_seats']]
+        lines = [route]
+        if entries:
+            lines.append('')
+        lines.extend(entries)
+        calendar_box: list[str] | None = None
+        if heatmap_entries and heatmap_stats:
+            heatmap_lines = format_heatmap_calendar(route, heatmap_entries, heatmap_stats)
+            if heatmap_lines:
+                calendar_box = heatmap_lines
+        box_contents.append((lines, calendar_box))
+
+    if not box_contents:
+        return
+
+    content_height = 0
+    for base_lines, calendar_box in box_contents:
+        total_len = len(base_lines)
+        if calendar_box:
+            if base_lines and base_lines[-1].strip():
+                total_len += 1  # spacer between entries and calendar
+            total_len += len(calendar_box)
+        content_height = max(content_height, total_len)
+
+    normalized_contents: list[list[str]] = []
+    for base_lines, calendar_box in box_contents:
+        lines = list(base_lines)
+        if calendar_box:
+            if lines and lines[-1].strip():
+                lines.append('')
+            padding_target = content_height - len(calendar_box)
+            if len(lines) < padding_target:
+                lines.extend([''] * (padding_target - len(lines)))
+            lines.extend(calendar_box)
+        else:
+            if len(lines) < content_height:
+                lines.extend([''] * (content_height - len(lines)))
+        normalized_contents.append(lines)
+
+    content_width = max(
+        (
+            (max(display_width(line) for line in lines) if lines else 0)
+            for lines in normalized_contents
+        ),
+        default=0,
+    )
+    boxes = [
+        render_text_box(
+            lines,
+            content_width=content_width,
+            content_height=content_height,
+            border_color=SeatMaps.BORDER_COLOR_DEFAULT,
+        )
+        for lines in normalized_contents
+    ]
+    if not boxes:
+        return
+    box_height = len(boxes[0])
+    for row_idx in range(box_height):
+        row_segments = [box[row_idx] for box in boxes]
+        print('  '.join(row_segments))
+
+
+def print_weekly_layout(
+    seatmaps_obj: SeatMaps,
+    seatmaps_by_date: dict[str, SeatMap],
+    *,
+    best_price_by_route: dict[tuple[str, str], Decimal] | None = None,
+    worst_price_by_route: dict[tuple[str, str], Decimal] | None = None,
+    style: str = 'ascii',
+) -> None:
+    """Print seatmaps grouped by week, filling missing days with placeholders."""
+    if not seatmaps_by_date:
+        return
+
+    rendered_blocks: dict[str, list[str]] = {}
+    max_width = 0
+    max_height = 0
+    for date_key, seatmap_obj in seatmaps_by_date.items():
+        highlight_state: str | None = None
+        if best_price_by_route and has_best_price_for_route(seatmap_obj, best_price_by_route):
+            highlight_state = 'best'
+        elif worst_price_by_route and has_worst_price_for_route(seatmap_obj, worst_price_by_route):
+            highlight_state = 'worst'
+        block_lines = seatmaps_obj.render_map(
+            seatmap_obj,
+            highlight=highlight_state,
+            style=style,
+            thick_border=bool(seatmap_obj.window_seats),
+        ).splitlines()
+        while block_lines and not block_lines[0].strip():
+            block_lines = block_lines[1:]
+        if SHOW_SEATMAP_PRICE:
+            price_text = seatmap_obj.formatted_total_price(rounded=True) or "N/A"
+            block_lines.append(f"{STATIC_LABELS['price_label']}: {price_text}")
+        rendered_blocks[date_key] = block_lines
+        if block_lines:
+            width = max(display_width(line) for line in block_lines)
+            max_width = max(max_width, width)
+            max_height = max(max_height, len(block_lines))
+
+    if max_width == 0 or max_height == 0:
+        return
+
+    week_row_width = (max_width * 7) + (2 * 6)
+    sorted_dates = sorted(datetime.strptime(key, '%Y%m%d') for key in seatmaps_by_date.keys())
+    start_date = sorted_dates[0] - timedelta(days=sorted_dates[0].weekday())
+    end_date = sorted_dates[-1] + timedelta(days=(6 - sorted_dates[-1].weekday()))
+    current = start_date
+    placeholder_cache: dict[str, list[str]] = {}
+    previous_week_signature: tuple[str, ...] | None = None
+    previous_month_key: tuple[int, int] | None = None
+    previous_route_label: str | None = None
+
+    while current <= end_date:
+        weekly_blocks: list[list[str]] = []
+        week_has_data = False
+        week_routes: set[str] = set()
+        week_data_dates: list[datetime] = []
+        for offset in range(7):
+            current_date = current + timedelta(days=offset)
+            date_key = current_date.strftime('%Y%m%d')
+            block_lines = rendered_blocks.get(date_key)
+            if block_lines is None:
+                block_lines = placeholder_cache.setdefault(
+                    date_key,
+                    build_placeholder_block(date_key, max_width, max_height)
+                )
+            else:
+                week_has_data = True
+                seatmap = seatmaps_by_date.get(date_key)
+                if seatmap is not None:
+                    week_routes.add(f"{seatmap.origin}->{seatmap.destination}")
+                    try:
+                        week_data_dates.append(datetime.strptime(date_key, '%Y%m%d'))
+                    except ValueError:
+                        pass
+                block_lines = normalize_block(block_lines, max_width, max_height)
+            weekly_blocks.append(block_lines)
+
+        if not week_has_data:
+            current += timedelta(days=7)
+            continue
+
+        month_reference_date = min(week_data_dates) if week_data_dates else current
+        month_key = (month_reference_date.year, month_reference_date.month)
+        if month_key != previous_month_key:
+            route_label = ' / '.join(sorted(week_routes)) if week_routes else ''
+            month_label = datetime(month_reference_date.year, month_reference_date.month, 1).strftime('%B %Y')
+            month_label = spaced_upper(month_label)
+            if route_label and route_label != previous_route_label:
+                boxed_route = render_text_box(
+                    [apply_bold_italic(route_label)],
+                    content_width=display_width(route_label),
+                    content_height=1,
+                    border_color=SeatMaps.BORDER_COLOR_DEFAULT,
+                )
+                for line in boxed_route:
+                    print(line)
+                print()
+                previous_route_label = route_label
+            target_width = max(week_row_width, display_width(month_label))
+            centered_month = apply_heatmap_header_color(pad_to_width_centered(month_label, target_width))
+            underline = apply_color(HEATMAP_HEADER_COLOR, '─' * target_width) if target_width > 0 else ''
+            print(centered_month)
+            if underline:
+                print(underline)
+            print()
+            previous_month_key = month_key
+
+        week_signature = tuple(sorted(week_routes))
+        if previous_week_signature and week_signature != previous_week_signature:
+            print()
+
+        for line_idx in range(max_height):
+            print('  '.join(block[line_idx] for block in weekly_blocks))
+        print()
+
+        previous_week_signature = week_signature
+        current += timedelta(days=7)
+
+
+original_stdout = sys.stdout
+output_buffer = io.StringIO()
+sys.stdout = _TeeWriter(original_stdout, output_buffer)
+
+selected_seatmap_styles = resolve_seatmap_style(SEATMAP_OUTPUT_STYLE)
+
+print("\n\n")
+
+seatmap_context_label = build_seatmap_context_label(seatmaps_by_date)
+section_slices: dict[str, str] = {}
+last_slice_end = 0
+for idx, style in enumerate(selected_seatmap_styles):
+    if seatmaps_by_date:
+        if style == 'compact':
+            print(STATIC_LABELS['compact_seatmap_heading'])
+        elif len(selected_seatmap_styles) > 1:
+            normal_heading = STATIC_LABELS.get('normal_seatmap_heading')
+            if normal_heading:
+                print(normal_heading)
+    print_weekly_layout(
+        seatmaps,
+        seatmaps_by_date,
+        best_price_by_route=best_price_by_route,
+        worst_price_by_route=worst_price_by_route,
+        style=style,
+    )
+    # Capture the newly appended chunk for this style to avoid double-rendering in PNGs.
+    current_text = output_buffer.getvalue()
+    section_slices[style] = current_text[last_slice_end:]
+    last_slice_end = len(current_text)
+    if idx < len(selected_seatmap_styles) - 1:
+        print()
+
+if seatmaps_by_date:
+    print(STATIC_LABELS['availability_heading'])
+    heatmap_entries = build_heatmap_entries(seatmaps_by_date, travel_windows)
+    heatmap_stats = build_heatmap_price_stats(heatmap_entries)
+    all_price_entries = build_price_entries_all_dates(seatmaps_by_date, travel_windows)
+    availability_by_route: dict[str, list[str]] = {}
+    route_first_date: dict[str, str] = {}
+    for date_key in sorted(seatmaps_by_date):
+        seatmap = seatmaps_by_date[date_key]
+        route_key = f"{seatmap.origin}->{seatmap.destination}"
+        route_first_date.setdefault(route_key, date_key)
+        seats = seatmap.window_seats
+        if not seats:
+            availability_by_route.setdefault(route_key, [])
+            continue
+        sorted_seats = ', '.join(sorted(seats, key=window_seat_sort_key))
+        formatted_date = datetime.strptime(date_key, '%Y%m%d').strftime('%Y-%m-%d')
+        price_text = seatmap.formatted_total_price(rounded=True) or "N/A"
+        price_decimal = heatmap_entries.get(route_key, {}).get(date_key)
+        min_price, max_price = heatmap_stats.get(route_key, (None, None))
+        colored_date = apply_heatmap_header_color(formatted_date)
+        price_color = heatmap_color_code(price_decimal, min_price, max_price)
+        colored_price = apply_color(price_color, price_text) if price_color else price_text
+        availability_by_route.setdefault(route_key, []).append(
+            f"{colored_date} {colored_price}: {sorted_seats}"
+        )
+
+    if availability_by_route:
+        ordered_routes = sorted(route_first_date, key=route_first_date.get)
+        render_availability_boxes(
+            availability_by_route,
+            route_order=ordered_routes,
+            heatmap_entries=heatmap_entries,
+            heatmap_stats=heatmap_stats,
+        )
+
+    window_matrix = build_roundtrip_matrix_data(heatmap_entries)
+    window_roundtrip_heatmap = format_roundtrip_price_heatmap(
+        heatmap_entries,
+        title=STATIC_LABELS['roundtrip_window_title'],
+        matrix_data=window_matrix,
+    ) if window_matrix else []
+    if window_roundtrip_heatmap:
+        print()
+        for line in window_roundtrip_heatmap:
+            print(line)
+
+    all_price_matrix = build_roundtrip_matrix_data(
+        all_price_entries,
+        highlight_entries=heatmap_entries,
+    )
+    if all_price_matrix:
+        all_price_roundtrip_heatmap = format_roundtrip_price_heatmap(
+            all_price_entries,
+            title=STATIC_LABELS['roundtrip_all_title'],
+            highlight_entries=heatmap_entries,
+            emphasize_highlights=True,
+            highlight_emphasis='bold_italic',
+            matrix_data=all_price_matrix,
+        )
+    else:
+        all_price_roundtrip_heatmap = []
+    if all_price_roundtrip_heatmap:
+        for line in all_price_roundtrip_heatmap:
+            print(line)
+
+    return_price_matrix = build_roundtrip_matrix_from_table(
+        "return_prices",
+        highlight_entries=heatmap_entries,
+    )
+    return_price_heatmap = (
+        format_roundtrip_price_heatmap(
+            heatmap_entries,
+            title=STATIC_LABELS['roundtrip_return_prices_title'],
+            highlight_entries=heatmap_entries,
+            matrix_data=return_price_matrix,
+            show_price_sum_suffix=False,
+        )
+        if return_price_matrix
+        else []
+    )
+    if return_price_heatmap:
+        for line in return_price_heatmap:
+            print(line)
+
+print("\n")
+
+# Restore stdout and emit PNG snapshots for each major section
+sys.stdout = original_stdout
+full_output = output_buffer.getvalue()
+
+def _clean_marker(value: str | None) -> str:
+    return (value or '').strip()
+
+def _localize_timestamp(ts: datetime | None) -> datetime | None:
+    """Ensure a timestamp is aware and converted to the local timezone."""
+    if ts is None:
+        return None
+    local_tz = datetime.now().astimezone().tzinfo
+    if ts.tzinfo is None:
+        return ts.replace(tzinfo=local_tz)
+    return ts.astimezone(local_tz)
+
+def _file_timestamp(path: Path | None) -> datetime | None:
+    if path is None or not path.exists():
+        return None
+    try:
+        return _localize_timestamp(datetime.fromtimestamp(path.stat().st_mtime))
+    except OSError:
+        return None
+
+
+def _format_timestamp_label(ts: datetime | None, *, label: str = "Data timestamp") -> str:
+    suffix = " (c) Robert Zaufall"
+    if not ts:
+        return f"{label}: N/A{suffix}"
+    local_ts = _localize_timestamp(ts)
+    return f"{label}: {local_ts.strftime('%Y-%m-%d %H:%M:%S %Z').rstrip()}{suffix}"
+
+compact_marker = _clean_marker(STATIC_LABELS.get('compact_seatmap_heading'))
+normal_marker = _clean_marker(STATIC_LABELS.get('normal_seatmap_heading'))
+availability_marker = _clean_marker(STATIC_LABELS.get('availability_heading'))
+seatmap_timestamp_label = _format_timestamp_label(_file_timestamp(SEATMAP_DATA_PATH), label="Seatmap responses")
+return_price_timestamp_label = _format_timestamp_label(_file_timestamp(RETURN_PRICE_DATA_PATH), label="Roundtrip price responses")
+
+compact_section = section_slices.get('compact') or extract_section(
+    full_output,
+    compact_marker,
+    [marker for marker in (normal_marker, availability_marker) if marker],
+)
+if compact_section:
+    save_text_block_png(
+        "seatmaps_compact",
+        append_footer(trim_leading_blank_lines(compact_section), seatmap_timestamp_label),
+        occupied_replacement="X",  # single-width for compact layout
+    )
+
+normal_section = section_slices.get('ascii') or extract_section(
+    full_output,
+    normal_marker,
+    [marker for marker in (availability_marker, "Round-trip price heatmap") if marker],
+)
+if normal_section:
+    save_text_block_png(
+        "seatmaps",
+        append_footer(trim_leading_blank_lines(normal_section), seatmap_timestamp_label),
+        occupied_replacement="XX",  # double-width for normal layout
+    )
+
+availability_section = extract_section(
+    full_output,
+    availability_marker,
+    ["Round-trip price heatmap"],
+)
+if availability_section:
+    save_text_block_png("window_seats", append_footer(trim_leading_blank_lines(availability_section), seatmap_timestamp_label))
+
+heatmaps_section = extract_section(full_output, "Round-trip price heatmap", [])
+if heatmaps_section:
+    save_text_block_png("price_heatmaps", append_footer(trim_leading_blank_lines(heatmaps_section), return_price_timestamp_label))
+
+
+
+================================================
+FILE: get_availability.py
+================================================
+from __future__ import annotations
+
+import json
+import os
+from copy import deepcopy
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Iterable, Sequence
+
+from amadeus import Client, ResponseError
+from dotenv import load_dotenv
+
+from config import TRAVEL_WINDOWS, FLIGHT_SEARCH_FILTERS, ENVIRONMENT
+
+fetch_from_api = True
+refresh_data = True # get data even data is present from today
+
+data_dir = Path(__file__).parent / "data"
+data_dir.mkdir(parents=True, exist_ok=True)
+data_dir_today = data_dir / datetime.now().strftime("%Y%m%d")
+data_dir_today.mkdir(parents=True, exist_ok=True)
+
+
+AVAILABILITY_REQUESTS_FILENAME = "availability_requests.json"
+AVAILABILITY_RESPONSES_FILENAME = "availability_responses.json"
+UNAVAILABLE_FLIGHTS_FILENAME = "unavailable_flights.json"
+TRAVEL_DATES_FILENAME = "travel_dates.json"
+
+
+def _dump_json(path: Path, payload: Any) -> None:
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2)
+
+
+def _load_json(path: Path) -> Any:
+    with path.open(encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def build_amadeus_client(environment: str) -> Client:
+    if environment not in {"test", "production"}:
+        raise ValueError("environment must be 'test' or 'production'")
+
+    if environment == "test":
+        client_id = os.getenv("TEST_AMADEUS_CLIENT_ID")
+        client_secret = os.getenv("TEST_AMADEUS_CLIENT_SECRET")
+    else:
+        client_id = os.getenv("AMADEUS_CLIENT_ID")
+        client_secret = os.getenv("AMADEUS_CLIENT_SECRET")
+
+    if not client_id or not client_secret:
+        raise RuntimeError("Missing Amadeus credentials in environment variables.")
+
+    return Client(
+        client_id=client_id,
+        client_secret=client_secret,
+        hostname=environment,
+    )
+
+
+def _build_request_template() -> dict[str, Any]:
+    max_number_of_connections = 0 if FLIGHT_SEARCH_FILTERS["non_stop"] == "true" else 1
+    return {
+        "originDestinations": [],
+        "travelers": [{"id": "1", "travelerType": "ADULT"}],
+        "sources": ["GDS"],
+        "searchCriteria": {
+            "maxFlightOffers": 1,
+            "flightFilters": {
+                "cabinRestrictions": [
+                    {
+                        "cabin": FLIGHT_SEARCH_FILTERS["travel_class"],
+                        "coverage": "MOST_SEGMENTS",
+                        "originDestinationIds": [],
+                    }
+                ],
+                "carrierRestrictions": {
+                    "includedCarrierCodes": [FLIGHT_SEARCH_FILTERS["included_airline_codes"]]
+                },
+                "connectionRestriction": {"maxNumberOfConnections": max_number_of_connections},
+            },
+        },
+    }
+
+
+def build_availability_requests(
+    travel_dates: Iterable[dict[str, Any]],
+    *,
+    batch_size: int = 6,
+) -> list[dict[str, Any]]:
+    request_template = _build_request_template()
+    availability_requests: list[dict[str, Any]] = []
+    availability_request = deepcopy(request_template)
+
+    for travel_date in travel_dates:
+        dates = travel_date.get("dates", [])
+        for date in dates:
+            if len(availability_request["originDestinations"]) == batch_size:
+                availability_requests.append(availability_request)
+                availability_request = deepcopy(request_template)
+
+            availability_request["originDestinations"].append(
+                {
+                    "id": str(len(availability_request["originDestinations"]) + 1),
+                    "originLocationCode": travel_date["origin"],
+                    "destinationLocationCode": travel_date["destination"],
+                    "departureDateTime": {"date": date},
+                }
+            )
+            availability_request["searchCriteria"]["flightFilters"]["cabinRestrictions"][0][
+                "originDestinationIds"
+            ].append(str(len(availability_request["originDestinations"])))
+
+    if availability_request["originDestinations"]:
+        availability_requests.append(availability_request)
+
+    return availability_requests
+
+
+def fetch_availability_batches(
+    amadeus: Client, availability_requests: Iterable[dict[str, Any]]
+) -> list[Any]:
+    availability_responses: list[Any] = []
+    for idx, request in enumerate(availability_requests, start=1):
+        print(f"Availability request batch {idx}:")
+        try:
+            availability_response = amadeus.post(
+                "/v1/shopping/availability/flight-availabilities",
+                request,
+            )
+            availability_responses.append(availability_response.data)
+        except ResponseError as error:
+            raise error
+        print(f"Availability request batch {idx} done.")
+    return availability_responses
+
+
+def compute_unavailable_flights(
+    availability_requests: Iterable[dict[str, Any]],
+    availability_responses: Iterable[Iterable[dict[str, Any]]],
+) -> list[dict[str, str]]:
+    unavailable_flights: list[dict[str, str]] = []
+
+    for request, response in zip(availability_requests, availability_responses):
+        origin_destinations = request.get("originDestinations", [])
+        requested_ids = {od["id"] for od in origin_destinations}
+        response_entries = response or []
+        returned_ids = {entry.get("originDestinationId") for entry in response_entries}
+        missing_ids = requested_ids - returned_ids
+
+        for missing_id in sorted(missing_ids, key=int):
+            od = next(od for od in origin_destinations if od["id"] == missing_id)
+            unavailable_flights.append(
+                {
+                    "origin": od["originLocationCode"],
+                    "destination": od["destinationLocationCode"],
+                    "date": od["departureDateTime"]["date"],
+                }
+            )
+    return unavailable_flights
+
+
+def prune_unavailable_dates(
+    travel_windows: list[dict[str, Any]],
+    unavailable_flights: Iterable[dict[str, str]],
+) -> list[dict[str, Any]]:
+    unavailable_set = {
+        (flight["origin"], flight["destination"], flight["date"]) for flight in unavailable_flights
+    }
+
+    for window in travel_windows:
+        dates = window.get("dates", [])
+        window["dates"] = [
+            date
+            for date in dates
+            if (window["origin"], window["destination"], date) not in unavailable_set
+        ]
+    return travel_windows
+
+
+def process_availability(
+    *,
+    amadeus: Client,
+    travel_dates: list[dict[str, Any]],
+    batch_size: int = 6,
+) -> tuple[list[dict[str, Any]], list[Any], list[dict[str, str]]]:
+    requests_path = data_dir_today / AVAILABILITY_REQUESTS_FILENAME
+    responses_path = data_dir_today / AVAILABILITY_RESPONSES_FILENAME
+    unavailable_path = data_dir_today / UNAVAILABLE_FLIGHTS_FILENAME
+
+    if fetch_from_api:
+        if refresh_data or not responses_path.exists():
+            availability_requests = build_availability_requests(
+                travel_dates,
+                batch_size=batch_size,
+            )
+            _dump_json(requests_path, availability_requests)
+            availability_responses = fetch_availability_batches(amadeus, availability_requests)
+            _dump_json(responses_path, availability_responses)
+
+            unavailable_flights = compute_unavailable_flights(
+                availability_requests, availability_responses
+            )
+            _dump_json(unavailable_path, unavailable_flights)
+
+    unavailable_flights = _load_json(unavailable_path) if unavailable_path.exists() else []
+    return unavailable_flights
+
+
+def iter_dates(start_date: str, end_date: str) -> Iterable[str]:
+    start = datetime.strptime(start_date, "%Y-%m-%d")
+    end = datetime.strptime(end_date, "%Y-%m-%d")
+    delta = end - start
+    for i in range(delta.days + 1):
+        yield (start + timedelta(days=i)).strftime("%Y-%m-%d")
+
+
+def get_travel_windows_with_dates(
+    travel_windows: list[dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
+    windows = travel_windows or TRAVEL_WINDOWS
+    schedule: list[dict[str, Any]] = []
+    for window in windows:
+        schedule.append(
+            {
+                "origin": window["origin"],
+                "destination": window["destination"],
+                "start_date": window["start_date"],
+                "end_date": window["end_date"],
+                "dates": list(iter_dates(window["start_date"], window["end_date"])),
+            }
+        )
+    return schedule
+
+
+def main() -> None:
+    load_dotenv()
+
+    travel_dates = get_travel_windows_with_dates()
+    amadeus = build_amadeus_client(ENVIRONMENT)
+
+    unavailable_flights = process_availability(
+        amadeus=amadeus,
+        travel_dates=travel_dates,
+        batch_size=6,
+    )
+
+    if unavailable_flights:
+        travel_dates = prune_unavailable_dates(travel_dates, unavailable_flights)
+
+    _dump_json(data_dir_today / TRAVEL_DATES_FILENAME, travel_dates)
+
+    print("Done availability data.")
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
+FILE: get_prices_oneway.py
+================================================
+from __future__ import annotations
+
+import json
+import os
+from copy import deepcopy
+from datetime import datetime, timedelta
+from pathlib import Path
+from time import sleep
+from typing import Any, Iterable, Sequence
+
+from amadeus import Client, ResponseError
+from dotenv import load_dotenv
+
+from config import ENVIRONMENT
+
+fetch_from_api = True
+refresh_data = True # get data even data is present from today
+
+data_dir = Path(__file__).parent / "data"
+data_dir.mkdir(parents=True, exist_ok=True)
+data_dir_today = data_dir / datetime.now().strftime("%Y%m%d")
+data_dir_today.mkdir(parents=True, exist_ok=True)
+
+
+TRAVEL_DATES_FILENAME = "travel_dates.json"
+AVAILABLE_FLIGHTS_FILENAME = "availability_responses.json"
+FLIGHT_OFFER_ONEWAY_TEMPLATE_FILENAME = "flight_offer_oneway_template.json"
+PRICING_REQUESTS_ONEWAY_FILENAME = "pricing_requests_oneway.json"
+PRICING_RESPONSES_ONEWAY_FILENAME = "pricing_responses_oneway.json"
+PRICING_RESPONSES_ONEWAY_SIMPLE_FILENAME = "pricing_responses_simple_oneway.json"
+
+
+def _dump_json(path: Path, payload: Any) -> None:
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2)
+
+
+def _load_json(path: Path) -> Any:
+    with path.open(encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def build_amadeus_client(environment: str) -> Client:
+    if environment not in {"test", "production"}:
+        raise ValueError("environment must be 'test' or 'production'")
+
+    if environment == "test":
+        client_id = os.getenv("TEST_AMADEUS_CLIENT_ID")
+        client_secret = os.getenv("TEST_AMADEUS_CLIENT_SECRET")
+    else:
+        client_id = os.getenv("AMADEUS_CLIENT_ID")
+        client_secret = os.getenv("AMADEUS_CLIENT_SECRET")
+
+    if not client_id or not client_secret:
+        raise RuntimeError("Missing Amadeus credentials in environment variables.")
+
+    return Client(
+        client_id=client_id,
+        client_secret=client_secret,
+        hostname=environment,
+    )
+
+
+def get_travel_dates_oneway() -> list[list[dict[str, str]]]:
+    if not (data_dir_today / TRAVEL_DATES_FILENAME).exists():
+        raise RuntimeError("Travel dates data not found. Please run get_availability.py first.")
+    travel_dates = _load_json(data_dir_today / TRAVEL_DATES_FILENAME)
+    if len(travel_dates) != 2:
+        raise RuntimeError("Expected travel dates for two travel windows.")
+
+    window1 = travel_dates[0]
+    window2 = travel_dates[1]
+
+    travel_dates_oneway = []
+    for dep_date in window1['dates']:
+        travel_dates_oneway.append(
+            {
+                "origin": window1['origin'],
+                "destination": window1['destination'],
+                "start_date": dep_date,
+                "end_date": dep_date,
+            })
+    for ret_date in window2['dates']:
+        travel_dates_oneway.append(
+            {
+                "origin": window2['origin'],
+                "destination": window2['destination'],
+                "start_date": ret_date,
+                "end_date": ret_date,
+            })
+    return travel_dates_oneway
+
+
+def get_availability_dates() -> list[list[dict[str, str]]]:
+    if not (data_dir_today / AVAILABLE_FLIGHTS_FILENAME).exists():
+        raise RuntimeError("Availability flights data not found. Please run get_availability.py first.")
+    availability_flights = _load_json(data_dir_today / AVAILABLE_FLIGHTS_FILENAME)
+
+    travel_dates_oneway = []
+    for batch in availability_flights:
+        for flight in batch:
+            departure = flight['segments'][0]['departure']
+            arrival = flight['segments'][0]['arrival']
+            travel_dates_oneway.append(
+                {
+                    "origin": departure['iataCode'],
+                    "destination": arrival['iataCode'],
+                    "start_date": departure['at'],
+                    "end_date": arrival['at'],
+                    "number": flight['segments'][0]['number'],
+                })
+    return travel_dates_oneway
+
+
+def process_pricing(
+    amadeus: Client,
+    batch_size: int = 6,
+) -> None:
+    requests_path = data_dir_today / PRICING_REQUESTS_ONEWAY_FILENAME
+    responses_path = data_dir_today / PRICING_RESPONSES_ONEWAY_FILENAME
+    simple_responses_path = data_dir_today / PRICING_RESPONSES_ONEWAY_SIMPLE_FILENAME
+
+    if fetch_from_api:
+        if refresh_data or not responses_path.exists():
+
+            travel_dates_oneway = get_availability_dates()
+            flight_offer_oneway_template_path = data_dir / FLIGHT_OFFER_ONEWAY_TEMPLATE_FILENAME
+            flight_offer_oneway_template = _load_json(flight_offer_oneway_template_path)
+
+            flight_offers_oneway = []
+            i = 0
+            for travel_date in travel_dates_oneway:
+                flight_offer_oneway = deepcopy(flight_offer_oneway_template)
+
+                flight_offer_oneway["id"] = str(i % 6 + 1)
+                last_ticketing_date = (datetime.now() + timedelta(days=6)).strftime("%Y-%m-%d")
+
+                flight_offer_oneway["lastTicketingDate"] = last_ticketing_date
+                flight_offer_oneway["lastTicketingDateTime"] = last_ticketing_date
+
+                # itinerary 0
+                flight_offer_oneway['itineraries'][0]['segments'][0]['departure']['iataCode'] = travel_date['origin']
+                flight_offer_oneway['itineraries'][0]['segments'][0]['departure']['at'] = travel_date['start_date']
+                flight_offer_oneway['itineraries'][0]['segments'][0]['arrival']['iataCode'] = travel_date['destination']
+                flight_offer_oneway['itineraries'][0]['segments'][0]['arrival']['at'] = travel_date['end_date']
+                flight_offer_oneway['itineraries'][0]['segments'][0]['arrival']['at'] = travel_date['end_date']
+
+                flight_offer_oneway['itineraries'][0]['segments'][0]['number'] = travel_date['number']
+                flight_offers_oneway.append(flight_offer_oneway)
+                i += 1
+
+            all_pricing_data = []
+            pricing_requests = []
+            
+            # Process flight offers in batches of 6
+            for batch_idx in range(0, len(flight_offers_oneway), batch_size):
+                batch = flight_offers_oneway[batch_idx:batch_idx + batch_size]
+                
+                pricing_request = {
+                    'data': {
+                        'type': 'flight-offers-pricing',
+                        'flightOffers': batch
+                    }
+                }
+
+                pricing_requests.append(pricing_request)
+                
+            _dump_json(requests_path, pricing_requests)
+
+            i = 0
+            for pricing_request in pricing_requests:
+                i += 1
+                sleep(0.5)  # To avoid hitting rate limits
+                try:
+                    pricing_response = amadeus.post(
+                        '/v1/shopping/flight-offers/pricing',
+                        pricing_request
+                    )
+                    pricing_data = pricing_response.data
+                    all_pricing_data.extend(pricing_data['flightOffers'] if 'flightOffers' in pricing_data else [])
+                    print(f"Batch {i} completed successfully")
+                except ResponseError as error:
+                    print(f"Error details: {error.response.body if hasattr(error, 'response') else 'No details'}")
+                    raise error
+
+            # Combine all results
+            combined_pricing_data = {
+                'type': 'flight-offers-pricing',
+                'flightOffers': all_pricing_data
+            }
+            
+            print("\nAll pricing batches completed.")
+            print(f"Total offers priced: {len(all_pricing_data)}")
+
+            _dump_json(responses_path, combined_pricing_data)
+
+    pricing_data = _load_json(responses_path)
+
+    pricing_data_simple = []
+    for flight in pricing_data['flightOffers']:
+        flight_simple = {
+            'outbound_route': flight['itineraries'][0]['segments'][0]['departure']['iataCode'] + "->" + flight['itineraries'][0]['segments'][0]['arrival']['iataCode'],
+            'outbound_date': flight['itineraries'][0]['segments'][0]['departure']['at'].split("T")[0],
+            'price': flight['price']['total'],
+            'currency': flight['price']['currency'],
+            'captured_at': datetime.now().strftime("%Y-%m-%d"),
+        }
+        pricing_data_simple.append(flight_simple)
+    _dump_json(simple_responses_path, pricing_data_simple)
+
+
+def main() -> None:
+    load_dotenv()
+
+    amadeus = build_amadeus_client(ENVIRONMENT)
+    process_pricing(amadeus)
+
+    print("Done pricing data.")
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
+FILE: get_prices_return.py
+================================================
+from __future__ import annotations
+
+import json
+import os
+from copy import deepcopy
+from datetime import datetime, timedelta
+from pathlib import Path
+from time import sleep
+from typing import Any, Iterable, Sequence
+
+from amadeus import Client, ResponseError
+from dotenv import load_dotenv
+
+from config import ENVIRONMENT
+
+fetch_from_api = True
+refresh_data = True # get data even data is present from today
+
+data_dir = Path(__file__).parent / "data"
+data_dir.mkdir(parents=True, exist_ok=True)
+data_dir_today = data_dir / datetime.now().strftime("%Y%m%d")
+data_dir_today.mkdir(parents=True, exist_ok=True)
+
+
+TRAVEL_DATES_FILENAME = "travel_dates.json"
+FLIGHT_OFFER_RETURN_TEMPLATE_FILENAME = "flight_offer_return_template.json"
+PRICING_REQUESTS_FILENAME = "pricing_requests.json"
+PRICING_RESPONSES_FILENAME = "pricing_responses.json"
+PRICING_RESPONSES_SIMPLE_FILENAME = "pricing_responses_simple.json"
+
+
+def _dump_json(path: Path, payload: Any) -> None:
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2)
+
+
+def _load_json(path: Path) -> Any:
+    with path.open(encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def build_amadeus_client(environment: str) -> Client:
+    if environment not in {"test", "production"}:
+        raise ValueError("environment must be 'test' or 'production'")
+
+    if environment == "test":
+        client_id = os.getenv("TEST_AMADEUS_CLIENT_ID")
+        client_secret = os.getenv("TEST_AMADEUS_CLIENT_SECRET")
+    else:
+        client_id = os.getenv("AMADEUS_CLIENT_ID")
+        client_secret = os.getenv("AMADEUS_CLIENT_SECRET")
+
+    if not client_id or not client_secret:
+        raise RuntimeError("Missing Amadeus credentials in environment variables.")
+
+    return Client(
+        client_id=client_id,
+        client_secret=client_secret,
+        hostname=environment,
+    )
+
+
+def get_travel_dates_permutations() -> list[list[dict[str, str]]]:
+    if not (data_dir_today / TRAVEL_DATES_FILENAME).exists():
+        raise RuntimeError("Travel dates data not found. Please run get_availability.py first.")
+    travel_dates = _load_json(data_dir_today / TRAVEL_DATES_FILENAME)
+    if len(travel_dates) != 2:
+        raise RuntimeError("Expected travel dates for two travel windows.")
+
+    window1 = travel_dates[0]
+    window2 = travel_dates[1]
+
+    travel_dates_permutations = []
+    for dep_date in window1['dates']:
+        for ret_date in window2['dates']:
+            travel_dates_permutations.append([
+                {
+                    "origin": window1['origin'],
+                    "destination": window1['destination'],
+                    "start_date": dep_date,
+                    "end_date": dep_date,
+                },
+                {
+                    "origin": window2['origin'],
+                    "destination": window2['destination'],
+                    "start_date": ret_date,
+                    "end_date": ret_date,
+                }
+            ])
+    return travel_dates_permutations
+
+
+def process_pricing(
+    amadeus: Client,
+    batch_size: int = 6,
+) -> None:
+    requests_path = data_dir_today / PRICING_REQUESTS_FILENAME
+    responses_path = data_dir_today / PRICING_RESPONSES_FILENAME
+    simple_responses_path = data_dir_today / PRICING_RESPONSES_SIMPLE_FILENAME
+
+    if fetch_from_api:
+        if refresh_data or not responses_path.exists():
+
+            travel_dates_permutations = get_travel_dates_permutations()
+            flight_offer_return_template_path = data_dir / FLIGHT_OFFER_RETURN_TEMPLATE_FILENAME
+            flight_offer_return_template = _load_json(flight_offer_return_template_path)
+
+            flight_offers_return = []
+            i = 0
+            for travel_date in travel_dates_permutations:
+                flight_offer_return = deepcopy(flight_offer_return_template)
+
+                flight_offer_return["id"] = str(i % 6 + 1)
+                last_ticketing_date = (datetime.now() + timedelta(days=6)).strftime("%Y-%m-%d")
+
+                flight_offer_return["lastTicketingDate"] = last_ticketing_date
+                flight_offer_return["lastTicketingDateTime"] = last_ticketing_date
+
+                # itinerary 0
+                flight_offer_return['itineraries'][0]['segments'][0]['departure']['at'] = travel_date[0]['start_date'] + "T13:35:00"
+                arrival_time = datetime.strptime(travel_date[0]['start_date'] + "T06:10:00", "%Y-%m-%dT%H:%M:%S")
+                flight_offer_return['itineraries'][0]['segments'][0]['arrival']['at'] = (arrival_time + timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%S")
+
+                # itinerary 1
+                flight_offer_return['itineraries'][1]['segments'][0]['departure']['at'] = travel_date[1]['start_date'] + "T00:50:00"
+                flight_offer_return['itineraries'][1]['segments'][0]['arrival']['at'] = travel_date[1]['start_date'] + "T06:45:00"
+
+                flight_offers_return.append(flight_offer_return)
+                i += 1
+
+            all_pricing_data = []
+            pricing_requests = []
+            
+            # Process flight offers in batches of 6
+            for batch_idx in range(0, len(flight_offers_return), batch_size):
+                batch = flight_offers_return[batch_idx:batch_idx + batch_size]
+                
+                pricing_request = {
+                    'data': {
+                        'type': 'flight-offers-pricing',
+                        'flightOffers': batch
+                    }
+                }
+
+                pricing_requests.append(pricing_request)
+                
+            _dump_json(requests_path, pricing_requests)
+
+            i = 0
+            for pricing_request in pricing_requests:
+                i += 1
+                sleep(0.5)  # To avoid hitting rate limits
+                try:
+                    pricing_response = amadeus.post(
+                        '/v1/shopping/flight-offers/pricing',
+                        pricing_request
+                    )
+                    pricing_data = pricing_response.data
+                    all_pricing_data.extend(pricing_data['flightOffers'] if 'flightOffers' in pricing_data else [])
+                    print(f"Batch {i} completed successfully")
+                except ResponseError as error:
+                    print(f"Error details: {error.response.body if hasattr(error, 'response') else 'No details'}")
+                    raise error
+
+            # Combine all results
+            combined_pricing_data = {
+                'type': 'flight-offers-pricing',
+                'flightOffers': all_pricing_data
+            }
+            
+            print("\nAll pricing batches completed.")
+            print(f"Total offers priced: {len(all_pricing_data)}")
+
+            _dump_json(responses_path, combined_pricing_data)
+
+    pricing_data = _load_json(responses_path)
+
+    pricing_data_simple = []
+    for flight in pricing_data['flightOffers']:
+        flight_simple = {
+            'outbound_route': flight['itineraries'][0]['segments'][0]['departure']['iataCode'] + "->" + flight['itineraries'][0]['segments'][0]['arrival']['iataCode'],
+            'return_route': flight['itineraries'][1]['segments'][0]['departure']['iataCode'] + "->" + flight['itineraries'][1]['segments'][0]['arrival']['iataCode'],
+            'outbound_date': flight['itineraries'][0]['segments'][0]['departure']['at'].split("T")[0],
+            'return_date': flight['itineraries'][1]['segments'][0]['departure']['at'].split("T")[0],
+            'price': flight['price']['total'],
+            'currency': flight['price']['currency'],
+            'captured_at': datetime.now().strftime("%Y-%m-%d"),
+        }
+        pricing_data_simple.append(flight_simple)
+    _dump_json(simple_responses_path, pricing_data_simple)
+
+
+def main() -> None:
+    load_dotenv()
+
+    amadeus = build_amadeus_client(ENVIRONMENT)
+    process_pricing(amadeus)
+
+    print("Done pricing data.")
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
+FILE: get_seatmaps.py
+================================================
+from __future__ import annotations
+
+import json
+import os
+from copy import deepcopy
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Iterable
+from urllib import request
+
+from amadeus import Client, ResponseError
+from dotenv import load_dotenv
+
+from config import ENVIRONMENT, FLIGHT_SEARCH_FILTERS
+
+fetch_from_api = True
+refresh_data = True  # fetch even if today's data exists
+
+data_dir = Path(__file__).parent / "data"
+data_dir.mkdir(parents=True, exist_ok=True)
+data_dir_today = data_dir / datetime.now().strftime("%Y%m%d")
+data_dir_today.mkdir(parents=True, exist_ok=True)
+
+FIXTURES_DIR = Path(__file__).parent / "test"
+
+TRAVEL_DATES_FILENAME = "travel_dates.json"
+SEATMAP_REQUESTS_FILENAME = "seatmap_requests.json"
+SEATMAP_RESPONSES_FILENAME = "seatmap_responses.json"
+SEATMAP_SUMMARY_FILENAME = "seatmaps_summary.json"
+FLIGHT_OFFER_RETURN_TEMPLATE_FILENAME = "flight_offer_return_template.json"
+SEATMAP_REQUEST_TEMPLATE_FILENAME = "seatmap_request_template.json"
+PRICING_RESPONSES_FILENAME = "pricing_responses.json"
+PRICING_RESPONSES_ONEWAY_FILENAME = "pricing_responses_oneway.json"
+
+
+@dataclass
+class SeatMapRecord:
+    departure_date: str
+    origin: str
+    destination: str
+    carrier: str
+    number: str
+    aircraft_code: str
+    decks: list[Any]
+    window_seats: list[str]
+    price_total: str | None = None
+    price_currency: str | None = None
+    price_timestamp: datetime | None = None
+
+    def to_serializable_dict(self) -> dict[str, Any]:
+        return {
+            "departure_date": self.departure_date,
+            "origin": self.origin,
+            "destination": self.destination,
+            "carrier": self.carrier,
+            "number": self.number,
+            "aircraft_code": self.aircraft_code,
+            "decks": self.decks,
+            "window_seats": self.window_seats,
+            "price_total": self.price_total,
+            "price_currency": self.price_currency,
+            "price_timestamp": self.price_timestamp.isoformat() if self.price_timestamp else None,
+        }
+
+
+def _dump_json(path: Path, payload: Any) -> None:
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2)
+
+
+def _load_json(path: Path) -> Any:
+    with path.open(encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def build_amadeus_client(environment: str) -> Client:
+    if environment not in {"test", "production"}:
+        raise ValueError("environment must be 'test' or 'production'")
+
+    if environment == "test":
+        client_id = os.getenv("TEST_AMADEUS_CLIENT_ID")
+        client_secret = os.getenv("TEST_AMADEUS_CLIENT_SECRET")
+    else:
+        client_id = os.getenv("AMADEUS_CLIENT_ID")
+        client_secret = os.getenv("AMADEUS_CLIENT_SECRET")
+
+    if not client_id or not client_secret:
+        raise RuntimeError("Missing Amadeus credentials in environment variables.")
+
+    return Client(
+        client_id=client_id,
+        client_secret=client_secret,
+        hostname=environment,
+    )
+
+
+def get_travel_dates_tuples() -> list[list[dict[str, str]]]:
+    if not (data_dir_today / TRAVEL_DATES_FILENAME).exists():
+        raise RuntimeError("Travel dates data not found. Please run get_availability.py first.")
+    travel_dates = _load_json(data_dir_today / TRAVEL_DATES_FILENAME)
+    if not travel_dates:
+        raise RuntimeError("No travel windows found in travel_dates.json.")
+
+    max_dates = max(len(window.get("dates", [])) for window in travel_dates)
+    travel_dates_tuples: list[list[dict[str, str]]] = []
+
+    for date_idx in range(max_dates):
+        entry: list[dict[str, str]] = []
+        for window in travel_dates:
+            dates = window.get("dates") or []
+            if date_idx >= len(dates):
+                continue
+            entry.append(
+                {
+                    "origin": window["origin"],
+                    "destination": window["destination"],
+                    "date": dates[date_idx],
+                }
+            )
+        if entry:
+            travel_dates_tuples.append(entry)
+
+    return travel_dates_tuples
+
+
+def build_seatmap_requests(travel_dates_tuples: list[list[dict[str, str]]]) -> list[dict[str, Any]]:
+    if not (data_dir_today / PRICING_RESPONSES_FILENAME).exists():
+        raise RuntimeError("Pricing responses data not found. Please run get_prices.py first.")
+    if not (data_dir_today / PRICING_RESPONSES_ONEWAY_FILENAME).exists():
+        raise RuntimeError("Pricing responses data for oneway not found. Please run get_prices_oneway.py first.")
+
+    pricing_payload = _load_json(data_dir_today / PRICING_RESPONSES_FILENAME)
+    pricing_oneway_payload = _load_json(data_dir_today / PRICING_RESPONSES_ONEWAY_FILENAME)
+ 
+    flight_offers = pricing_payload.get("flightOffers") if isinstance(pricing_payload, dict) else pricing_payload
+    if not isinstance(flight_offers, list):
+        raise RuntimeError("Unexpected pricing responses format; expected 'flightOffers' list.")
+
+    flight_offers_oneway = pricing_oneway_payload.get("flightOffers") if isinstance(pricing_oneway_payload, dict) else pricing_oneway_payload
+    if not isinstance(flight_offers_oneway, list):
+        raise RuntimeError("Unexpected pricing responses format; expected 'flightOffers' list.")
+
+    requests: list[dict[str, Any]] = []
+
+    for element in travel_dates_tuples:
+        if len(element) == 2:
+
+            outbound, inbound = element
+            origin1 = outbound["origin"]
+            destination1 = outbound["destination"]
+            date1 = outbound["date"]
+            origin2 = inbound["origin"]
+            destination2 = inbound["destination"]
+            date2 = inbound["date"]
+
+            def matches_offer(offer: dict[str, Any]) -> bool:
+                itineraries = offer.get("itineraries", [])
+                if len(itineraries) < 2:
+                    return False
+
+                outbound_segment = itineraries[0].get("segments", [{}])[0]
+                inbound_segment = itineraries[1].get("segments", [{}])[0]
+
+                outbound_departure = outbound_segment.get("departure", {})
+                inbound_departure = inbound_segment.get("departure", {})
+
+                outbound_date = (outbound_departure.get("at") or "").split("T")[0]
+                inbound_date = (inbound_departure.get("at") or "").split("T")[0]
+
+                return (
+                    outbound_departure.get("iataCode") == origin1
+                    and outbound_segment.get("arrival", {}).get("iataCode") == destination1
+                    and inbound_departure.get("iataCode") == origin2
+                    and inbound_segment.get("arrival", {}).get("iataCode") == destination2
+                    and outbound_date == date1
+                    and inbound_date == date2
+                )
+
+            flight_offer = next((offer for offer in flight_offers if matches_offer(offer)), None)
+            if flight_offer:
+                requests.append(flight_offer)
+
+        else:
+            single = element[0]
+            origin = single["origin"]
+            destination = single["destination"]
+            date = single["date"]
+
+            def matches_offer_oneway(offer: dict[str, Any]) -> bool:
+                itineraries = offer.get("itineraries", [])
+                if len(itineraries) < 1:
+                    return False
+
+                segment = itineraries[0].get("segments", [{}])[0]
+                departure = segment.get("departure", {})
+
+                departure_date = (departure.get("at") or "").split("T")[0]
+
+                return (
+                    departure.get("iataCode") == origin
+                    and segment.get("arrival", {}).get("iataCode") == destination
+                    and departure_date == date
+                )
+
+            flight_offer = next((offer for offer in flight_offers_oneway if matches_offer_oneway(offer)), None)
+            if flight_offer:
+                requests.append(flight_offer)
+
+    return requests
+
+def fetch_seatmap_batches(
+    amadeus: Client, seatmap_request: Iterable[dict[str, Any]]
+) -> list[Any]:
+    seatmap_response = None    
+    try:
+        seatmap_response = amadeus.post(
+            "/v1/shopping/seatmaps",
+            seatmap_request,
+        )
+    except ResponseError as error:
+        raise error
+    return seatmap_response.data or []
+
+def process_seatmaps(amadeus, travel_dates_tuples, batch_size: int = 6):
+    requests_path = data_dir_today / SEATMAP_REQUESTS_FILENAME
+    responses_path = data_dir_today / SEATMAP_RESPONSES_FILENAME
+
+    if fetch_from_api:
+        if refresh_data or not responses_path.exists():
+
+            seatmap_requests = build_seatmap_requests(travel_dates_tuples)
+            if not seatmap_requests:
+                print("No travel windows configured; skipping seatmap fetch.")
+                return
+            if ENVIRONMENT in {"test", "production"} and amadeus is None:
+                raise RuntimeError("Amadeus client is required to fetch seatmaps.")
+
+            _dump_json(requests_path, seatmap_requests)
+
+            seatmap_responses: list[Any] = []
+            # process in batches
+            total_requests = len(seatmap_requests)
+            print(f"Total seatmap requests to process: {total_requests}")
+            for idx in range(0, total_requests, batch_size):
+                batch = seatmap_requests[idx : idx + batch_size]
+                for i, request in enumerate(batch):
+                    batch[i]["id"] = str(i)
+                batch_request = {"data": batch}
+                seatmap_responses.extend(fetch_seatmap_batches(amadeus, batch_request))
+                print(f"Processed seatmap requests {idx + 1} to {min(idx + batch_size, total_requests)}")
+            _dump_json(responses_path, seatmap_responses)
+
+
+def main() -> None:
+    load_dotenv()
+
+    travel_dates_tuples = get_travel_dates_tuples()
+
+    amadeus = build_amadeus_client(ENVIRONMENT)
+    process_seatmaps(amadeus=amadeus, travel_dates_tuples=travel_dates_tuples)
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
+FILE: png_utils.py
+================================================
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+from display_utils import char_display_width
+
+try:
+    from PIL import Image, ImageDraw, ImageFont
+except ImportError:  # pillow is optional; PNG export is skipped if unavailable
+    Image = None
+    ImageDraw = None
+    ImageFont = None
+
+
+ANSI_SGR_RE = re.compile(r'\x1b\[([0-9;]*?)m')
+PNG_FONT_SIZE = 18
+EMOJI_FILL_COLORS = {
+    "🟩": (32, 180, 120),
+    "🟥": (210, 70, 70),
+    "🟦": (70, 130, 235),
+    "🟨": (230, 200, 70),
+    "⬛": (40, 40, 40),
+}
+
+
+def _ansi_palette() -> dict[int, tuple[int, int, int]]:
+    """Basic 16-color ANSI palette (xterm-ish)."""
+    return {
+        30: (0, 0, 0),          # black
+        31: (205, 49, 49),      # red
+        32: (13, 188, 121),     # green
+        33: (229, 229, 16),     # yellow
+        34: (65, 140, 220),     # blue (brightened a bit)
+        35: (188, 63, 188),     # magenta
+        36: (17, 168, 205),     # cyan
+        37: (229, 229, 229),    # white
+        90: (160, 160, 160),    # bright black (grey) - lifted for contrast
+        91: (241, 76, 76),
+        92: (35, 209, 139),
+        93: (245, 245, 67),
+        94: (59, 142, 234),
+        95: (214, 112, 214),
+        96: (41, 184, 219),
+        97: (255, 255, 255),
+        40: (0, 0, 0),          # bg black
+        41: (205, 49, 49),
+        42: (13, 188, 121),
+        43: (229, 229, 16),
+        44: (36, 114, 200),
+        45: (188, 63, 188),
+        46: (17, 168, 205),
+        47: (229, 229, 229),
+        100: (70, 70, 70),      # bg bright black (lightened)
+        101: (241, 76, 76),
+        102: (35, 209, 139),
+        103: (245, 245, 67),
+        104: (59, 142, 234),
+        105: (214, 112, 214),
+        106: (41, 184, 219),
+        107: (255, 255, 255),
+    }
+
+
+def _brighten(color: tuple[int, int, int], factor: float = 1.15) -> tuple[int, int, int]:
+    return tuple(min(int(channel * factor), 255) for channel in color)
+
+
+def _pick_font(size: int = PNG_FONT_SIZE) -> "ImageFont.FreeTypeFont | ImageFont.ImageFont":
+    """Try a few monospace fonts before falling back to default."""
+    if ImageFont is None:
+        raise RuntimeError("Pillow is required for PNG export; install the 'pillow' package to continue.")
+    candidates = [
+        "DejaVuSansMono.ttf",
+        "Menlo.ttf",
+        "Menlo-Regular.ttf",
+        "Consolas.ttf",
+        "Courier New.ttf",
+        "Hack-Regular.ttf",
+    ]
+    for name in candidates:
+        try:
+            return ImageFont.truetype(name, size)
+        except Exception:
+            continue
+    return ImageFont.load_default()
+
+
+def save_text_block_png(
+    name: str,
+    text: str,
+    output_dir: Path = Path("docs"),
+    *,
+    occupied_replacement: str = "XX",
+    output_path: Path | None = None,
+) -> None:
+    """Render ANSI-colored text to a monospaced PNG (dark background)."""
+    if not text or not text.strip():
+        return
+    if Image is None or ImageDraw is None or ImageFont is None:
+        print(f"[WARN] Pillow not installed; skipping PNG export for {name}")
+        return
+
+    # Fallback glyphs that render reliably in common monospace fonts (PNG only).
+    # Normalize occupied-seat glyphs for PNG export; keep terminal output unchanged.
+    occupied_safe = occupied_replacement or "XX"
+    safe_text = text.translate(str.maketrans({"❌": occupied_safe, "🔺": occupied_safe, "✘": occupied_safe, "✖": occupied_safe}))
+
+    target_dir = output_path.parent if output_path else output_dir
+    target_dir.mkdir(parents=True, exist_ok=True)
+    font = _pick_font()
+    palette = _ansi_palette()
+    base_bg = (18, 18, 18)
+    base_fg = (235, 235, 235)
+    margin = 12
+    padding_x = 1
+    line_spacing = 4
+
+    def iter_cells(line: str):
+        fg = base_fg
+        bg = base_bg
+        bold = False
+        idx = 0
+        length = len(line)
+        while idx < length:
+            ch = line[idx]
+            if ch == '\x1b':
+                match = ANSI_SGR_RE.match(line, idx)
+                if match:
+                    codes = [code for code in match.group(1).split(';') if code != '']
+                    if not codes:
+                        codes = ['0']
+                    for code in codes:
+                        if code == '0':
+                            fg, bg, bold = base_fg, base_bg, False
+                        elif code == '1':
+                            bold = True
+                        elif code == '3':  # italic (ignored for layout)
+                            continue
+                        else:
+                            num = int(code) if code.isdigit() else None
+                            if num is not None:
+                                if 30 <= num <= 37 or 90 <= num <= 97:
+                                    fg = palette.get(num, base_fg)
+                                elif 40 <= num <= 47 or 100 <= num <= 107:
+                                    bg = palette.get(num, base_bg)
+                    idx = match.end()
+                    continue
+            width = max(1, char_display_width(ch))
+            fg_effective = fg if not bold else _brighten(fg)
+            # High-contrast digits when background is set (calendar cells)
+            if bg != base_bg and ch.isdigit():
+                fg_effective = (0, 0, 0)
+            yield ch, width, fg_effective, bg
+            idx += 1
+
+    lines = safe_text.rstrip('\n').splitlines() or ['']
+    line_cell_widths = []
+    parsed_lines = []
+    for raw_line in lines:
+        cells = list(iter_cells(raw_line))
+        parsed_lines.append(cells)
+        line_cell_widths.append(sum(cell[1] for cell in cells))
+    max_cells = max(line_cell_widths or [1])
+
+    glyph_bbox = font.getbbox('M')
+    cell_width = max((glyph_bbox[2] - glyph_bbox[0]) + padding_x, 8)
+    ascent, descent = font.getmetrics()
+    line_height = ascent + descent + line_spacing
+
+    img_width = margin * 2 + cell_width * max_cells
+    img_height = margin * 2 + line_height * len(lines)
+    img = Image.new("RGB", (img_width, img_height), color=base_bg)
+    draw = ImageDraw.Draw(img)
+
+    y = margin
+    for cells in parsed_lines:
+        x = margin
+        for ch, cell_w, fg, bg in cells:
+            cell_right = x + cell_width * cell_w
+            cell_bottom = y + line_height - line_spacing // 3
+            if bg != base_bg:
+                draw.rectangle(
+                    [x, y - line_spacing // 3, cell_right, cell_bottom],
+                    fill=bg,
+                )
+            if ch in EMOJI_FILL_COLORS:
+                # Draw solid block to approximate emoji color for fonts without emoji glyphs.
+                draw.rectangle(
+                    [x + 1, y + 1, cell_right - 1, cell_bottom - 2],
+                    fill=EMOJI_FILL_COLORS[ch],
+                )
+            else:
+                draw.text(
+                    (x, y),
+                    ch,
+                    fill=fg,
+                    font=font,
+                    stroke_width=1,
+                    stroke_fill=fg,
+                )
+            x += cell_width * cell_w
+        y += line_height
+
+    dest = output_path if output_path else target_dir / f"{name}.png"
+    img.save(dest)
+
+
+
+================================================
+FILE: run_pipeline.py
+================================================
+from __future__ import annotations
+
+import argparse
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).parent.resolve()
+
+# Ordered list of scripts that make up the full data fetch + render flow.
+SCRIPT_ORDER = [
+    ("Fetch availability", "get_availability.py"),
+    ("Fetch one-way prices", "get_prices_oneway.py"),
+    ("Fetch round-trip prices", "get_prices_return.py"),
+    ("Fetch seatmaps", "get_seatmaps.py"),
+    ("Render reports", "flight_search.py"),
+]
+
+
+def run_script(label: str, script_name: str) -> None:
+    script_path = ROOT / script_name
+    print(f"\n=== {label} ({script_path.name}) ===")
+    result = subprocess.run([sys.executable, str(script_path)], cwd=ROOT)
+    if result.returncode != 0:
+        raise SystemExit(f"{script_path.name} failed with exit code {result.returncode}.")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Run the full Amadeus seatmap pipeline (fetch + render)."
+    )
+    parser.add_argument(
+        "--skip-render",
+        action="store_true",
+        help="Skip the final rendering step (flight_search.py) after fetching data.",
+    )
+    args = parser.parse_args()
+
+    for label, script_name in SCRIPT_ORDER:
+        if args.skip_render and script_name == "flight_search.py":
+            print("Skipping render step (flight_search.py).")
+            break
+        run_script(label, script_name)
+
+    print("\nPipeline finished successfully.")
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+================================================
+FILE: seatmap_data.py
+================================================
+from __future__ import annotations
+
+from collections import defaultdict
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+from typing import Iterable, Iterator
+
+from config import CURRENCY_SYMBOLS
+
+
+@dataclass
+class SeatMap:
+    departure_date: str
+    origin: str
+    destination: str
+    carrier: str
+    number: str
+    aircraft_code: str
+    decks: list
+    window_seats: list[str] = field(default_factory=list)
+    price_total: str | None = None
+    price_currency: str | None = None
+    price_timestamp: datetime | None = None
+
+    def formatted_total_price(self, *, rounded: bool = False) -> str | None:
+        display_total = self.price_total
+        if rounded and display_total:
+            try:
+                display_total = str(Decimal(display_total).quantize(Decimal('1'), rounding=ROUND_HALF_UP))
+            except (InvalidOperation, ValueError):
+                pass
+        currency_code = (self.price_currency or '').upper()
+        currency_symbol = CURRENCY_SYMBOLS.get(currency_code)
+        if display_total and currency_code:
+            if currency_symbol:
+                return f"{currency_symbol}{display_total}"
+            return f"{display_total} {currency_code}"
+        if display_total:
+            return display_total
+        return None
+
+
+def iter_dates(start_date: str, end_date: str) -> Iterator[str]:
+    current = datetime.fromisoformat(start_date)
+    stop = datetime.fromisoformat(end_date)
+    while current <= stop:
+        yield current.strftime('%Y-%m-%d')
+        current += timedelta(days=1)
+
+
+def parse_total_price(value: str | None) -> Decimal | None:
+    if value is None:
+        return None
+    try:
+        return Decimal(value)
+    except (InvalidOperation, ValueError):
+        return None
+
+
+def compute_best_price_by_route(seatmaps: Iterable[SeatMap]) -> dict[tuple[str, str], Decimal]:
+    best: dict[tuple[str, str], Decimal] = {}
+    for seatmap_obj in seatmaps:
+        price = parse_total_price(seatmap_obj.price_total)
+        if price is None:
+            continue
+        route = (seatmap_obj.origin, seatmap_obj.destination)
+        existing = best.get(route)
+        if existing is None or price < existing:
+            best[route] = price
+    return best
+
+
+def compute_worst_price_by_route(seatmaps: Iterable[SeatMap]) -> dict[tuple[str, str], Decimal]:
+    worst: dict[tuple[str, str], Decimal] = {}
+    for seatmap_obj in seatmaps:
+        price = parse_total_price(seatmap_obj.price_total)
+        if price is None:
+            continue
+        route = (seatmap_obj.origin, seatmap_obj.destination)
+        existing = worst.get(route)
+        if existing is None or price > existing:
+            worst[route] = price
+    return worst
+
+
+def has_best_price_for_route(seatmap_obj: SeatMap, price_lookup: dict[tuple[str, str], Decimal]) -> bool:
+    price = parse_total_price(seatmap_obj.price_total)
+    if price is None:
+        return False
+    route = (seatmap_obj.origin, seatmap_obj.destination)
+    best_price = price_lookup.get(route)
+    return best_price is not None and price == best_price
+
+
+def has_worst_price_for_route(seatmap_obj: SeatMap, price_lookup: dict[tuple[str, str], Decimal]) -> bool:
+    price = parse_total_price(seatmap_obj.price_total)
+    if price is None:
+        return False
+    route = (seatmap_obj.origin, seatmap_obj.destination)
+    worst_price = price_lookup.get(route)
+    return worst_price is not None and price == worst_price
+
+
+def extract_layout_snapshot(seatmap_obj: SeatMap) -> list[dict]:
+    """Return a pared-down representation of the seat layout suitable for storage."""
+    layout: list[dict] = []
+    for deck in seatmap_obj.decks or []:
+        deck_snapshot = {
+            "deckType": deck.get("deckType"),
+            "deckNumber": deck.get("deckNumber"),
+            "deckConfiguration": deck.get("deckConfiguration"),
+            "seats": [],
+        }
+        for seat in deck.get("seats", []):
+            traveler_pricing = seat.get("travelerPricing", [])
+            if traveler_pricing:
+                pricing_snapshot = [{
+                    "seatAvailabilityStatus": traveler_pricing[0].get("seatAvailabilityStatus")
+                }]
+            else:
+                pricing_snapshot = []
+            deck_snapshot["seats"].append(
+                {
+                    "number": seat.get("number"),
+                    "coordinates": seat.get("coordinates"),
+                    "travelerPricing": pricing_snapshot,
+                    "characteristicsCodes": seat.get("characteristicsCodes", []),
+                }
+            )
+        layout.append(deck_snapshot)
+    return layout
+
+
+def build_heatmap_entries(
+    seatmaps_by_date: dict[str, SeatMap],
+    travel_windows: list[dict],
+) -> dict[str, dict[str, Decimal]]:
+    route_entries: dict[str, dict[str, Decimal]] = defaultdict(dict)
+    for window in travel_windows:
+        route_key = f"{window['origin']}->{window['destination']}"
+        for date_iso in iter_dates(window["start_date"], window["end_date"]):
+            date_key = date_iso.replace('-', '')
+            seatmap = seatmaps_by_date.get(date_key)
+            if seatmap is None or not seatmap.window_seats:
+                continue
+            price = parse_total_price(seatmap.price_total)
+            if price is None:
+                continue
+            route_entries[route_key][date_key] = price
+    return route_entries
+
+
+def build_price_entries_all_dates(
+    seatmaps_by_date: dict[str, SeatMap],
+    travel_windows: list[dict],
+) -> dict[str, dict[str, Decimal]]:
+    """Build price entries for every seatmap date regardless of window-seat availability."""
+    route_entries: dict[str, dict[str, Decimal]] = defaultdict(dict)
+    for window in travel_windows:
+        route_key = f"{window['origin']}->{window['destination']}"
+        for date_iso in iter_dates(window["start_date"], window["end_date"]):
+            date_key = date_iso.replace('-', '')
+            seatmap = seatmaps_by_date.get(date_key)
+            if seatmap is None:
+                continue
+            price = parse_total_price(seatmap.price_total)
+            if price is None:
+                continue
+            route_entries[route_key][date_key] = price
+    return route_entries
+
+
+def build_heatmap_price_stats(entries_by_route: dict[str, dict[str, Decimal]]) -> dict[str, tuple[Decimal, Decimal]]:
+    stats: dict[str, tuple[Decimal, Decimal]] = {}
+    for route, entries in entries_by_route.items():
+        if not entries:
+            continue
+        prices = list(entries.values())
+        stats[route] = (min(prices), max(prices))
+    return stats
+
+
+__all__ = [
+    "SeatMap",
+    "iter_dates",
+    "parse_total_price",
+    "compute_best_price_by_route",
+    "compute_worst_price_by_route",
+    "has_best_price_for_route",
+    "has_worst_price_for_route",
+    "extract_layout_snapshot",
+    "build_heatmap_entries",
+    "build_price_entries_all_dates",
+    "build_heatmap_price_stats",
+]
+
+
+
+================================================
+FILE: seatmap_display.py
+================================================
+from __future__ import annotations
+from datetime import datetime
+from colors import apply as apply_color, resolve as resolve_color, ANSI_RESET as COLORS_ANSI_RESET
+from config import (
+    ANSI_RESET as CONFIG_ANSI_RESET,
+    BORDER_COLORS,
+    COMPACT_BACKGROUND_COLORS,
+    COMPACT_SYMBOL_COLORS,
+    COMPACT_SYMBOLS,
+    HIGHLIGHT_AVAILABLE_SYMBOL,
+    HIGHLIGHT_CHARACTERISTIC_CODES,
+    STATUS_SYMBOLS,
+    SUPPRESS_COMPACT_SECOND_HEADER,
+    WINDOW_AVAILABLE_SYMBOL as CONFIG_WINDOW_AVAILABLE_SYMBOL,
+)
+from display_utils import (
+    apply_heatmap_header_color,
+    display_width,
+    extract_row_and_column,
+    pad_to_width,
+    weekday_short_name,
+)
+from seatmap_data import SeatMap
+
+
+class SeatMaps:
+    STATUS_SYMBOL = STATUS_SYMBOLS
+    WINDOW_AVAILABLE_SYMBOL = CONFIG_WINDOW_AVAILABLE_SYMBOL
+    BORDER_COLOR_DEFAULT = BORDER_COLORS['default']
+    BORDER_COLOR_BEST = BORDER_COLORS['best']
+    BORDER_COLOR_WORST = BORDER_COLORS['worst']
+    ANSI_RESET = CONFIG_ANSI_RESET
+    COMPACT_BACKGROUND = COMPACT_BACKGROUND_COLORS
+    COMPACT_SYMBOLS = COMPACT_SYMBOLS
+    COMPACT_SYMBOL_COLORS = COMPACT_SYMBOL_COLORS
+    HIGHLIGHT_CHARACTERISTIC_CODES = HIGHLIGHT_CHARACTERISTIC_CODES
+    HIGHLIGHT_AVAILABLE_SYMBOL = HIGHLIGHT_AVAILABLE_SYMBOL
+
+    def __init__(self, seatmaps: list[SeatMap] | None = None):
+        self.seatmaps = seatmaps or []
+
+    def __iter__(self):
+        return iter(self.seatmaps)
+
+    def __len__(self):
+        return len(self.seatmaps)
+
+    def add(self, seatmap: SeatMap | None):
+        if seatmap is not None:
+            self.seatmaps.append(seatmap)
+
+    def render_map(
+        self,
+        seatmap: SeatMap,
+        *,
+        highlight: str | None = None,
+        style: str = 'ascii',
+        thick_border: bool = False,
+        show_header: bool = True,
+    ) -> str:
+        render_fn = self._render_ascii_deck if style != 'compact' else self._render_compact_deck
+        rendered_decks: list[str] = []
+        for deck in self._sorted_decks(seatmap):
+            rendered = render_fn(deck, highlight=highlight, thick_border=thick_border)
+            if rendered:
+                rendered_decks.append(rendered)
+
+        header_width = display_width(rendered_decks[0].splitlines()[0]) if rendered_decks else None
+        header = self._format_header(seatmap, style=style, width=header_width) if show_header else ''
+        output: list[str] = []
+        if header:
+            output.append(header)
+        output.extend(rendered_decks)
+        return '\n'.join(output)
+
+    def _render_ascii_deck(self, deck: dict, *, highlight: str | None = None, thick_border: bool = False) -> str:
+        rows, column_layout = self._build_seat_grid(deck)
+        if not rows or not column_layout:
+            return ''
+        symbol_candidates = list(self.STATUS_SYMBOL.values()) + [
+            self.WINDOW_AVAILABLE_SYMBOL,
+            self.HIGHLIGHT_AVAILABLE_SYMBOL,
+        ]
+        symbol_width = max(display_width(symbol) for symbol in symbol_candidates)
+        seat_column_width = max(symbol_width, 1)
+        aisle_column_width = max(1, seat_column_width // 2) + 1
+
+        def format_cell(value: str, width: int) -> str:
+            value = value or ''
+            pad = max(width - display_width(value), 0)
+            return value + (' ' * pad)
+
+        display_columns = [
+            (col['position'], col['label'], aisle_column_width if col['is_aisle'] else seat_column_width)
+            for col in column_layout
+        ]
+
+        header_cells = [format_cell(col_label, width) for _, col_label, width in display_columns]
+        header = f"{'':>2} " + ''.join(header_cells).replace('A B   D E F G   J K', ' A B  D E  F G  J K')
+        lines = [header]
+        for row_name in sorted(rows, key=self._row_sort_key):
+            seats_in_row = rows[row_name]
+            cells = []
+            for pos, _, width in display_columns:
+                if pos is None:
+                    cells.append(format_cell('', width))
+                else:
+                    seat_info = seats_in_row.get(pos)
+                    symbol = seat_info['symbol'] if seat_info else ' '
+                    cells.append(format_cell(symbol, width))
+            lines.append(f"{row_name:>2} " + ''.join(cells))
+
+        return self._wrap_with_border(lines, highlight=highlight, thick_border=thick_border)
+
+    def _render_compact_deck(self, deck: dict, *, highlight: str | None = None, thick_border: bool = False) -> str:
+        rows, column_layout = self._build_seat_grid(deck)
+        if not rows or not column_layout:
+            return ''
+
+        aisle_fill = '  '
+        header_cells = [aisle_fill if col['is_aisle'] else (col['label'] or ' ') for col in column_layout]
+        header = f"{'':>2} " + ''.join(header_cells)
+        lines = [header]
+
+        for row_name in sorted(rows, key=self._row_sort_key):
+            seats_in_row = rows[row_name]
+            row_cells = []
+            for col in column_layout:
+                if col['is_aisle']:
+                    row_cells.append(aisle_fill)
+                else:
+                    row_cells.append(self._compact_seat_cell(seats_in_row.get(col['position'])))
+            lines.append(f"{row_name:>2} " + ''.join(row_cells))
+
+        return self._wrap_with_border(lines, highlight=highlight, thick_border=thick_border)
+
+    def _compact_seat_cell(self, seat_info: dict | None) -> str:
+        if not seat_info:
+            return ' '
+        availability = seat_info.get('availability') or 'UNKNOWN'
+        is_window = seat_info.get('is_window', False)
+        is_highlighted = seat_info.get('has_highlight_code', False)
+        if availability == 'AVAILABLE' and is_highlighted:
+            color_key = 'AVAILABLE_HIGHLIGHT'
+        elif availability == 'AVAILABLE' and is_window:
+            color_key = 'AVAILABLE_WINDOW'
+        elif availability == 'AVAILABLE':
+            color_key = 'AVAILABLE'
+        elif availability == 'OCCUPIED':
+            color_key = 'OCCUPIED'
+        elif availability == 'BLOCKED':
+            color_key = 'BLOCKED'
+        else:
+            color_key = 'UNKNOWN'
+        bg_color = self.COMPACT_BACKGROUND.get(color_key, '')
+        symbol = self.COMPACT_SYMBOLS.get(color_key, ' ')
+        fg_color = self.COMPACT_SYMBOL_COLORS.get(color_key, '')
+
+        # Resolve tokens (or raw ANSI sequences) to real escape sequences
+        bg_seq = resolve_color(bg_color)
+        fg_seq = resolve_color(fg_color)
+
+        if not bg_seq:
+            # Only foreground (or none)
+            if fg_seq:
+                return f"{fg_seq}{symbol}{COLORS_ANSI_RESET}"
+            return symbol
+
+        # Background present; compose bg + optional fg then symbol, and reset once
+        return f"{bg_seq}{fg_seq or ''}{symbol}{COLORS_ANSI_RESET}"
+
+    def _build_seat_grid(self, deck: dict) -> tuple[dict[str, dict[int, dict]], list[dict]]:
+        seats = deck.get('seats', [])
+        columns_by_position: dict[int, str] = {}
+        rows: dict[str, dict[int, dict]] = {}
+
+        # First pass: collect columns and seat entries so we can infer windows even when codes are missing.
+        seat_entries: list[tuple[int, dict]] = []
+        for seat in seats:
+            coords = seat.get('coordinates', {})
+            column_position = coords.get('y')
+            if column_position is None:
+                continue
+            seat_number = seat.get('number', '?')
+            row_label, column_label = extract_row_and_column(seat_number)
+            columns_by_position.setdefault(column_position, column_label)
+            seat_entries.append((column_position, seat))
+
+        if columns_by_position:
+            ordered_cols = sorted(columns_by_position)
+            window_positions = {ordered_cols[0], ordered_cols[-1]}
+        else:
+            window_positions = set()
+
+        for column_position, seat in seat_entries:
+            seat_number = seat.get('number', '?')
+            row_label, _ = extract_row_and_column(seat_number)
+            row_bucket = rows.setdefault(row_label, {})
+            traveler_pricing = seat.get('travelerPricing', [])
+            availability = traveler_pricing[0].get('seatAvailabilityStatus') if traveler_pricing else 'UNKNOWN'
+            codes = seat.get('characteristicsCodes') or []
+            has_window_code = 'W' in codes
+            has_highlight_code = any(code in self.HIGHLIGHT_CHARACTERISTIC_CODES for code in codes)
+            is_window = has_window_code or column_position in window_positions
+            seat_symbol = self.STATUS_SYMBOL.get(availability, '?')
+            if availability == 'AVAILABLE' and has_highlight_code:
+                seat_symbol = self.HIGHLIGHT_AVAILABLE_SYMBOL
+            elif availability == 'AVAILABLE' and is_window:
+                seat_symbol = self.WINDOW_AVAILABLE_SYMBOL
+            elif availability == 'OCCUPIED':
+                seat_symbol = apply_color('fg_red', '×')
+            row_bucket[column_position] = {
+                'symbol': seat_symbol,
+                'availability': availability,
+                'is_window': is_window,
+                'has_highlight_code': has_highlight_code,
+            }
+
+        column_layout = self._build_column_layout(columns_by_position)
+        return rows, column_layout
+
+    def _build_column_layout(self, columns_by_position: dict[int, str]) -> list[dict]:
+        """Build ordered columns, inserting aisles when there are gaps or known splits."""
+        ordered_columns = sorted(columns_by_position)
+        layout: list[dict] = []
+        last_label = None
+        last_pos: int | None = None
+        for pos in ordered_columns:
+            label = columns_by_position[pos]
+            gap = (pos - last_pos) if last_pos is not None else 0
+            if last_pos is not None and (gap > 1 or self._has_aisle_between(last_label, label)):
+                layout.append({'position': None, 'label': '', 'is_aisle': True})
+            layout.append({'position': pos, 'label': label, 'is_aisle': False})
+            last_label = label
+            last_pos = pos
+        return layout
+
+    @staticmethod
+    def _has_aisle_between(previous_label: str | None, next_label: str | None) -> bool:
+        return (previous_label, next_label) in {
+            ('B', 'D'),
+            ('F', 'J'),
+            ('G', 'J'),
+        }
+
+    def _format_header(self, seatmap: SeatMap, *, style: str, width: int | None = None) -> str:
+        day_label = self._format_day_of_month(seatmap.departure_date)
+        header = self._center_text(day_label, width)
+        if style == 'compact':
+            return apply_heatmap_header_color(header)
+        return header
+
+    @staticmethod
+    def _format_day_of_month(date_str: str | None) -> str:
+        if not date_str:
+            return ''
+        try:
+            date_value = datetime.strptime(date_str, '%Y%m%d')
+            return str(date_value.day)
+        except ValueError:
+            fallback = date_str[-2:]
+            return fallback.lstrip('0') or fallback or date_str
+
+    @staticmethod
+    def _center_text(text: str, width: int | None) -> str:
+        if not width or width <= 0:
+            return text
+        if display_width(text) >= width:
+            return text
+        return text.center(width)
+
+    @staticmethod
+    def _weekday_label(date_str: str | None) -> str:
+        if not date_str:
+            return ''
+        try:
+            date_value = datetime.strptime(date_str, '%Y%m%d').date()
+        except ValueError:
+            return ''
+        return weekday_short_name(date_value)
+
+    @staticmethod
+    def _build_compact_header_primary_line(
+        date_label: str,
+        route_label: str,
+        flight_label: str,
+    ) -> tuple[str, dict[str, int | None]]:
+        layout: dict[str, int | None] = {
+            'route_start': None,
+            'flight_start': None,
+            'flight_end': None,
+            'line_length': 0,
+        }
+        builder: list[str] = []
+        current_index = 0
+        sequence = (
+            ('date', date_label),
+            ('route', route_label),
+            ('flight', flight_label),
+        )
+        for name, value in sequence:
+            if not value:
+                continue
+            if builder:
+                builder.append(' ')
+                current_index += 1
+            if name == 'route':
+                layout['route_start'] = current_index
+            if name == 'flight':
+                layout['flight_start'] = current_index
+            builder.append(value)
+            current_index += len(value)
+            if name == 'flight':
+                layout['flight_end'] = current_index
+        line = ''.join(builder)
+        layout['line_length'] = len(line)
+        return line, layout
+
+    @staticmethod
+    def _build_compact_header_meta_line(
+        *,
+        weekday_label: str,
+        price_label: str,
+        aircraft_label: str,
+        layout: dict[str, int | None],
+    ) -> str:
+        if not any((weekday_label, price_label, aircraft_label)):
+            return ''
+
+        base_length = max(layout.get('line_length', 0) or 0, len(weekday_label))
+        if base_length == 0:
+            base_length = 1
+        characters = [' '] * base_length
+
+        def ensure_capacity(size: int) -> None:
+            if size <= len(characters):
+                return
+            characters.extend([' '] * (size - len(characters)))
+
+        def place_text(text: str, start_index: int) -> None:
+            if not text:
+                return
+            if start_index < 0:
+                text = text[-start_index:]
+                start_index = 0
+            end_index = start_index + len(text)
+            ensure_capacity(end_index)
+            for offset, char in enumerate(text):
+                characters[start_index + offset] = char
+
+        place_text(weekday_label, 0)
+
+        route_start = layout.get('route_start')
+        fallback_price_start = len(weekday_label) + 1 if weekday_label else 0
+        price_start = route_start if route_start is not None else fallback_price_start
+        place_text(price_label, price_start)
+
+        flight_end = layout.get('flight_end')
+        if flight_end is None:
+            flight_end = max(len(characters), price_start + len(price_label))
+        aircraft_start = max(0, flight_end - len(aircraft_label))
+        place_text(aircraft_label, aircraft_start)
+
+        rendered = ''.join(characters).rstrip()
+        return rendered if rendered.strip() else ''
+
+    def _wrap_with_border(self, lines: list[str], *, highlight: str | None, thick_border: bool) -> str:
+        if not lines:
+            return ''
+        content_width = max((display_width(line) for line in lines), default=0)
+        horiz_char = '═' if thick_border else '─'
+        vert_char = '║' if thick_border else '│'
+        corners = ('╔', '╗', '╚', '╝') if thick_border else ('╭', '╮', '╰', '╯')
+        horizontal = horiz_char * (content_width + 2)
+        if highlight == 'best':
+            border_color = self.BORDER_COLOR_BEST
+        elif highlight == 'worst':
+            border_color = self.BORDER_COLOR_WORST
+        else:
+            border_color = self.BORDER_COLOR_DEFAULT
+
+        bordered_lines = [apply_color(border_color, f"{corners[0]}{horizontal}{corners[1]}")]
+        left_border = apply_color(border_color, vert_char)
+        right_border = apply_color(border_color, vert_char)
+        for line in lines:
+            padded = self._pad_line(line, content_width)
+            bordered_lines.append(f"{left_border} {padded} {right_border}")
+        bordered_lines.append(apply_color(border_color, f"{corners[2]}{horizontal}{corners[3]}"))
+        return '\n'.join(bordered_lines)
+
+    @staticmethod
+    def _pad_line(text: str, width: int) -> str:
+        pad = max(width - display_width(text), 0)
+        return text + (' ' * pad)
+
+    @staticmethod
+    def _row_sort_key(row_name: str):
+        return (0, int(row_name)) if row_name.isdigit() else (1, row_name)
+
+    # Internal helpers for deck ordering
+    def _sorted_decks(self, seatmap: SeatMap) -> list[dict]:
+        """Sort decks so the lowest row appears first when multiple decks exist."""
+        return sorted(seatmap.decks or [], key=self._deck_sort_key)
+
+    def _deck_sort_key(self, deck: dict) -> tuple[int, int]:
+        min_row = None
+        for seat in deck.get('seats', []) or []:
+            seat_number = seat.get('number')
+            row_label, _ = extract_row_and_column(str(seat_number or ''))
+            if row_label.isdigit():
+                value = int(row_label)
+            else:
+                coords = seat.get('coordinates') or {}
+                coord_row = coords.get('x')
+                value = int(coord_row) if isinstance(coord_row, (int, float)) and coord_row > 0 else None
+            if value is None:
+                continue
+            min_row = value if min_row is None else min(min_row, value)
+        deck_number = deck.get('deckNumber')
+        deck_hint = int(deck_number) if isinstance(deck_number, int) else 0
+        return (min_row if min_row is not None else 10**9, deck_hint)
+
+
+def render_text_box(
+    lines: list[str],
+    *,
+    content_width: int,
+    content_height: int,
+    border_color: str | None = None,
+) -> list[str]:
+    """Render a text box with padding, returning the list of lines."""
+    padded_lines = list(lines)
+    while len(padded_lines) < content_height:
+        padded_lines.append('')
+    padded_lines = [pad_to_width(line, content_width) for line in padded_lines]
+    horizontal = '─' * (content_width + 2)
+    color = border_color or SeatMaps.BORDER_COLOR_DEFAULT
+    box_lines = [apply_color(color, f"╭{horizontal}╮")]
+    for line in padded_lines:
+        box_lines.append(f"{apply_color(color, '│')} {line} {apply_color(color, '│')}")
+    box_lines.append(apply_color(color, f"╰{horizontal}╯"))
+    return box_lines
+
+
+__all__ = ["SeatMaps", "render_text_box"]
+
+
+
+================================================
+FILE: .env.template
+================================================
+TEST_AMADEUS_CLIENT_ID=
+TEST_AMADEUS_CLIENT_SECRET=
+
+AMADEUS_CLIENT_ID=
+AMADEUS_CLIENT_SECRET=
+
+
+
+================================================
+FILE: .github/workflows/run-seatmap.yml
+================================================
+name: Run Seatmap Pipeline
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "55 22 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  run-seatmap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set run date
+        id: rundate
+        run: echo "RUN_DATE=$(date +%Y%m%d)" >> "$GITHUB_ENV"
+
+      - name: Enforce cutoff date
+        run: |
+          cutoff=20251210
+
+          if [ "$RUN_DATE" -gt "$cutoff" ]; then
+            echo "Run date $RUN_DATE is beyond cutoff $cutoff. Skipping workflow steps."
+            echo "RUN_ALLOWED=false" >> "$GITHUB_ENV"
+          else
+            echo "RUN_ALLOWED=true" >> "$GITHUB_ENV"
+          fi
+
+      - name: Checkout repository
+        if: env.RUN_ALLOWED == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        if: env.RUN_ALLOWED == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        if: env.RUN_ALLOWED == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run seatmap pipeline
+        if: env.RUN_ALLOWED == 'true'
+        env:
+          AMADEUS_CLIENT_ID: ${{ secrets.AMADEUS_CLIENT_ID }}
+          AMADEUS_CLIENT_SECRET: ${{ secrets.AMADEUS_CLIENT_SECRET }}
+          TEST_AMADEUS_CLIENT_ID: ${{ secrets.TEST_AMADEUS_CLIENT_ID }}
+          TEST_AMADEUS_CLIENT_SECRET: ${{ secrets.TEST_AMADEUS_CLIENT_SECRET }}
+        run: python run_pipeline.py
+
+      - name: Upload run data
+        if: env.RUN_ALLOWED == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: seatmap-data-${{ env.RUN_DATE }}
+          path: data/${{ env.RUN_DATE }}/
+          if-no-files-found: ignore
+
+      - name: Commit rendered PNGs
+        if: env.RUN_ALLOWED == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if ! compgen -G "docs/*.png" > /dev/null; then
+            echo "No PNG updates to commit."
+            exit 0
+          fi
+
+          git add docs/*.png
+
+          if git diff --cached --quiet; then
+            echo "No PNG updates to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: update rendered seatmaps"
+          git push
+
+
+
+================================================
+FILE: .github/workflows/scheduled-muc-bkk-seatmap.yml
+================================================
+name: Scheduled MUC-BKK Seatmap
+
+on:
+  schedule:
+    - cron: "0 */8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-seatmap:
+    runs-on: ubuntu-latest
+    env:
+      END_DATE: "2025-12-11"
+      OUTPUT_DIR: "data/flights/production-MUC-BKK-2025-12-10-212500-MULTI-EK-EUR"
+      REQUEST_FILE: "data/flights/production-MUC-BKK-2025-12-10-212500-MULTI-EK-EUR/seatmaps_request.json"
+      PNG_FILE: "data/flights/production-MUC-BKK-2025-12-10-212500-MULTI-EK-EUR/seatmaps.png"
+      METADATA_FILE: "data/flights/production-MUC-BKK-2025-12-10-212500-MULTI-EK-EUR/metadata.json"
+      SEATMAPS_FILE: "data/flights/production-MUC-BKK-2025-12-10-212500-MULTI-EK-EUR/seatmaps.json"
+
+    steps:
+      - name: Check schedule end date
+        run: |
+          set -euo pipefail
+          today="$(date -u +%Y-%m-%d)"
+
+          if [[ "$today" > "$END_DATE" ]]; then
+            echo "Schedule end date $END_DATE passed (today: $today UTC); skipping run."
+            echo "RUN_ALLOWED=false" >> "$GITHUB_ENV"
+          else
+            echo "RUN_ALLOWED=true" >> "$GITHUB_ENV"
+          fi
+
+      - name: Checkout repository
+        if: env.RUN_ALLOWED == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        if: env.RUN_ALLOWED == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        if: env.RUN_ALLOWED == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run seatmap command
+        if: env.RUN_ALLOWED == 'true'
+        env:
+          AMADEUS_CLIENT_ID: ${{ secrets.AMADEUS_CLIENT_ID }}
+          AMADEUS_CLIENT_SECRET: ${{ secrets.AMADEUS_CLIENT_SECRET }}
+          TEST_AMADEUS_CLIENT_ID: ${{ secrets.TEST_AMADEUS_CLIENT_ID }}
+          TEST_AMADEUS_CLIENT_SECRET: ${{ secrets.TEST_AMADEUS_CLIENT_SECRET }}
+        run: >
+          python flight_offer_seatmaps.py
+          --date 2025-12-10
+          --time 21:25
+          --from MUC
+          --to BKK
+          --airline EK
+
+      - name: Verify expected outputs
+        if: env.RUN_ALLOWED == 'true'
+        run: |
+          set -euo pipefail
+          for target in "$REQUEST_FILE" "$PNG_FILE" "$METADATA_FILE" "$SEATMAPS_FILE"; do
+            if [ ! -f "$target" ]; then
+              echo "Expected file missing: $target"
+              exit 1
+            fi
+          done
+
+      - name: Commit seatmap artifacts
+        if: env.RUN_ALLOWED == 'true'
+        run: |
+          set -euo pipefail
+          branch="${GITHUB_REF_NAME:-${GITHUB_REF##*/}}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add .
+
+          if git diff --cached --quiet; then
+            echo "No seatmap updates to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: update MUC-BKK seatmap for 2025-12-10 21:25"
+          git push origin "HEAD:$branch"
+
+
+
+================================================
+FILE: .github/workflows/static.yml
+================================================
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["master"]
+    paths:
+      - "docs/**/*.png"
+      - "docs/**/*.html"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+  # Trigger after the seatmap pipeline completes (GitHub token pushes won't trigger push-based workflows)
+  workflow_run:
+    workflows: ["Run Seatmap Pipeline"]
+    types:
+      - completed
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+
