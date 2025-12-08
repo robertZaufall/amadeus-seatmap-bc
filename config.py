@@ -1,11 +1,5 @@
-"""Central configuration for seatmap rendering and search behavior."""
-
 from datetime import date, timedelta
 
-# Valid values: "production", "test", "e2e", "e2e-pickle"
-#ENVIRONMENT = "e2e-pickle"
-#ENVIRONMENT = "e2e"
-#ENVIRONMENT = "test"
 ENVIRONMENT = "production"
 
 def _build_travel_windows(today: date | None = None) -> list[dict[str, str]]:
