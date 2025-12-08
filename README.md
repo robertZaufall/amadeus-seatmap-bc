@@ -2,6 +2,8 @@
 
 CLI utility for browsing Amadeus seat-map availability across a set of long-haul trips. It pulls live data from the Amadeus Self-Service APIs and caches each day's responses under `data/<YYYYMMDD>` so you can re-render the output without hitting the API again.
 
+![Example](docs/doc1.png)
+
 ## Highlights
 - Builds ASCII seat maps with wide-character awareness so layouts stay aligned even when using emoji markers.
 - Highlights the lowest fare per route with a green border so deals stand out immediately.
@@ -83,6 +85,8 @@ python flight_offer_seatmaps.py \
   --class BUSINESS \
   --currency EUR
 ```
+
+![Example](docs/doc2.png)
 
 Notes:
 - Seatmaps print to the terminal and save as `seatmaps.png` plus JSON files (`flight_offers.json`, `seatmaps.json`, `metadata.json`) in the cache folder.
