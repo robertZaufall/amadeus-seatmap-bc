@@ -1,8 +1,8 @@
 {
-  "fetched_at": "2025-12-08T08:02:51.569997+00:00",
+  "fetched_at": "2025-12-08T12:07:44.289695+01:00",
   "seatmaps_cached": true,
-  "seatmaps_hash": "fb9cc8c16b92e526587a070b6a905ca6bcae4818f33b93cc0807abadb5d46a4d",
-  "previous_seatmaps_hash": "fb9cc8c16b92e526587a070b6a905ca6bcae4818f33b93cc0807abadb5d46a4d",
+  "seatmaps_hash": "09b5bf9448de37a265e63dcfc26286c89852df6fb712a82493907ac0d1b472e2",
+  "previous_seatmaps_hash": "a10be46d69a5a7e6632d8ba4fac32d280c71fc0c3bc82c91868b4dc21db73c99",
   "command_args": [
     "--date",
     "2025-12-10",
@@ -13,6 +13,7 @@
     "--to",
     "BKK",
     "--airline",
-    "EK"
+    "EK",
+    "--force-refresh"
   ]
 }

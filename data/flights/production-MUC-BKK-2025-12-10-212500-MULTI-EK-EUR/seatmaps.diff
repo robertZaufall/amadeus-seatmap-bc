@@ -1,0 +1,53 @@
+--- seatmaps.json (previous)
++++ seatmaps.json (new)
+@@ -25,17 +25,6 @@
+     "segmentId": "1",
+     "decks": [
+       {
+-        "deckType": "MAIN",
+-        "deckConfiguration": {
+-          "width": 12,
+-          "length": 0,
+-          "startSeatRow": 13,
+-          "endSeatRow": 13,
+-          "startWingsRow": 13,
+-          "endWingsRow": 13
+-        }
+-      },
+-      {
+         "deckType": "UPPER",
+         "deckConfiguration": {
+           "width": 12,
+@@ -1377,6 +1366,17 @@
+             }
+           }
+         ]
++      },
++      {
++        "deckType": "MAIN",
++        "deckConfiguration": {
++          "width": 12,
++          "length": 0,
++          "startSeatRow": 13,
++          "endSeatRow": 13,
++          "startWingsRow": 13,
++          "endWingsRow": 13
++        }
+       }
+     ],
+     "aircraftCabinAmenities": {
+@@ -1402,7 +1402,13 @@
+         "isChargeable": false,
+         "beverageType": "ALCOHOLIC"
+       }
+-    }
++    },
++    "availableSeatsCounters": [
++      {
++        "travelerId": "1",
++        "value": 32
++      }
++    ]
+   },
+   {
+     "id": "2",

@@ -236,12 +236,26 @@ def _cache_paths(cache_dir: Path) -> dict[str, Path]:
     }
 
 
-def _is_fresh(path: Path, ttl_hours: float) -> bool:
+def _is_fresh(path: Path, ttl_hours: float, *, fetched_at: str | None = None) -> bool:
+    """Return True when both the file and metadata timestamps are within the TTL window."""
     if ttl_hours <= 0:
         return False
     if not path.exists():
         return False
-    age_seconds = (datetime.now().timestamp() - path.stat().st_mtime)
+
+    timestamps: list[float] = []
+    if fetched_at:
+        parsed = _parse_timestamp(fetched_at)
+        if parsed:
+            timestamps.append(parsed.timestamp())
+    try:
+        timestamps.append(path.stat().st_mtime)
+    except OSError:
+        pass
+    if not timestamps:
+        return False
+
+    age_seconds = datetime.now().timestamp() - max(timestamps)
     return age_seconds <= (ttl_hours * 3600)
 
 
@@ -254,14 +268,16 @@ def _load_cache(
     offers_path = paths["offers"]
     meta_path = paths["meta"]
 
-    if not _is_fresh(seatmaps_path, ttl_hours):
+    meta = _load_json(meta_path)
+    fetched_at = meta.get("fetched_at") if isinstance(meta, dict) else None
+
+    if not _is_fresh(seatmaps_path, ttl_hours, fetched_at=fetched_at):
         return None
-    if not _is_fresh(offers_path, ttl_hours):
+    if not _is_fresh(offers_path, ttl_hours, fetched_at=fetched_at):
         return None
 
     seatmaps = _load_json(seatmaps_path)
     offers = _load_json(offers_path)
-    meta = _load_json(meta_path)
     if not isinstance(seatmaps, list) or not isinstance(offers, list):
         return None
     return offers, seatmaps, meta
@@ -893,16 +909,15 @@ def main() -> None:
     cache_paths = _cache_paths(cache_dir)
     seatmaps_request_path = cache_paths["seatmaps_request"]
 
-    seatmaps_request: dict[str, Any] | None = _load_json(seatmaps_request_path)
-    if args.force_refresh:
-        seatmaps_request = None
-    elif travel_class is None and isinstance(seatmaps_request, dict):
-        data_entries = seatmaps_request.get("data")
-        if not (isinstance(data_entries, list) and len(data_entries) >= len(cabins)):
-            # Rebuild the seatmaps request to include all cabins when missing.
-            seatmaps_request = None
-        else:
+    raw_seatmaps_request: dict[str, Any] | None = _load_json(seatmaps_request_path)
+    seatmaps_request: dict[str, Any] | None = None
+    if isinstance(raw_seatmaps_request, dict):
+        data_entries = raw_seatmaps_request.get("data")
+        if isinstance(data_entries, list):
+            # Always honor an existing seatmaps_request.json, deduping IDs as needed.
             seatmaps_request = build_seatmaps_request(_dedupe_offer_ids_for_seatmaps(data_entries))
+        else:
+            seatmaps_request = raw_seatmaps_request
     seatmap_records: list[dict[str, Any]] = []
     cache_meta: dict[str, Any] | None = None
     cached_offers = _load_json(cache_paths["offers"])
@@ -911,9 +926,10 @@ def main() -> None:
     if isinstance(seatmaps_request, dict):
         cached_seatmaps = _load_json(cache_paths["seatmaps"])
         cache_meta = _load_json(cache_paths["meta"])
+        fetched_at = cache_meta.get("fetched_at") if isinstance(cache_meta, dict) else None
         use_cached_seatmaps = (
             not args.force_refresh
-            and _is_fresh(cache_paths["seatmaps"], args.cache_ttl_hours)
+            and _is_fresh(cache_paths["seatmaps"], args.cache_ttl_hours, fetched_at=fetched_at)
             and isinstance(cached_seatmaps, list)
             and len(cached_seatmaps) >= expected_seatmaps
         )
