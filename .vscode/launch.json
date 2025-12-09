@@ -30,7 +30,7 @@
                 "--to", "BKK",
                 "--class", "BUSINESS",
                 "--airline", "EK",
-                // "--force-refresh"
+                "--force-refresh"
             ],
             "console": "integratedTerminal"
         },
@@ -45,7 +45,7 @@
                 "--from", "MUC",
                 "--to", "BKK",
                 "--airline", "EK",
-                // "--force-refresh"
+                "--force-refresh"
             ],
             "console": "integratedTerminal"
         },

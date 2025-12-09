@@ -918,14 +918,31 @@ def main() -> None:
             seatmaps_request = build_seatmaps_request(_dedupe_offer_ids_for_seatmaps(data_entries))
         else:
             seatmaps_request = raw_seatmaps_request
+    cache_meta: dict[str, Any] | None = _load_json(cache_paths["meta"])
     seatmap_records: list[dict[str, Any]] = []
-    cache_meta: dict[str, Any] | None = None
     cached_offers = _load_json(cache_paths["offers"])
     flight_offers: list[dict[str, Any]] = cached_offers if isinstance(cached_offers, list) else []
+    fetched_at = cache_meta.get("fetched_at") if isinstance(cache_meta, dict) else None
+
+    if (
+        seatmaps_request is None
+        and not args.force_refresh
+        and flight_offers
+        and _is_fresh(cache_paths["offers"], args.cache_ttl_hours, fetched_at=fetched_at)
+    ):
+        if travel_class is None:
+            selected_offers = _select_offers_for_cabins(flight_offers, cabins)
+            if selected_offers:
+                seatmaps_request = build_seatmaps_request(_dedupe_offer_ids_for_seatmaps(selected_offers))
+                _dump_json(seatmaps_request_path, seatmaps_request)
+                print("Rebuilt seatmaps_request.json from cached flight offers.")
+        elif len(flight_offers) == 1:
+            seatmaps_request = build_seatmaps_request(_dedupe_offer_ids_for_seatmaps([flight_offers[0]]))
+            _dump_json(seatmaps_request_path, seatmaps_request)
+            print("Rebuilt seatmaps_request.json from cached flight offer.")
 
     if isinstance(seatmaps_request, dict):
         cached_seatmaps = _load_json(cache_paths["seatmaps"])
-        cache_meta = _load_json(cache_paths["meta"])
         fetched_at = cache_meta.get("fetched_at") if isinstance(cache_meta, dict) else None
         use_cached_seatmaps = (
             not args.force_refresh
@@ -941,7 +958,11 @@ def main() -> None:
         else:
             print("Refreshing seatmaps using existing seatmaps_request.json (skipping flight-offer search).")
             amadeus = build_amadeus_client(args.environment)
-            seatmap_records = _sanitize_seatmaps(fetch_seatmaps(amadeus, seatmaps_request))
+            try:
+                seatmap_records = _sanitize_seatmaps(fetch_seatmaps(amadeus, seatmaps_request))
+            except RuntimeError as exc:
+                print(exc)
+                return
             _write_seatmaps_with_diff(cache_paths["seatmaps"], seatmap_records)
             existing_meta = _load_json(cache_paths["meta"])
             cache_meta = _build_metadata(True, cache_paths["seatmaps"], existing_meta, _current_command_args())
@@ -1009,7 +1030,19 @@ def main() -> None:
                     return
                 seatmaps_request = build_seatmaps_request(_dedupe_offer_ids_for_seatmaps([flight_offers[0]]))
 
-            seatmap_records = _sanitize_seatmaps(fetch_seatmaps(amadeus, seatmaps_request))
+            _dump_json(seatmaps_request_path, seatmaps_request)
+            try:
+                seatmap_records = _sanitize_seatmaps(fetch_seatmaps(amadeus, seatmaps_request))
+            except RuntimeError as exc:
+                _write_cache(
+                    cache_dir,
+                    request_body=flight_offer_request,
+                    flight_offers=flight_offers,
+                    seatmaps_request=seatmaps_request,
+                    seatmaps=None,
+                )
+                print(exc)
+                return
             cache_meta = _write_cache(
                 cache_dir,
                 request_body=flight_offer_request,
