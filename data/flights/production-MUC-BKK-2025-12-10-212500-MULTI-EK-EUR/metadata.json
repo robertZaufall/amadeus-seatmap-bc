@@ -1,8 +1,8 @@
 {
-  "fetched_at": "2025-12-09T08:03:04.722816+00:00",
+  "fetched_at": "2025-12-09T16:02:56.304970+00:00",
   "seatmaps_cached": true,
-  "seatmaps_hash": "54500bc5428290494d54a12511bc6b64d7b3710686fc7377dc8ab685b197f62f",
-  "previous_seatmaps_hash": "4a144da43fa5848aec7173967d4f3ebe78193f837215475ae360c05dd24f70a2",
+  "seatmaps_hash": "ed95a8c8668b37b97af3995743897b8658d66baad13fa1cd23f12a36d64d402b",
+  "previous_seatmaps_hash": "54500bc5428290494d54a12511bc6b64d7b3710686fc7377dc8ab685b197f62f",
   "command_args": [
     "--date",
     "2025-12-10",

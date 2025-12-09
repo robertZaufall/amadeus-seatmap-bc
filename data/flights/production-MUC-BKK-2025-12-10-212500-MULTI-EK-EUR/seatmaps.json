@@ -287,7 +287,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -338,7 +338,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "OCCUPIED"
+                "seatAvailabilityStatus": "AVAILABLE"
               }
             ],
             "coordinates": {
@@ -1293,7 +1293,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "OCCUPIED"
+                "seatAvailabilityStatus": "AVAILABLE"
               }
             ],
             "coordinates": {
@@ -2300,12 +2300,12 @@
             "cabin": "ECONOMY",
             "number": "42J",
             "characteristicsCodes": [
-              "O"
+              "9"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "BLOCKED"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -5000,12 +5000,12 @@
             "cabin": "ECONOMY",
             "number": "60H",
             "characteristicsCodes": [
-              "H"
+              "A"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -5085,12 +5085,12 @@
             "cabin": "ECONOMY",
             "number": "61C",
             "characteristicsCodes": [
-              "H"
+              "A"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -5153,12 +5153,12 @@
             "cabin": "ECONOMY",
             "number": "61G",
             "characteristicsCodes": [
-              "H"
+              "A"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -5345,7 +5345,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -6054,28 +6054,12 @@
             "cabin": "ECONOMY",
             "number": "67H",
             "characteristicsCodes": [
-              "CH",
-              "1A",
-              "IE",
-              "K",
-              "E",
-              "1A_AQC_PREMIUM_SEAT"
+              "A"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE",
-                "price": {
-                  "currency": "EUR",
-                  "total": "101.73",
-                  "base": "101.73",
-                  "taxes": [
-                    {
-                      "amount": "0.00",
-                      "code": "SUPPLIER"
-                    }
-                  ]
-                }
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -6087,28 +6071,12 @@
             "cabin": "ECONOMY",
             "number": "67J",
             "characteristicsCodes": [
-              "CH",
-              "1A",
-              "IE",
-              "K",
-              "E",
-              "1A_AQC_PREMIUM_SEAT"
+              "9"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE",
-                "price": {
-                  "currency": "EUR",
-                  "total": "101.73",
-                  "base": "101.73",
-                  "taxes": [
-                    {
-                      "amount": "0.00",
-                      "code": "SUPPLIER"
-                    }
-                  ]
-                }
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -6288,27 +6256,12 @@
             "cabin": "ECONOMY",
             "number": "68K",
             "characteristicsCodes": [
-              "CH",
-              "1A",
-              "IE",
-              "E",
-              "1A_AQC_PREMIUM_SEAT"
+              "W"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE",
-                "price": {
-                  "currency": "EUR",
-                  "total": "101.73",
-                  "base": "101.73",
-                  "taxes": [
-                    {
-                      "amount": "0.00",
-                      "code": "SUPPLIER"
-                    }
-                  ]
-                }
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -6359,7 +6312,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -6733,7 +6686,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -7447,7 +7400,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -7634,7 +7587,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -7884,12 +7837,12 @@
             "cabin": "ECONOMY",
             "number": "78C",
             "characteristicsCodes": [
-              "U"
+              "A"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -7923,7 +7876,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -8054,12 +8007,12 @@
             "cabin": "ECONOMY",
             "number": "79C",
             "characteristicsCodes": [
-              "U"
+              "A"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -8076,7 +8029,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -8093,7 +8046,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -8122,28 +8075,12 @@
             "cabin": "ECONOMY",
             "number": "80B",
             "characteristicsCodes": [
-              "CH",
-              "1A",
-              "IE",
-              "K",
-              "E",
-              "1A_AQC_PREMIUM_SEAT"
+              "9"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE",
-                "price": {
-                  "currency": "EUR",
-                  "total": "101.73",
-                  "base": "101.73",
-                  "taxes": [
-                    {
-                      "amount": "0.00",
-                      "code": "SUPPLIER"
-                    }
-                  ]
-                }
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -8155,28 +8092,12 @@
             "cabin": "ECONOMY",
             "number": "80C",
             "characteristicsCodes": [
-              "CH",
-              "1A",
-              "IE",
-              "K",
-              "E",
-              "1A_AQC_PREMIUM_SEAT"
+              "A"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE",
-                "price": {
-                  "currency": "EUR",
-                  "total": "101.73",
-                  "base": "101.73",
-                  "taxes": [
-                    {
-                      "amount": "0.00",
-                      "code": "SUPPLIER"
-                    }
-                  ]
-                }
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -8188,28 +8109,12 @@
             "cabin": "ECONOMY",
             "number": "80H",
             "characteristicsCodes": [
-              "CH",
-              "1A",
-              "IE",
-              "K",
-              "E",
-              "1A_AQC_PREMIUM_SEAT"
+              "A"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE",
-                "price": {
-                  "currency": "EUR",
-                  "total": "101.73",
-                  "base": "101.73",
-                  "taxes": [
-                    {
-                      "amount": "0.00",
-                      "code": "SUPPLIER"
-                    }
-                  ]
-                }
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -8566,7 +8471,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -8634,7 +8539,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -8889,7 +8794,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "OCCUPIED"
+                "seatAvailabilityStatus": "AVAILABLE"
               }
             ],
             "coordinates": {
@@ -9025,7 +8930,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -9059,7 +8964,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -9573,7 +9478,7 @@
     "availableSeatsCounters": [
       {
         "travelerId": "1",
-        "value": 42
+        "value": 20
       }
     ]
   },
@@ -9838,13 +9743,12 @@
             "cabin": "ECONOMY",
             "number": "9B",
             "characteristicsCodes": [
-              "O",
-              "I"
+              "9"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "BLOCKED"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -10756,7 +10660,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -10807,7 +10711,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -10875,7 +10779,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -10994,7 +10898,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -11385,7 +11289,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -11504,7 +11408,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -11657,7 +11561,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -13440,7 +13344,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -16468,7 +16372,7 @@
     "availableSeatsCounters": [
       {
         "travelerId": "1",
-        "value": 19
+        "value": 11
       }
     ]
   }
