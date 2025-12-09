@@ -64,6 +64,7 @@ jobs:
           --from MUC
           --to BKK
           --airline EK
+          --force-refresh
 
       - name: Verify expected outputs
         if: env.RUN_ALLOWED == 'true'
