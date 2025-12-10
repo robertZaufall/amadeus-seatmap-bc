@@ -25,6 +25,17 @@
     "segmentId": "1",
     "decks": [
       {
+        "deckType": "MAIN",
+        "deckConfiguration": {
+          "width": 12,
+          "length": 0,
+          "startSeatRow": 13,
+          "endSeatRow": 13,
+          "startWingsRow": 13,
+          "endWingsRow": 13
+        }
+      },
+      {
         "deckType": "UPPER",
         "deckConfiguration": {
           "width": 12,
@@ -1360,17 +1371,6 @@
             }
           }
         ]
-      },
-      {
-        "deckType": "MAIN",
-        "deckConfiguration": {
-          "width": 12,
-          "length": 0,
-          "startSeatRow": 13,
-          "endSeatRow": 13,
-          "startWingsRow": 13,
-          "endWingsRow": 13
-        }
       }
     ],
     "aircraftCabinAmenities": {
@@ -1396,13 +1396,7 @@
         "isChargeable": false,
         "beverageType": "ALCOHOLIC"
       }
-    },
-    "availableSeatsCounters": [
-      {
-        "travelerId": "1",
-        "value": 32
-      }
-    ]
+    }
   },
   {
     "id": "2",
@@ -4295,7 +4289,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -9497,7 +9491,7 @@
     "availableSeatsCounters": [
       {
         "travelerId": "1",
-        "value": 11
+        "value": 10
       }
     ]
   },
