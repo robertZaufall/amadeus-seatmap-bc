@@ -1924,15 +1924,12 @@
             "cabin": "BUSINESS",
             "number": "5A",
             "characteristicsCodes": [
-              "B",
-              "1",
-              "K",
-              "I"
+              "W"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "BLOCKED"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -3588,12 +3585,12 @@
             "cabin": "ECONOMY",
             "number": "51E",
             "characteristicsCodes": [
-              "O"
+              "9"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "BLOCKED"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -10571,7 +10568,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -16385,7 +16382,7 @@
     "availableSeatsCounters": [
       {
         "travelerId": "1",
-        "value": 7
+        "value": 6
       }
     ]
   }
