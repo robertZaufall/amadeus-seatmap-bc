@@ -1,0 +1,18 @@
+{
+  "fetched_at": "2025-12-15T22:38:42.025538+07:00",
+  "seatmaps_cached": true,
+  "seatmaps_hash": "50bd8d40bc5f43bd2b8525a5d4380b0964b107d853aa02f6f10995fb7a5c10f5",
+  "previous_seatmaps_hash": null,
+  "command_args": [
+    "--date",
+    "2026-01-26",
+    "--time",
+    "00:50",
+    "--from",
+    "BKK",
+    "--to",
+    "MUC",
+    "--airline",
+    "TG"
+  ]
+}

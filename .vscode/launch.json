@@ -50,15 +50,15 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "flight_offer_seatmaps MUC-BKK TG BUSINESS",
+            "name": "flight_offer_seatmaps BKK-MUC TG BUSINESS",
             "type": "debugpy",
             "request": "launch",
             "program": "flight_offer_seatmaps.py",
             "args": [
-                "--date", "2025-12-10",
-                "--time", "13:35",
-                "--from", "MUC",
-                "--to", "BKK",
+                "--date", "2026-01-26",
+                "--time", "00:50",
+                "--from", "BKK",
+                "--to", "MUC",
                 "--class", "BUSINESS",
                 "--airline", "TG",
                 // "--force-refresh"
@@ -66,15 +66,15 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "flight_offer_seatmaps MUC-BKK TG MULTI",
+            "name": "flight_offer_seatmaps BKK-MUC TG MULTI",
             "type": "debugpy",
             "request": "launch",
             "program": "flight_offer_seatmaps.py",
             "args": [
-                "--date", "2025-12-10",
-                "--time", "13:35",
-                "--from", "MUC",
-                "--to", "BKK",
+                "--date", "2026-01-26",
+                "--time", "00:50",
+                "--from", "BKK",
+                "--to", "MUC",
                 "--airline", "TG",
                 // "--force-refresh"
             ],
