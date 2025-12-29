@@ -1,0 +1,96 @@
+name: Scheduled BKK-MUC TG Seatmap
+
+on:
+  schedule:
+    - cron: "0 */8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-seatmap:
+    runs-on: ubuntu-latest
+    env:
+      END_DATE: "2026-01-26"
+      OUTPUT_DIR: "data/flights/production-BKK-MUC-2026-01-26-005000-MULTI-TG-EUR"
+      REQUEST_FILE: "data/flights/production-BKK-MUC-2026-01-26-005000-MULTI-TG-EUR/seatmaps_request.json"
+      PNG_FILE: "data/flights/production-BKK-MUC-2026-01-26-005000-MULTI-TG-EUR/seatmaps.png"
+      METADATA_FILE: "data/flights/production-BKK-MUC-2026-01-26-005000-MULTI-TG-EUR/metadata.json"
+      SEATMAPS_FILE: "data/flights/production-BKK-MUC-2026-01-26-005000-MULTI-TG-EUR/seatmaps.json"
+
+    steps:
+      - name: Check schedule end date
+        run: |
+          set -euo pipefail
+          today="$(date -u +%Y-%m-%d)"
+
+          if [[ "$today" > "$END_DATE" ]]; then
+            echo "Schedule end date $END_DATE passed (today: $today UTC); skipping run."
+            echo "RUN_ALLOWED=false" >> "$GITHUB_ENV"
+          else
+            echo "RUN_ALLOWED=true" >> "$GITHUB_ENV"
+          fi
+
+      - name: Checkout repository
+        if: env.RUN_ALLOWED == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        if: env.RUN_ALLOWED == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        if: env.RUN_ALLOWED == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run seatmap command
+        if: env.RUN_ALLOWED == 'true'
+        env:
+          AMADEUS_CLIENT_ID: ${{ secrets.AMADEUS_CLIENT_ID }}
+          AMADEUS_CLIENT_SECRET: ${{ secrets.AMADEUS_CLIENT_SECRET }}
+          TEST_AMADEUS_CLIENT_ID: ${{ secrets.TEST_AMADEUS_CLIENT_ID }}
+          TEST_AMADEUS_CLIENT_SECRET: ${{ secrets.TEST_AMADEUS_CLIENT_SECRET }}
+        run: >
+          python flight_offer_seatmaps.py
+          --date 2026-01-26
+          --time 00:50
+          --from BKK
+          --to MUC
+          --airline TG
+          --force-refresh
+
+      - name: Verify expected outputs
+        if: env.RUN_ALLOWED == 'true'
+        run: |
+          set -euo pipefail
+          for target in "$REQUEST_FILE" "$PNG_FILE" "$METADATA_FILE" "$SEATMAPS_FILE"; do
+            if [ ! -f "$target" ]; then
+              echo "Expected file missing: $target"
+              exit 1
+            fi
+          done
+
+      - name: Commit seatmap artifacts
+        if: env.RUN_ALLOWED == 'true'
+        run: |
+          set -euo pipefail
+          branch="${GITHUB_REF_NAME:-${GITHUB_REF##*/}}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add .
+
+          if git diff --cached --quiet; then
+            echo "No seatmap updates to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: update MUC-BKK seatmap for 2026-01-26 00:50"
+          git push origin "HEAD:$branch"
