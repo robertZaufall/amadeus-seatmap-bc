@@ -1734,13 +1734,12 @@
             "number": "35C",
             "characteristicsCodes": [
               "A",
-              "OW",
-              "1"
+              "OW"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "BLOCKED"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
