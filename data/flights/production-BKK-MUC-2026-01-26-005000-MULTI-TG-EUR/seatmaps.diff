@@ -1,94 +1,13 @@
 --- seatmaps.json (previous)
 +++ seatmaps.json (new)
-@@ -212,7 +212,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -282,7 +282,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -333,7 +333,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -420,7 +420,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -556,7 +556,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -573,7 +573,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -590,7 +590,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -624,7 +624,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -747,7 +747,7 @@
-     "availableSeatsCounters": [
-       {
-         "travelerId": "1",
--        "value": 14
-+        "value": 6
-       }
-     ]
-   },
 @@ -1035,8 +1035,8 @@
                  "seatAvailabilityStatus": "BLOCKED",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
@@ -96,10 +15,10 @@
                  "seatAvailabilityStatus": "BLOCKED",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
@@ -107,10 +26,10 @@
                  "seatAvailabilityStatus": "BLOCKED",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
@@ -118,10 +37,10 @@
                  "seatAvailabilityStatus": "BLOCKED",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
@@ -129,10 +48,10 @@
                  "seatAvailabilityStatus": "BLOCKED",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
@@ -140,10 +59,10 @@
                  "seatAvailabilityStatus": "BLOCKED",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
@@ -151,10 +70,10 @@
                  "seatAvailabilityStatus": "BLOCKED",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
@@ -162,10 +81,10 @@
                  "seatAvailabilityStatus": "BLOCKED",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
@@ -173,265 +92,109 @@
                  "seatAvailabilityStatus": "BLOCKED",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
-@@ -1342,13 +1342,12 @@
-             "cabin": "ECONOMY",
-             "number": "32K",
-             "characteristicsCodes": [
--              "W",
--              "1"
--            ],
--            "travelerPricing": [
--              {
--                "travelerId": "1",
--                "seatAvailabilityStatus": "BLOCKED"
-+              "W"
-+            ],
-+            "travelerPricing": [
-+              {
-+                "travelerId": "1",
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -1379,13 +1378,12 @@
-             "number": "33B",
-             "characteristicsCodes": [
-               "9",
--              "OW",
--              "1"
--            ],
--            "travelerPricing": [
--              {
--                "travelerId": "1",
--                "seatAvailabilityStatus": "BLOCKED"
-+              "OW"
-+            ],
-+            "travelerPricing": [
-+              {
-+                "travelerId": "1",
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -1566,13 +1564,12 @@
-             "number": "34C",
-             "characteristicsCodes": [
-               "A",
--              "OW",
--              "1"
--            ],
--            "travelerPricing": [
--              {
--                "travelerId": "1",
--                "seatAvailabilityStatus": "BLOCKED"
-+              "OW"
-+            ],
-+            "travelerPricing": [
-+              {
-+                "travelerId": "1",
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -3068,13 +3065,12 @@
-             "number": "43A",
-             "characteristicsCodes": [
-               "OW",
--              "W",
--              "1"
--            ],
--            "travelerPricing": [
--              {
--                "travelerId": "1",
--                "seatAvailabilityStatus": "BLOCKED"
-+              "W"
-+            ],
-+            "travelerPricing": [
-+              {
-+                "travelerId": "1",
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -4277,8 +4273,8 @@
+@@ -4273,8 +4273,8 @@
                  "seatAvailabilityStatus": "AVAILABLE",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
-@@ -4308,8 +4304,8 @@
+@@ -4304,8 +4304,8 @@
                  "seatAvailabilityStatus": "AVAILABLE",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
-@@ -4340,8 +4336,8 @@
+@@ -4336,8 +4336,8 @@
                  "seatAvailabilityStatus": "OCCUPIED",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
-@@ -4371,8 +4367,8 @@
+@@ -4367,8 +4367,8 @@
                  "seatAvailabilityStatus": "OCCUPIED",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
-@@ -4403,8 +4399,8 @@
+@@ -4399,8 +4399,8 @@
                  "seatAvailabilityStatus": "AVAILABLE",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
-@@ -4434,8 +4430,8 @@
+@@ -4430,8 +4430,8 @@
                  "seatAvailabilityStatus": "AVAILABLE",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
-@@ -4465,8 +4461,8 @@
+@@ -4461,8 +4461,8 @@
                  "seatAvailabilityStatus": "AVAILABLE",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
-@@ -4496,8 +4492,8 @@
+@@ -4492,8 +4492,8 @@
                  "seatAvailabilityStatus": "AVAILABLE",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
-@@ -4647,11 +4643,11 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE",
-+                "seatAvailabilityStatus": "OCCUPIED",
+@@ -4646,8 +4646,8 @@
+                 "seatAvailabilityStatus": "OCCUPIED",
                  "price": {
                    "currency": "EUR",
--                  "total": "86.02",
--                  "base": "86.02",
-+                  "total": "87.54",
-+                  "base": "87.54",
+-                  "total": "87.54",
+-                  "base": "87.54",
++                  "total": "87.62",
++                  "base": "87.62",
                    "taxes": [
                      {
                        "amount": "0.00",
-@@ -4862,7 +4858,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -5032,7 +5028,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -5049,7 +5045,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -5168,7 +5164,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "OCCUPIED"
-+                "seatAvailabilityStatus": "AVAILABLE"
-               }
-             ],
-             "coordinates": {
-@@ -5678,7 +5674,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -5695,7 +5691,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -6052,7 +6048,7 @@
-             "travelerPricing": [
-               {
-                 "travelerId": "1",
--                "seatAvailabilityStatus": "AVAILABLE"
-+                "seatAvailabilityStatus": "OCCUPIED"
-               }
-             ],
-             "coordinates": {
-@@ -6787,7 +6783,7 @@
-     "availableSeatsCounters": [
-       {
-         "travelerId": "1",
--        "value": 29
-+        "value": 23
-       }
-     ]
-   }
