@@ -5384,7 +5384,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "OCCUPIED"
+                "seatAvailabilityStatus": "AVAILABLE"
               }
             ],
             "coordinates": {
@@ -6782,7 +6782,7 @@
     "availableSeatsCounters": [
       {
         "travelerId": "1",
-        "value": 22
+        "value": 23
       }
     ]
   }
