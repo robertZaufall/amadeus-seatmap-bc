@@ -1,0 +1,20 @@
+--- seatmaps.json (previous)
++++ seatmaps.json (new)
+@@ -420,7 +420,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -747,7 +747,7 @@
+     "availableSeatsCounters": [
+       {
+         "travelerId": "1",
+-        "value": 7
++        "value": 8
+       }
+     ]
+   },
