@@ -1,11 +1,29 @@
 --- seatmaps.json (previous)
 +++ seatmaps.json (new)
+@@ -333,7 +333,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "OCCUPIED"
+               }
+             ],
+             "coordinates": {
 @@ -420,7 +420,7 @@
              "travelerPricing": [
                {
                  "travelerId": "1",
--                "seatAvailabilityStatus": "OCCUPIED"
-+                "seatAvailabilityStatus": "AVAILABLE"
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "OCCUPIED"
+               }
+             ],
+             "coordinates": {
+@@ -505,7 +505,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "OCCUPIED"
                }
              ],
              "coordinates": {
@@ -13,8 +31,8 @@
      "availableSeatsCounters": [
        {
          "travelerId": "1",
--        "value": 7
-+        "value": 8
+-        "value": 8
++        "value": 5
        }
      ]
    },
