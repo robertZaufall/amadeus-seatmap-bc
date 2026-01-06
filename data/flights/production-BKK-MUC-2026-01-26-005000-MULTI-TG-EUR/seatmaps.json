@@ -1089,13 +1089,12 @@
             "characteristicsCodes": [
               "A",
               "CH",
-              "K",
-              "1"
+              "K"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "BLOCKED",
+                "seatAvailabilityStatus": "OCCUPIED",
                 "price": {
                   "currency": "EUR",
                   "total": "86.64",
@@ -1564,12 +1563,13 @@
             "number": "34C",
             "characteristicsCodes": [
               "A",
-              "OW"
+              "OW",
+              "1"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "OCCUPIED"
+                "seatAvailabilityStatus": "BLOCKED"
               }
             ],
             "coordinates": {
