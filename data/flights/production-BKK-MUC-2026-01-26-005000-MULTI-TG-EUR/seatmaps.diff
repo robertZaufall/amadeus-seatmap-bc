@@ -1,0 +1,200 @@
+--- seatmaps.json (previous)
++++ seatmaps.json (new)
+@@ -1035,8 +1035,8 @@
+                 "seatAvailabilityStatus": "BLOCKED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1067,8 +1067,8 @@
+                 "seatAvailabilityStatus": "BLOCKED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1097,8 +1097,8 @@
+                 "seatAvailabilityStatus": "OCCUPIED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1129,8 +1129,8 @@
+                 "seatAvailabilityStatus": "BLOCKED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1160,8 +1160,8 @@
+                 "seatAvailabilityStatus": "BLOCKED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1192,8 +1192,8 @@
+                 "seatAvailabilityStatus": "BLOCKED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1223,8 +1223,8 @@
+                 "seatAvailabilityStatus": "BLOCKED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1255,8 +1255,8 @@
+                 "seatAvailabilityStatus": "BLOCKED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1286,8 +1286,8 @@
+                 "seatAvailabilityStatus": "BLOCKED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4272,8 +4272,8 @@
+                 "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4303,8 +4303,8 @@
+                 "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4335,8 +4335,8 @@
+                 "seatAvailabilityStatus": "OCCUPIED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4366,8 +4366,8 @@
+                 "seatAvailabilityStatus": "OCCUPIED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4398,8 +4398,8 @@
+                 "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4429,8 +4429,8 @@
+                 "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4460,8 +4460,8 @@
+                 "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4491,8 +4491,8 @@
+                 "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4645,8 +4645,8 @@
+                 "seatAvailabilityStatus": "OCCUPIED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.18",
+-                  "base": "87.18",
++                  "total": "87.42",
++                  "base": "87.42",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
