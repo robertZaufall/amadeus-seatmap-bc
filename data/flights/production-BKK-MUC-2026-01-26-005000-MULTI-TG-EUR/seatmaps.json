@@ -1120,13 +1120,12 @@
               "A",
               "B",
               "CH",
-              "K",
-              "1"
+              "K"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE",
+                "seatAvailabilityStatus": "OCCUPIED",
                 "price": {
                   "currency": "EUR",
                   "total": "87.06",
@@ -1151,13 +1150,12 @@
             "characteristicsCodes": [
               "9",
               "CH",
-              "K",
-              "1"
+              "K"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE",
+                "seatAvailabilityStatus": "OCCUPIED",
                 "price": {
                   "currency": "EUR",
                   "total": "87.06",
@@ -1183,13 +1181,12 @@
               "A",
               "B",
               "CH",
-              "K",
-              "1"
+              "K"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE",
+                "seatAvailabilityStatus": "OCCUPIED",
                 "price": {
                   "currency": "EUR",
                   "total": "87.06",
@@ -4806,7 +4803,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "AVAILABLE"
+                "seatAvailabilityStatus": "OCCUPIED"
               }
             ],
             "coordinates": {
@@ -5741,7 +5738,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "OCCUPIED"
+                "seatAvailabilityStatus": "AVAILABLE"
               }
             ],
             "coordinates": {
@@ -5758,7 +5755,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "OCCUPIED"
+                "seatAvailabilityStatus": "AVAILABLE"
               }
             ],
             "coordinates": {
@@ -5775,7 +5772,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "OCCUPIED"
+                "seatAvailabilityStatus": "AVAILABLE"
               }
             ],
             "coordinates": {
@@ -6782,7 +6779,7 @@
     "availableSeatsCounters": [
       {
         "travelerId": "1",
-        "value": 193
+        "value": 192
       }
     ]
   }
