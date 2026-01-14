@@ -3896,12 +3896,13 @@
             "number": "47K",
             "characteristicsCodes": [
               "OW",
-              "W"
+              "W",
+              "1"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "OCCUPIED"
+                "seatAvailabilityStatus": "BLOCKED"
               }
             ],
             "coordinates": {
