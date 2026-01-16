@@ -1,0 +1,1732 @@
+--- seatmaps.json (previous)
++++ seatmaps.json (new)
+@@ -175,7 +175,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -195,7 +195,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -248,7 +248,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -386,7 +386,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -747,7 +747,7 @@
+     "availableSeatsCounters": [
+       {
+         "travelerId": "1",
+-        "value": 6
++        "value": 2
+       }
+     ]
+   },
+@@ -1032,11 +1032,11 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE",
++                "seatAvailabilityStatus": "BLOCKED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1064,11 +1064,11 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE",
++                "seatAvailabilityStatus": "BLOCKED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1097,8 +1097,8 @@
+                 "seatAvailabilityStatus": "OCCUPIED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1128,8 +1128,8 @@
+                 "seatAvailabilityStatus": "OCCUPIED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1158,8 +1158,8 @@
+                 "seatAvailabilityStatus": "OCCUPIED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1189,8 +1189,8 @@
+                 "seatAvailabilityStatus": "OCCUPIED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1217,11 +1217,11 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE",
++                "seatAvailabilityStatus": "BLOCKED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1249,11 +1249,11 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE",
++                "seatAvailabilityStatus": "BLOCKED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1280,11 +1280,11 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE",
++                "seatAvailabilityStatus": "BLOCKED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -1326,7 +1326,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1417,7 +1417,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1436,7 +1436,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1456,7 +1456,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1493,7 +1493,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1566,7 +1566,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1585,7 +1585,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1604,7 +1604,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1623,7 +1623,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1642,7 +1642,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1661,7 +1661,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1680,7 +1680,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1717,7 +1717,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1755,7 +1755,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1774,7 +1774,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1794,7 +1794,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1813,7 +1813,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1832,7 +1832,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1851,7 +1851,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1870,7 +1870,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1889,7 +1889,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1908,7 +1908,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1927,7 +1927,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1946,7 +1946,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1965,7 +1965,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -1984,7 +1984,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2003,7 +2003,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2022,7 +2022,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2041,7 +2041,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2060,7 +2060,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2079,7 +2079,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2098,7 +2098,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2117,7 +2117,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2136,7 +2136,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2155,7 +2155,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2174,7 +2174,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2193,7 +2193,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2212,7 +2212,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2231,7 +2231,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2250,7 +2250,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2269,7 +2269,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2288,7 +2288,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2307,7 +2307,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2326,7 +2326,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2345,7 +2345,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2364,7 +2364,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2383,7 +2383,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2402,7 +2402,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2421,7 +2421,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2440,7 +2440,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2459,7 +2459,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2478,7 +2478,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2497,7 +2497,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2516,7 +2516,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2535,7 +2535,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2554,7 +2554,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2573,7 +2573,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2592,7 +2592,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2629,7 +2629,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2648,7 +2648,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2667,7 +2667,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2686,7 +2686,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2705,7 +2705,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2724,7 +2724,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2743,7 +2743,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2762,7 +2762,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2781,7 +2781,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2800,7 +2800,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2819,7 +2819,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2838,7 +2838,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2857,7 +2857,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2876,7 +2876,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2895,7 +2895,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2914,7 +2914,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2933,7 +2933,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2952,7 +2952,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2971,7 +2971,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -2990,7 +2990,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3009,7 +3009,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3028,7 +3028,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3047,7 +3047,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3084,7 +3084,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3103,7 +3103,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3122,7 +3122,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3141,7 +3141,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3160,7 +3160,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3179,7 +3179,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3198,7 +3198,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3217,7 +3217,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3236,7 +3236,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3255,7 +3255,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3274,7 +3274,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3293,7 +3293,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3312,7 +3312,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3331,7 +3331,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3350,7 +3350,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3369,7 +3369,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3388,7 +3388,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3407,7 +3407,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3426,7 +3426,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3445,7 +3445,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3464,7 +3464,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3483,7 +3483,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3502,7 +3502,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3521,7 +3521,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3540,7 +3540,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3559,7 +3559,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3578,7 +3578,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3597,7 +3597,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3616,7 +3616,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3635,7 +3635,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3654,7 +3654,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3673,7 +3673,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3692,7 +3692,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3711,7 +3711,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3730,7 +3730,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3749,7 +3749,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3768,7 +3768,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3787,7 +3787,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3806,7 +3806,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3825,7 +3825,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3844,7 +3844,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3863,7 +3863,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3882,7 +3882,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3901,7 +3901,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3920,7 +3920,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3939,7 +3939,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3958,7 +3958,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3977,7 +3977,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -3996,7 +3996,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -4015,7 +4015,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -4034,7 +4034,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -4053,7 +4053,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -4072,7 +4072,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -4187,7 +4187,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -4245,7 +4245,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -4268,8 +4268,8 @@
+                 "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4299,8 +4299,8 @@
+                 "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4331,8 +4331,8 @@
+                 "seatAvailabilityStatus": "OCCUPIED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4362,8 +4362,8 @@
+                 "seatAvailabilityStatus": "OCCUPIED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4394,8 +4394,8 @@
+                 "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4425,8 +4425,8 @@
+                 "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4456,8 +4456,8 @@
+                 "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4487,8 +4487,8 @@
+                 "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -4548,7 +4548,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -4584,7 +4584,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -4641,8 +4641,8 @@
+                 "seatAvailabilityStatus": "OCCUPIED",
+                 "price": {
+                   "currency": "EUR",
+-                  "total": "87.24",
+-                  "base": "87.24",
++                  "total": "87.25",
++                  "base": "87.25",
+                   "taxes": [
+                     {
+                       "amount": "0.00",
+@@ -6096,7 +6096,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6115,7 +6115,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6134,7 +6134,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6203,7 +6203,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6221,7 +6221,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6239,7 +6239,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6258,7 +6258,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6277,7 +6277,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6296,7 +6296,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6365,7 +6365,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6383,7 +6383,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6401,7 +6401,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6420,7 +6420,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6439,7 +6439,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6458,7 +6458,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6528,7 +6528,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6547,7 +6547,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6566,7 +6566,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6586,7 +6586,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6606,7 +6606,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6626,7 +6626,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6700,7 +6700,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6720,7 +6720,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6740,7 +6740,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "BLOCKED"
+               }
+             ],
+             "coordinates": {
+@@ -6778,7 +6778,7 @@
+     "availableSeatsCounters": [
+       {
+         "travelerId": "1",
+-        "value": 190
++        "value": 23
+       }
+     ]
+   }
