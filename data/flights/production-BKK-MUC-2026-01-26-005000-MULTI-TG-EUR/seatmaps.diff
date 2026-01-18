@@ -1,0 +1,6384 @@
+--- seatmaps.json (previous)
++++ seatmaps.json (new)
+@@ -175,7 +175,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -195,7 +195,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -248,7 +248,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -386,7 +386,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -747,7 +747,7 @@
+     "availableSeatsCounters": [
+       {
+         "travelerId": "1",
+-        "value": 2
++        "value": 6
+       }
+     ]
+   },
+@@ -1032,7 +1032,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED",
++                "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+                   "total": "87.50",
+@@ -1064,7 +1064,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED",
++                "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+                   "total": "87.50",
+@@ -1248,3022 +1248,6 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED",
+-                "price": {
+-                  "currency": "EUR",
+-                  "total": "87.50",
+-                  "base": "87.50",
+-                  "taxes": [
+-                    {
+-                      "amount": "0.00",
+-                      "code": "SUPPLIER"
+-                    }
+-                  ]
+-                }
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 1,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "31K",
+-            "characteristicsCodes": [
+-              "CH",
+-              "K",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED",
+-                "price": {
+-                  "currency": "EUR",
+-                  "total": "87.50",
+-                  "base": "87.50",
+-                  "taxes": [
+-                    {
+-                      "amount": "0.00",
+-                      "code": "SUPPLIER"
+-                    }
+-                  ]
+-                }
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 1,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "32H",
+-            "characteristicsCodes": [
+-              "A"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 2,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "32J",
+-            "characteristicsCodes": [
+-              "9",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 2,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "32K",
+-            "characteristicsCodes": [
+-              "W"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 2,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "33A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 3,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "33B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 3,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "33C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 3,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "33D",
+-            "characteristicsCodes": [
+-              "A",
+-              "H",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 3,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "33E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 3,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "33F",
+-            "characteristicsCodes": [
+-              "A",
+-              "H",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 3,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "33H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 3,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "33J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 3,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "33K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 3,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "34A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 4,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "34B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 4,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "34C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 4,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "34D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 4,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "34E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 4,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "34F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 4,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "34H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 4,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "34J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 4,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "34K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 4,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "35A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 5,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "35B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 5,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "35C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 5,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "35D",
+-            "characteristicsCodes": [
+-              "A",
+-              "H",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 5,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "35E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 5,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "35F",
+-            "characteristicsCodes": [
+-              "A",
+-              "H",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 5,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "35H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 5,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "35J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 5,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "35K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 5,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "36A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 6,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "36B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 6,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "36C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 6,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "36D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 6,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "36E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 6,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "36F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 6,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "36H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 6,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "36J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 6,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "36K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 6,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "37A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 7,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "37B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 7,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "37C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 7,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "37D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 7,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "37E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 7,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "37F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 7,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "37H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 7,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "37J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 7,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "37K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 7,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "38A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 8,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "38B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 8,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "38C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 8,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "38D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 8,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "38E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 8,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "38F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 8,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "38H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 8,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "38J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 8,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "38K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 8,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "39A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 9,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "39B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 9,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "39C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 9,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "39D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 9,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "39E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 9,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "39F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 9,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "39H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 9,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "39J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 9,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "39K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 9,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "40A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 10,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "40B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 10,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "40C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 10,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "40D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 10,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "40E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 10,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "40F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 10,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "40H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 10,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "40J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 10,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "40K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 10,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "41A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 11,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "41B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 11,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "41C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 11,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "41D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 11,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "41E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 11,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "41F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 11,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "41H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 11,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "41J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 11,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "41K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 11,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "42A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 12,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "42B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 12,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "42C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 12,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "42D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 12,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "42E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 12,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "42F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 12,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "42H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 12,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "42J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 12,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "42K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 12,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "43A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 13,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "43B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 13,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "43C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 13,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "43D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 13,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "43E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 13,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "43F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 13,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "43H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 13,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "43J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 13,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "43K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 13,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "44A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 14,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "44B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 14,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "44C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 14,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "44D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 14,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "44E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 14,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "44F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 14,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "44H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 14,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "44J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 14,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "44K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 14,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "45A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 15,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "45B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 15,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "45C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 15,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "45D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 15,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "45E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 15,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "45F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 15,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "45H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 15,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "45J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 15,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "45K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 15,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "46A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 16,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "46B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 16,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "46C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 16,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "46D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 16,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "46E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 16,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "46F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 16,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "46H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 16,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "46J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 16,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "46K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 16,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "47A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 17,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "47B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 17,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "47C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 17,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "47D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 17,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "47E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 17,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "47F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 17,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "47H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 17,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "47J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 17,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "47K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 17,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "48A",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 18,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "48B",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 18,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "48C",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 18,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "48D",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 18,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "48E",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 18,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "48F",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 18,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "48H",
+-            "characteristicsCodes": [
+-              "A",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 18,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "48J",
+-            "characteristicsCodes": [
+-              "9",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 18,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "48K",
+-            "characteristicsCodes": [
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 18,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "49A",
+-            "characteristicsCodes": [
+-              "AL",
+-              "OW",
+-              "W"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 19,
+-              "y": 0
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "49B",
+-            "characteristicsCodes": [
+-              "9",
+-              "AL",
+-              "OW"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 19,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "49C",
+-            "characteristicsCodes": [
+-              "A",
+-              "AL",
+-              "OW"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 19,
+-              "y": 2
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "49D",
+-            "characteristicsCodes": [
+-              "A",
+-              "AL",
+-              "OW"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 19,
+-              "y": 4
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "49E",
+-            "characteristicsCodes": [
+-              "9",
+-              "AL",
+-              "OW"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 19,
+-              "y": 5
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "49F",
+-            "characteristicsCodes": [
+-              "A",
+-              "AL",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 19,
+-              "y": 6
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "49H",
+-            "characteristicsCodes": [
+-              "A",
+-              "AL",
+-              "OW"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 19,
+-              "y": 8
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "49J",
+-            "characteristicsCodes": [
+-              "9",
+-              "AL",
+-              "OW"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "OCCUPIED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 19,
+-              "y": 9
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "49K",
+-            "characteristicsCodes": [
+-              "AL",
+-              "OW",
+-              "W",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
+-              }
+-            ],
+-            "coordinates": {
+-              "x": 19,
+-              "y": 10
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "50B",
+-            "characteristicsCodes": [
+-              "9",
+-              "AL",
+-              "CH",
+-              "E"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+                 "seatAvailabilityStatus": "AVAILABLE",
+                 "price": {
+                   "currency": "EUR",
+@@ -4279,18 +1263,18 @@
+               }
+             ],
+             "coordinates": {
+-              "x": 21,
+-              "y": 1
+-            }
+-          },
+-          {
+-            "cabin": "ECONOMY",
+-            "number": "50C",
+-            "characteristicsCodes": [
+-              "A",
+-              "AL",
++              "x": 1,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "31K",
++            "characteristicsCodes": [
+               "CH",
+-              "E"
++              "K",
++              "W",
++              "1"
+             ],
+             "travelerPricing": [
+               {
+@@ -4310,6 +1294,3022 @@
+               }
+             ],
+             "coordinates": {
++              "x": 1,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "32H",
++            "characteristicsCodes": [
++              "A"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 2,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "32J",
++            "characteristicsCodes": [
++              "9",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 2,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "32K",
++            "characteristicsCodes": [
++              "W"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 2,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "33A",
++            "characteristicsCodes": [
++              "OW",
++              "W"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 3,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "33B",
++            "characteristicsCodes": [
++              "9",
++              "OW"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 3,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "33C",
++            "characteristicsCodes": [
++              "A",
++              "OW"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 3,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "33D",
++            "characteristicsCodes": [
++              "A",
++              "H",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 3,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "33E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 3,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "33F",
++            "characteristicsCodes": [
++              "A",
++              "H",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 3,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "33H",
++            "characteristicsCodes": [
++              "A",
++              "OW"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 3,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "33J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 3,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "33K",
++            "characteristicsCodes": [
++              "OW",
++              "W"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 3,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "34A",
++            "characteristicsCodes": [
++              "OW",
++              "W"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 4,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "34B",
++            "characteristicsCodes": [
++              "9",
++              "OW"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 4,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "34C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 4,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "34D",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 4,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "34E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 4,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "34F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 4,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "34H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 4,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "34J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 4,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "34K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 4,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "35A",
++            "characteristicsCodes": [
++              "OW",
++              "W"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 5,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "35B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 5,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "35C",
++            "characteristicsCodes": [
++              "A",
++              "OW"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 5,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "35D",
++            "characteristicsCodes": [
++              "A",
++              "H",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 5,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "35E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 5,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "35F",
++            "characteristicsCodes": [
++              "A",
++              "H",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 5,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "35H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 5,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "35J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 5,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "35K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 5,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "36A",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 6,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "36B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 6,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "36C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 6,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "36D",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 6,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "36E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 6,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "36F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 6,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "36H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 6,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "36J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 6,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "36K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 6,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "37A",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 7,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "37B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 7,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "37C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 7,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "37D",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 7,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "37E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 7,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "37F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 7,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "37H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 7,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "37J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 7,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "37K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 7,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "38A",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 8,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "38B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 8,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "38C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 8,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "38D",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 8,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "38E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 8,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "38F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 8,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "38H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 8,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "38J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 8,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "38K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 8,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "39A",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 9,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "39B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 9,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "39C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 9,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "39D",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 9,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "39E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 9,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "39F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 9,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "39H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 9,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "39J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 9,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "39K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 9,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "40A",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 10,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "40B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 10,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "40C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 10,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "40D",
++            "characteristicsCodes": [
++              "A",
++              "OW"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "BLOCKED"
++              }
++            ],
++            "coordinates": {
++              "x": 10,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "40E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 10,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "40F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 10,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "40H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 10,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "40J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 10,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "40K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 10,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "41A",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 11,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "41B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 11,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "41C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 11,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "41D",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 11,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "41E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 11,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "41F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 11,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "41H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 11,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "41J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 11,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "41K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 11,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "42A",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 12,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "42B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 12,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "42C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 12,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "42D",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 12,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "42E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 12,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "42F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 12,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "42H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 12,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "42J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 12,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "42K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 12,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "43A",
++            "characteristicsCodes": [
++              "OW",
++              "W"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 13,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "43B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 13,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "43C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 13,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "43D",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 13,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "43E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 13,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "43F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 13,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "43H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 13,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "43J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 13,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "43K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 13,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "44A",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 14,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "44B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 14,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "44C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 14,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "44D",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 14,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "44E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 14,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "44F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 14,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "44H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 14,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "44J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 14,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "44K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 14,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "45A",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 15,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "45B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 15,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "45C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 15,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "45D",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 15,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "45E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 15,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "45F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 15,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "45H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 15,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "45J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 15,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "45K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 15,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "46A",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 16,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "46B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 16,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "46C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 16,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "46D",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 16,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "46E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 16,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "46F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 16,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "46H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 16,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "46J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 16,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "46K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 16,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "47A",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 17,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "47B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 17,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "47C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 17,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "47D",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 17,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "47E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 17,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "47F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 17,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "47H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 17,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "47J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 17,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "47K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 17,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "48A",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 18,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "48B",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 18,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "48C",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 18,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "48D",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 18,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "48E",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 18,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "48F",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 18,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "48H",
++            "characteristicsCodes": [
++              "A",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 18,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "48J",
++            "characteristicsCodes": [
++              "9",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 18,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "48K",
++            "characteristicsCodes": [
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 18,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "49A",
++            "characteristicsCodes": [
++              "AL",
++              "OW",
++              "W"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 19,
++              "y": 0
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "49B",
++            "characteristicsCodes": [
++              "9",
++              "AL",
++              "OW"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 19,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "49C",
++            "characteristicsCodes": [
++              "A",
++              "AL",
++              "OW"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 19,
++              "y": 2
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "49D",
++            "characteristicsCodes": [
++              "A",
++              "AL",
++              "OW"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 19,
++              "y": 4
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "49E",
++            "characteristicsCodes": [
++              "9",
++              "AL",
++              "OW"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 19,
++              "y": 5
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "49F",
++            "characteristicsCodes": [
++              "A",
++              "AL",
++              "OW",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 19,
++              "y": 6
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "49H",
++            "characteristicsCodes": [
++              "A",
++              "AL",
++              "OW"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 19,
++              "y": 8
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "49J",
++            "characteristicsCodes": [
++              "9",
++              "AL",
++              "OW"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
++              }
++            ],
++            "coordinates": {
++              "x": 19,
++              "y": 9
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "49K",
++            "characteristicsCodes": [
++              "AL",
++              "OW",
++              "W",
++              "1"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE"
++              }
++            ],
++            "coordinates": {
++              "x": 19,
++              "y": 10
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "50B",
++            "characteristicsCodes": [
++              "9",
++              "AL",
++              "CH",
++              "E"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE",
++                "price": {
++                  "currency": "EUR",
++                  "total": "87.50",
++                  "base": "87.50",
++                  "taxes": [
++                    {
++                      "amount": "0.00",
++                      "code": "SUPPLIER"
++                    }
++                  ]
++                }
++              }
++            ],
++            "coordinates": {
++              "x": 21,
++              "y": 1
++            }
++          },
++          {
++            "cabin": "ECONOMY",
++            "number": "50C",
++            "characteristicsCodes": [
++              "A",
++              "AL",
++              "CH",
++              "E"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "AVAILABLE",
++                "price": {
++                  "currency": "EUR",
++                  "total": "87.50",
++                  "base": "87.50",
++                  "taxes": [
++                    {
++                      "amount": "0.00",
++                      "code": "SUPPLIER"
++                    }
++                  ]
++                }
++              }
++            ],
++            "coordinates": {
+               "x": 21,
+               "y": 2
+             }
+@@ -4547,7 +4547,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -4583,7 +4583,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6095,7 +6095,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6114,7 +6114,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6133,7 +6133,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6202,7 +6202,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6220,7 +6220,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6238,7 +6238,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6257,7 +6257,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6276,7 +6276,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6295,7 +6295,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6364,7 +6364,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6382,7 +6382,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6400,7 +6400,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6419,7 +6419,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6438,7 +6438,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6457,7 +6457,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6527,7 +6527,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6546,7 +6546,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6565,7 +6565,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6585,7 +6585,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6605,7 +6605,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6625,7 +6625,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6699,7 +6699,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6719,7 +6719,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6739,7 +6739,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++                "seatAvailabilityStatus": "AVAILABLE"
+               }
+             ],
+             "coordinates": {
+@@ -6777,7 +6777,7 @@
+     "availableSeatsCounters": [
+       {
+         "travelerId": "1",
+-        "value": 25
++        "value": 191
+       }
+     ]
+   }
