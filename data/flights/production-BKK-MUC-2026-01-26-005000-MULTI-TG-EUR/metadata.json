@@ -1,8 +1,8 @@
 {
-  "fetched_at": "2026-01-20T00:01:32.052386+00:00",
+  "fetched_at": "2026-01-20T08:01:13.760509+00:00",
   "seatmaps_cached": true,
-  "seatmaps_hash": "ae48896c2c321bf89edad8c894f3998cfa5a87d45407a5ef16a9c6115a5cd8a7",
-  "previous_seatmaps_hash": "fae7345e132263d6b14f246bc21195160a452f066b5eb658fc5903b59302c44c",
+  "seatmaps_hash": "cd33b5568a97d6da12a5be4d61e41d745a18431275ba9112f3a88aababebb20e",
+  "previous_seatmaps_hash": "ae48896c2c321bf89edad8c894f3998cfa5a87d45407a5ef16a9c6115a5cd8a7",
   "command_args": [
     "--date",
     "2026-01-26",
