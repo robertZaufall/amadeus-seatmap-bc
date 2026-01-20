@@ -12,12 +12,12 @@ jobs:
   run-seatmap:
     runs-on: ubuntu-latest
     env:
-      END_DATE: "2026-01-26"
-      OUTPUT_DIR: "data/flights/production-BKK-MUC-2026-01-26-005000-MULTI-TG-EUR"
-      REQUEST_FILE: "data/flights/production-BKK-MUC-2026-01-26-005000-MULTI-TG-EUR/seatmaps_request.json"
-      PNG_FILE: "data/flights/production-BKK-MUC-2026-01-26-005000-MULTI-TG-EUR/seatmaps.png"
-      METADATA_FILE: "data/flights/production-BKK-MUC-2026-01-26-005000-MULTI-TG-EUR/metadata.json"
-      SEATMAPS_FILE: "data/flights/production-BKK-MUC-2026-01-26-005000-MULTI-TG-EUR/seatmaps.json"
+      END_DATE: "2026-02-04"
+      OUTPUT_DIR: "data/flights/production-BKK-MUC-2026-02-04-005000-MULTI-TG-EUR"
+      REQUEST_FILE: "data/flights/production-BKK-MUC-2026-02-04-005000-MULTI-TG-EUR/seatmaps_request.json"
+      PNG_FILE: "data/flights/production-BKK-MUC-2026-02-04-005000-MULTI-TG-EUR/seatmaps.png"
+      METADATA_FILE: "data/flights/production-BKK-MUC-2026-02-04-005000-MULTI-TG-EUR/metadata.json"
+      SEATMAPS_FILE: "data/flights/production-BKK-MUC-2026-02-04-005000-MULTI-TG-EUR/seatmaps.json"
 
     steps:
       - name: Check schedule end date
@@ -59,7 +59,7 @@ jobs:
           TEST_AMADEUS_CLIENT_SECRET: ${{ secrets.TEST_AMADEUS_CLIENT_SECRET }}
         run: >
           python flight_offer_seatmaps.py
-          --date 2026-01-26
+          --date 2026-02-04
           --time 00:50
           --from BKK
           --to MUC
