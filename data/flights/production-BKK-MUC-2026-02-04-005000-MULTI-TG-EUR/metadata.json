@@ -1,8 +1,8 @@
 {
-  "fetched_at": "2026-01-22T00:01:34.575989+00:00",
+  "fetched_at": "2026-01-22T08:01:18.033422+00:00",
   "seatmaps_cached": true,
   "seatmaps_hash": "e905349ad8d8e4ba389297271c94cd82dbce279fbe3538f591cbf90d267a04c6",
-  "previous_seatmaps_hash": "674bd88b861e8d9b34b48ac4a62943258956929ff969ffe4328fb505a3df755f",
+  "previous_seatmaps_hash": "e905349ad8d8e4ba389297271c94cd82dbce279fbe3538f591cbf90d267a04c6",
   "command_args": [
     "--date",
     "2026-02-04",
