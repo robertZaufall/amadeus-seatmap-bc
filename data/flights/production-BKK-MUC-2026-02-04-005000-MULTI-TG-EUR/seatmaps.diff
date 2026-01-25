@@ -1,0 +1,20 @@
+--- seatmaps.json (previous)
++++ seatmaps.json (new)
+@@ -4644,7 +4644,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE",
++                "seatAvailabilityStatus": "OCCUPIED",
+                 "price": {
+                   "currency": "EUR",
+                   "total": "87.32",
+@@ -6784,7 +6784,7 @@
+     "availableSeatsCounters": [
+       {
+         "travelerId": "1",
+-        "value": 53
++        "value": 52
+       }
+     ]
+   }
