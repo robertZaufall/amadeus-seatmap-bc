@@ -1,0 +1,40 @@
+--- seatmaps.json (previous)
++++ seatmaps.json (new)
+@@ -556,7 +556,7 @@
+             "travelerPricing": [
+               {
+                 "travelerId": "1",
+-                "seatAvailabilityStatus": "AVAILABLE"
++                "seatAvailabilityStatus": "OCCUPIED"
+               }
+             ],
+             "coordinates": {
+@@ -747,7 +747,7 @@
+     "availableSeatsCounters": [
+       {
+         "travelerId": "1",
+-        "value": 13
++        "value": 12
+       }
+     ]
+   },
+@@ -4187,13 +4187,12 @@
+             "characteristicsCodes": [
+               "A",
+               "AL",
+-              "OW",
+-              "1"
+-            ],
+-            "travelerPricing": [
+-              {
+-                "travelerId": "1",
+-                "seatAvailabilityStatus": "BLOCKED"
++              "OW"
++            ],
++            "travelerPricing": [
++              {
++                "travelerId": "1",
++                "seatAvailabilityStatus": "OCCUPIED"
+               }
+             ],
+             "coordinates": {
