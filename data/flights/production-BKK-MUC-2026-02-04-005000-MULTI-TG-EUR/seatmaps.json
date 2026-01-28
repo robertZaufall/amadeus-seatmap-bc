@@ -556,7 +556,7 @@
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "OCCUPIED"
+                "seatAvailabilityStatus": "AVAILABLE"
               }
             ],
             "coordinates": {
@@ -747,7 +747,7 @@
     "availableSeatsCounters": [
       {
         "travelerId": "1",
-        "value": 11
+        "value": 12
       }
     ]
   },
@@ -1584,12 +1584,13 @@
             "number": "34D",
             "characteristicsCodes": [
               "A",
-              "OW"
+              "OW",
+              "1"
             ],
             "travelerPricing": [
               {
                 "travelerId": "1",
-                "seatAvailabilityStatus": "OCCUPIED"
+                "seatAvailabilityStatus": "BLOCKED"
               }
             ],
             "coordinates": {
